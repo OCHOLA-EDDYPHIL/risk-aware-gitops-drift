@@ -1,0 +1,29 @@
+{
+  "metadata_label_change": {
+  "id": "fixture-metadata-label-change",
+  "resource": {
+    "group": "apps",
+    "version": "v1",
+    "kind": "Deployment",
+    "namespace": "demo",
+    "name": "payments-api"
+  },
+  "change": {
+    "operation": "update",
+    "path": "/metadata/labels",
+    "before": {
+      "app.kubernetes.io/part-of": "checkout"
+    },
+    "after": {
+      "app.kubernetes.io/part-of": "checkout",
+      "research.example/scenario": "metadata-only"
+    },
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}

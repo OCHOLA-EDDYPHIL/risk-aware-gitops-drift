@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "name": "guestbook",
+    "namespace": "argocd"
+  },
+  "spec": {
+    "project": "default"
+  },
+  "status": {
+    "sync": {
+      "status": "OutOfSync"
+    },
+    "health": {
+      "status": "Healthy"
+    },
+    "resources": [
+      {
+        "group": "apps",
+        "version": "v1",
+        "kind": "Deployment",
+        "namespace": "demo",
+        "name": "guestbook",
+        "status": "OutOfSync",
+        "health": {
+          "status": "Healthy"
+        }
+      },
+      {
+        "group": "",
+        "version": "v1",
+        "kind": "Service",
+        "namespace": "demo",
+        "name": "guestbook",
+        "status": "Synced",
+        "health": {
+          "status": "Healthy"
+        }
+      }
+    ]
+  }
+}

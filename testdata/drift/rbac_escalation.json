@@ -1,0 +1,36 @@
+{
+  "rbac_escalation": {
+  "id": "fixture-rbac-escalation",
+  "resource": {
+    "group": "rbac.authorization.k8s.io",
+    "version": "v1",
+    "kind": "ClusterRole",
+    "namespace": "",
+    "name": "demo-expanded-role"
+  },
+  "change": {
+    "operation": "update",
+    "path": "/rules",
+    "before": [
+      {
+        "apiGroups": [""],
+        "resources": ["pods"],
+        "verbs": ["get", "list"]
+      }
+    ],
+    "after": [
+      {
+        "apiGroups": ["*"],
+        "resources": ["*"],
+        "verbs": ["*"]
+      }
+    ],
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}

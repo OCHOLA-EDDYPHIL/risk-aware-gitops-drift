@@ -1,0 +1,24 @@
+{
+  "privileged_container": {
+  "id": "fixture-privileged-container",
+  "resource": {
+    "group": "apps",
+    "version": "v1",
+    "kind": "Deployment",
+    "namespace": "demo",
+    "name": "payments-api"
+  },
+  "change": {
+    "operation": "update",
+    "path": "/spec/template/spec/containers/0/securityContext/privileged",
+    "before": false,
+    "after": true,
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}

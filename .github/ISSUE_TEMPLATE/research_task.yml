@@ -1,0 +1,34 @@
+name: Research task
+description: Track a research artifact or evidence task.
+title: "research: "
+labels: ["type:research"]
+body:
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: Chapter link
+      options:
+        - Ch3
+        - Ch4
+        - Ch5
+        - Ch6
+    validations:
+      required: true
+  - type: textarea
+    id: objective
+    attributes:
+      label: Research question/objective
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Source/evidence needed
+    validations:
+      required: true
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Expected artifact
+    validations:
+      required: true

@@ -1,0 +1,60 @@
+name: Drift scenario
+description: Define a Kubernetes drift scenario for policy and evaluation work.
+title: "scenario: "
+labels: ["type:policy"]
+body:
+  - type: input
+    id: scenario
+    attributes:
+      label: Scenario name
+    validations:
+      required: true
+  - type: input
+    id: resource
+    attributes:
+      label: Kubernetes resource affected
+      placeholder: Deployment, NetworkPolicy, RoleBinding
+    validations:
+      required: true
+  - type: textarea
+    id: intended
+    attributes:
+      label: Intended Git state
+    validations:
+      required: true
+  - type: textarea
+    id: live
+    attributes:
+      label: Live drift state
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Expected severity
+      options:
+        - CRITICAL
+        - HIGH
+        - MEDIUM
+        - LOW
+        - INFO
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: Expected policy rule
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence
+    attributes:
+      label: Evidence needed
+      options:
+        - Screenshot
+        - Test Log
+        - Diagram
+        - Code
+        - Result Table
+    validations:
+      required: true
