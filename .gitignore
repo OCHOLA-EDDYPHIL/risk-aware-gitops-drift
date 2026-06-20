@@ -1,0 +1,16 @@
+.env
+*.log
+*.out
+*.test
+bin/
+dist/
+/radar
+coverage.out
+.DS_Store
+.idea/
+.vscode/
+kubeconfig
+*.kubeconfig
+*.pem
+*.key
+*.crt

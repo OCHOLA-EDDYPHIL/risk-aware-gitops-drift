@@ -1,0 +1,39 @@
+name: Feature request
+description: Propose a RADAR feature tied to the research project.
+title: "feat: "
+labels: ["type:backend"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature
+      description: What should be added?
+    validations:
+      required: true
+  - type: input
+    id: objective
+    attributes:
+      label: Research objective link
+      description: Link or name the related objective.
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Implementation component
+      options:
+        - Argo CD client
+        - Drift model
+        - Policy engine
+        - CLI report
+        - Kubernetes lab
+        - CI
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true

@@ -1,0 +1,27 @@
+{
+  "hostpath_added": {
+  "id": "fixture-hostpath-added",
+  "resource": {
+    "group": "apps",
+    "version": "v1",
+    "kind": "Deployment",
+    "namespace": "demo",
+    "name": "node-reader"
+  },
+  "change": {
+    "operation": "add",
+    "path": "/spec/template/spec/volumes/0/hostPath",
+    "before": null,
+    "after": {
+      "path": "/var/log",
+      "type": "Directory"
+    },
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}

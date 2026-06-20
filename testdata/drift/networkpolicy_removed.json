@@ -1,0 +1,27 @@
+{
+  "networkpolicy_removed": {
+  "id": "fixture-networkpolicy-removed",
+  "resource": {
+    "group": "networking.k8s.io",
+    "version": "v1",
+    "kind": "NetworkPolicy",
+    "namespace": "demo",
+    "name": "deny-all-ingress"
+  },
+  "change": {
+    "operation": "delete",
+    "path": "/spec",
+    "before": {
+      "podSelector": {},
+      "policyTypes": ["Ingress"]
+    },
+    "after": null,
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}

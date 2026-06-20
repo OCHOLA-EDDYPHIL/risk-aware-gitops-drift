@@ -1,0 +1,24 @@
+{
+  "service_exposed": {
+  "id": "fixture-service-exposed",
+  "resource": {
+    "group": "",
+    "version": "v1",
+    "kind": "Service",
+    "namespace": "demo",
+    "name": "payments-api"
+  },
+  "change": {
+    "operation": "update",
+    "path": "/spec/type",
+    "before": "ClusterIP",
+    "after": "LoadBalancer",
+    "confidence": "field-level-fixture"
+  },
+  "severity": "",
+  "score": 0,
+  "reason": "",
+  "recommendation": "",
+  "evidenceSource": "synthetic-fixture"
+  }
+}
