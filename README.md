@@ -4,7 +4,7 @@ RADAR is a final-year Computer Networks and Cybersecurity research prototype for
 
 RADAR means **Risk-Aware Drift Assessment for Reconciliation**.
 
-The CLI currently uses only the Go standard library. No CLI framework is included in the foundation so the command surface stays small and easy to audit.
+The CLI deliberately avoids a CLI framework so the command surface stays small and easy to audit. The Go implementation uses a focused JSON-diff dependency for deterministic desired-versus-live comparison and invokes the local OPA CLI for Rego evaluation.
 
 ## What RADAR Does
 
@@ -25,7 +25,7 @@ The CLI currently uses only the Go standard library. No CLI framework is include
 
 ## Architecture Summary
 
-RADAR uses Argo CD as the first drift source. The Go CLI collects Application status, converts OutOfSync resources into normalized findings, and writes terminal or JSON reports. Rego policies under `policies/` define the intended risk classification for normalized field-level drift fixtures. The current Argo CD Application status integration is intentionally honest: it can identify resource-level OutOfSync findings, but it does not fake field-level diff semantics.
+RADAR uses Argo CD as the first drift source. The Go CLI retrieves Application and managed-resource state, compares normalized desired and live Kubernetes objects, evaluates each atomic change with Rego policies under `policies/`, and writes terminal or JSON reports. If only Application status is available, RADAR emits an INFO finding and does not invent field-level evidence or a security severity.
 
 ## MVP Scope
 
@@ -53,25 +53,30 @@ RADAR accepts explicit flags and environment variables. Flags override environme
 ARGOCD_SERVER=https://argocd.example.local
 ARGOCD_AUTH_TOKEN=replace-with-token
 RADAR_OUTPUT=table
+RADAR_POLICY_PATH=policies/risk.rego
 ```
 
 Defaults:
 
 - `RADAR_OUTPUT` defaults to `table`.
+- `RADAR_POLICY_PATH` defaults to `policies/risk.rego`.
 - `ARGOCD_SERVER` has no default.
 - `ARGOCD_AUTH_TOKEN` has no default.
+
+Equivalent command flags are `--server`, `--token`, `--output`, and `--policy`. `--timeout` limits the complete scan and defaults to `30s`. Flags take precedence over environment variables.
 
 ## Example Commands
 
 ```sh
 radar version
 radar scan --app guestbook --server https://argocd.example.local --token replace-with-token --output table
-radar scan --app guestbook --server https://argocd.example.local --token replace-with-token --output json
+radar scan --app guestbook --server https://argocd.example.local --token replace-with-token --policy policies/risk.rego --output json
 radar scan --app guestbook --output json
 go run ./cmd/radar scan --fixture testdata/argocd/application_outofsync.json --output table
+go run ./cmd/radar scan --fixture testdata/argocd/scan_bundle_privileged.json --output json
 ```
 
-The last command uses a sanitized local fixture for development and documentation.
+The fixture mode supports two sanitized formats. A legacy Application-only fixture demonstrates the explicit INFO fallback when field-level evidence is unavailable. A scan-bundle fixture contains both Application and managed-resource responses and exercises deterministic extraction, policy evaluation, and reporting without claiming that a live cluster was observed. Fixtures are development evidence, not experimental results.
 
 ## Example Output
 
@@ -84,9 +89,9 @@ Health Status: Healthy
 
 Findings:
 
-| Severity | Score | Resource | Change | Reason | Recommendation |
-| -------- | ----- | -------- | ------ | ------ | -------------- |
-| INFO | 0 | apps/v1/Deployment/demo/guestbook | unknown unknown | Argo CD reports this resource as OutOfSync, but field-level diff data is unavailable. | Fetch field-level diff data before assigning a security severity. |
+| Severity | Score | Rule | Resource | Change | Reason | Recommendation |
+| -------- | ----- | ---- | -------- | ------ | ------ | -------------- |
+| INFO | 0 | RADAR-INSUFFICIENT-EVIDENCE | apps/v1/Deployment/demo/guestbook | unknown unknown | Argo CD reports resource-level drift but field-level evidence is unavailable. | Collect valid field-level desired and live state before assigning security risk. |
 ```
 
 ## Security Notice
@@ -95,12 +100,12 @@ Do not commit Argo CD tokens, kubeconfigs, real cluster URLs, screenshots with s
 
 ## Current Implementation Status
 
-- Go CLI skeleton exists.
-- Argo CD Application API client exists and is tested with `httptest`.
-- Argo CD managed-resource retrieval and deterministic desired-versus-live field normalization exist with sanitized fixtures.
-- Resource-level OutOfSync findings are produced from Argo CD Application status.
-- Rego policies and tests are scaffolded against synthetic field-level fixtures.
-- The live scan command does not yet invoke the managed-resource extractor or OPA evaluator; end-to-end controlled-lab validation remains required for the MVP.
+- The Go CLI retrieves Argo CD Application and managed-resource API data.
+- Desired-versus-live state is normalized into deterministic atomic changes.
+- Frozen Rego rules classify the selected security scenarios with explainable impact, likelihood, score, and recommendation fields.
+- Terminal and JSON reports expose the selected rule and retain all matched rule IDs in JSON.
+- Sanitized scan bundles validate the integrated extraction-to-report path.
+- Controlled-lab validation and the formal repeated-run evaluation remain outstanding; fixture results must not be presented as live experimental evidence.
 
 ## Roadmap
 

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"sort"
 
 	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/drift"
 )
@@ -19,6 +20,54 @@ type Decision struct {
 	Score          int    `json:"score"`
 	Reason         string `json:"reason"`
 	Recommendation string `json:"recommendation"`
+}
+
+// ApplyDecisions deterministically selects the highest-scoring decision and
+// retains all matched rule IDs for auditability. Equal scores are ordered by
+// rule ID so identical input always produces identical output.
+func ApplyDecisions(finding drift.Finding, decisions []Decision) drift.Finding {
+	if len(decisions) == 0 {
+		if finding.Change.Confidence == "field-level" {
+			finding.Severity = "INFO"
+			finding.Score = 0
+			finding.Reason = "Field-level drift was extracted, but no configured security rule matched."
+			finding.Recommendation = "Review the change and add a policy only if the selected research scope requires classification."
+		}
+		return finding
+	}
+
+	ordered := append([]Decision(nil), decisions...)
+	sort.SliceStable(ordered, func(i, j int) bool {
+		if ordered[i].Score != ordered[j].Score {
+			return ordered[i].Score > ordered[j].Score
+		}
+		return ordered[i].RuleID < ordered[j].RuleID
+	})
+
+	matched := make([]string, 0, len(ordered))
+	seen := map[string]struct{}{}
+	for _, decision := range ordered {
+		if decision.RuleID == "" {
+			continue
+		}
+		if _, exists := seen[decision.RuleID]; exists {
+			continue
+		}
+		seen[decision.RuleID] = struct{}{}
+		matched = append(matched, decision.RuleID)
+	}
+	sort.Strings(matched)
+
+	selected := ordered[0]
+	finding.RuleID = selected.RuleID
+	finding.MatchedRuleIDs = matched
+	finding.Impact = selected.Impact
+	finding.Likelihood = selected.Likelihood
+	finding.Severity = selected.Severity
+	finding.Score = selected.Score
+	finding.Reason = selected.Reason
+	finding.Recommendation = selected.Recommendation
+	return finding
 }
 
 type Evaluator struct {

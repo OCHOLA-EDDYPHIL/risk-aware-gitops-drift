@@ -19,8 +19,8 @@ func WriteTerminal(w io.Writer, report drift.DriftReport) error {
 		"",
 		"Findings:",
 		"",
-		"| Severity | Score | Resource | Change | Reason | Recommendation |",
-		"| -------- | ----- | -------- | ------ | ------ | -------------- |",
+		"| Severity | Score | Rule | Resource | Change | Reason | Recommendation |",
+		"| -------- | ----- | ---- | -------- | ------ | ------ | -------------- |",
 	}
 	for _, line := range lines {
 		if _, err := fmt.Fprintln(w, line); err != nil {
@@ -32,9 +32,10 @@ func WriteTerminal(w io.Writer, report drift.DriftReport) error {
 		change := finding.Change.Operation + " " + finding.Change.Path
 		if _, err := fmt.Fprintf(
 			w,
-			"| %s | %d | %s | %s | %s | %s |\n",
+			"| %s | %d | %s | %s | %s | %s | %s |\n",
 			finding.Severity,
 			finding.Score,
+			finding.RuleID,
 			finding.Resource.String(),
 			change,
 			finding.Reason,
