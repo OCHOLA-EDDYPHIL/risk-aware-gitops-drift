@@ -9,7 +9,7 @@
     "name": "payments-api"
   },
   "change": {
-    "operation": "update",
+    "operation": "replace",
     "path": "/spec/template/spec/containers/0/securityContext/privileged",
     "before": false,
     "after": true,

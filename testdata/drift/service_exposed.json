@@ -9,10 +9,10 @@
     "name": "payments-api"
   },
   "change": {
-    "operation": "update",
+    "operation": "replace",
     "path": "/spec/type",
     "before": "ClusterIP",
-    "after": "LoadBalancer",
+    "after": "NodePort",
     "confidence": "field-level-fixture"
   },
   "severity": "",
