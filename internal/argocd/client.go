@@ -53,16 +53,10 @@ func NewClient(serverURL string, token string) (*Client, error) {
 }
 
 func (c *Client) GetApplication(ctx context.Context, appName string) (*Application, error) {
-	if c == nil {
-		return nil, errors.New("argocd client is nil")
+	if err := validateApplicationRequest(c, appName); err != nil {
+		return nil, err
 	}
 	appName = strings.TrimSpace(appName)
-	if appName == "" {
-		return nil, errors.New("argocd application name is required")
-	}
-	if strings.Contains(appName, "/") {
-		return nil, errors.New("argocd application name must not contain '/'")
-	}
 
 	endpoint := *c.baseURL
 	endpoint.Path = path.Join(endpoint.Path, "api", "v1", "applications", appName)
@@ -93,6 +87,59 @@ func (c *Client) GetApplication(ctx context.Context, appName string) (*Applicati
 	}
 
 	return &app, nil
+}
+
+func (c *Client) GetManagedResources(ctx context.Context, appName string) (*ManagedResourcesResponse, error) {
+	if err := validateApplicationRequest(c, appName); err != nil {
+		return nil, err
+	}
+	appName = strings.TrimSpace(appName)
+
+	endpoint := *c.baseURL
+	endpoint.Path = path.Join(endpoint.Path, "api", "v1", "applications", appName, "managed-resources")
+	endpoint.RawQuery = ""
+	endpoint.Fragment = ""
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("create argocd managed resources request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+c.token)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("get argocd managed resources for %q: %w", appName, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		return nil, statusError(appName, resp.StatusCode, resp.Body)
+	}
+
+	var resources ManagedResourcesResponse
+	decoder := json.NewDecoder(resp.Body)
+	if err := decoder.Decode(&resources); err != nil {
+		return nil, fmt.Errorf("decode argocd managed resources for %q: %w", appName, err)
+	}
+	if resources.Items == nil {
+		resources.Items = []ResourceDiff{}
+	}
+	return &resources, nil
+}
+
+func validateApplicationRequest(c *Client, appName string) error {
+	if c == nil {
+		return errors.New("argocd client is nil")
+	}
+	appName = strings.TrimSpace(appName)
+	if appName == "" {
+		return errors.New("argocd application name is required")
+	}
+	if strings.Contains(appName, "/") {
+		return errors.New("argocd application name must not contain '/'")
+	}
+	return nil
 }
 
 func statusError(appName string, statusCode int, body io.Reader) error {
