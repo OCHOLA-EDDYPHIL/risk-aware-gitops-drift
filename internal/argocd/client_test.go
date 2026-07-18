@@ -61,6 +61,63 @@ func TestGetApplicationHandles200(t *testing.T) {
 	}
 }
 
+func TestGetManagedResourcesBuildsPathAndDecodesEvidence(t *testing.T) {
+	var gotPath string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath = r.URL.Path
+		fmt.Fprint(w, `{"items":[{"group":"apps","kind":"Deployment","namespace":"demo","name":"guestbook","predictedLiveState":"{\"apiVersion\":\"apps/v1\"}","normalizedLiveState":"{\"apiVersion\":\"apps/v1\"}","modified":true}]}`)
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, testToken)
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+	resources, err := client.GetManagedResources(context.Background(), "guestbook")
+	if err != nil {
+		t.Fatalf("GetManagedResources() error = %v", err)
+	}
+	if gotPath != "/api/v1/applications/guestbook/managed-resources" {
+		t.Fatalf("path = %q", gotPath)
+	}
+	if len(resources.Items) != 1 || resources.Items[0].Kind != "Deployment" {
+		t.Fatalf("resources = %#v", resources.Items)
+	}
+}
+
+func TestGetManagedResourcesHandlesEmptyItems(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{}`)
+	}))
+	defer server.Close()
+	client, err := NewClient(server.URL, testToken)
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+	resources, err := client.GetManagedResources(context.Background(), "guestbook")
+	if err != nil {
+		t.Fatalf("GetManagedResources() error = %v", err)
+	}
+	if resources.Items == nil || len(resources.Items) != 0 {
+		t.Fatalf("items = %#v, want non-nil empty slice", resources.Items)
+	}
+}
+
+func TestGetManagedResourcesHandlesInvalidJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{not-json`)
+	}))
+	defer server.Close()
+	client, err := NewClient(server.URL, testToken)
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+	_, err = client.GetManagedResources(context.Background(), "guestbook")
+	if err == nil || !strings.Contains(err.Error(), "decode argocd managed resources") {
+		t.Fatalf("error = %v, want decode error", err)
+	}
+}
+
 func TestGetApplicationHandles401WithoutTokenLeak(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad token "+testToken, http.StatusUnauthorized)

@@ -3,6 +3,7 @@ package drift
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/argocd"
 )
@@ -17,13 +18,18 @@ type DriftReport struct {
 
 type Finding struct {
 	ID             string      `json:"id"`
+	RuleID         string      `json:"ruleId,omitempty"`
+	MatchedRuleIDs []string    `json:"matchedRuleIds,omitempty"`
 	Resource       ResourceRef `json:"resource"`
 	Change         Change      `json:"change"`
 	Severity       string      `json:"severity"`
 	Score          int         `json:"score"`
+	Impact         int         `json:"impact,omitempty"`
+	Likelihood     int         `json:"likelihood,omitempty"`
 	Reason         string      `json:"reason"`
 	Recommendation string      `json:"recommendation"`
 	EvidenceSource string      `json:"evidenceSource"`
+	ObservedAt     time.Time   `json:"observedAt,omitempty"`
 }
 
 type ResourceRef struct {

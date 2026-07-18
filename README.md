@@ -97,9 +97,10 @@ Do not commit Argo CD tokens, kubeconfigs, real cluster URLs, screenshots with s
 
 - Go CLI skeleton exists.
 - Argo CD Application API client exists and is tested with `httptest`.
+- Argo CD managed-resource retrieval and deterministic desired-versus-live field normalization exist with sanitized fixtures.
 - Resource-level OutOfSync findings are produced from Argo CD Application status.
 - Rego policies and tests are scaffolded against synthetic field-level fixtures.
-- Field-level Argo CD diff extraction is not implemented yet and is required for the MVP.
+- The live scan command does not yet invoke the managed-resource extractor or OPA evaluator; end-to-end controlled-lab validation remains required for the MVP.
 
 ## Roadmap
 
