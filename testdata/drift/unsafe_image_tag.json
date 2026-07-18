@@ -9,7 +9,7 @@
     "name": "payments-api"
   },
   "change": {
-    "operation": "update",
+    "operation": "replace",
     "path": "/spec/template/spec/containers/0/image",
     "before": "registry.example.local/demo/payments-api:1.0.0",
     "after": "registry.example.local/demo/payments-api:latest",

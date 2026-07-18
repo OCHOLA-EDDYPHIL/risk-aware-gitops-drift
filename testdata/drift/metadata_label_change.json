@@ -9,15 +9,10 @@
     "name": "payments-api"
   },
   "change": {
-    "operation": "update",
-    "path": "/metadata/labels",
-    "before": {
-      "app.kubernetes.io/part-of": "checkout"
-    },
-    "after": {
-      "app.kubernetes.io/part-of": "checkout",
-      "research.example/scenario": "metadata-only"
-    },
+    "operation": "add",
+    "path": "/metadata/labels/research.example~1scenario",
+    "before": null,
+    "after": "metadata-only",
     "confidence": "field-level-fixture"
   },
   "severity": "",

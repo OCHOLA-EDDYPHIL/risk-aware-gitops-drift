@@ -9,12 +9,9 @@
     "name": "deny-all-ingress"
   },
   "change": {
-    "operation": "delete",
-    "path": "/spec",
-    "before": {
-      "podSelector": {},
-      "policyTypes": ["Ingress"]
-    },
+    "operation": "remove",
+    "path": "",
+    "before": {"apiVersion":"networking.k8s.io/v1","kind":"NetworkPolicy"},
     "after": null,
     "confidence": "field-level-fixture"
   },

@@ -12,6 +12,9 @@ import (
 )
 
 type Decision struct {
+	RuleID         string `json:"ruleId"`
+	Impact         int    `json:"impact"`
+	Likelihood     int    `json:"likelihood"`
 	Severity       string `json:"severity"`
 	Score          int    `json:"score"`
 	Reason         string `json:"reason"`
