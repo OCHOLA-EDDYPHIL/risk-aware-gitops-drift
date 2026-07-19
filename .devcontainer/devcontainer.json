@@ -8,7 +8,7 @@
       "installDockerBuildx": false,
       "dockerDashComposeVersion": "none"
     },
-    "ghcr.io/devcontainers/features/sshd:1.0.18": {}
+    "ghcr.io/devcontainers/features/sshd:1.1.0": {}
   },
   "hostRequirements": {
     "cpus": 2,
