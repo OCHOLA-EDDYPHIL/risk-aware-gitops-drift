@@ -1,6 +1,6 @@
 # Guarded Controlled-Drift Scenarios
 
-`scripts/run-scenario.sh` accepts exactly one scenario and one positive repetition number. It refuses any context other than `radar-lab`, refuses a dirty baseline, changes only the live synthetic namespace, and never edits Git.
+`scripts/run-scenario.sh` accepts exactly one scenario and one positive repetition number. It refuses any context other than `radar-lab`, refuses a dirty baseline or mutable Application revision, changes only the live synthetic namespace, and never edits Git. The synchronized Argo CD revision must equal the immutable target commit before drift is injected, preventing source reconciliation from clearing the mutation during observation.
 
 | Scenario argument | Live mutation | Expected rule | Severity |
 | --- | --- | --- | --- |

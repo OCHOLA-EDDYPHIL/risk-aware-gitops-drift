@@ -33,6 +33,16 @@ assert_context() {
   [[ "${requested_context}" == "${RADAR_CONTEXT}" ]] || die "--context must be exactly ${RADAR_CONTEXT}"
 }
 
+assert_frozen_application_revision() {
+  local target_revision="${1:-}"
+  local synchronized_revision="${2:-}"
+
+  [[ "${target_revision}" =~ ^[0-9a-f]{40}$ ]] || \
+    die "controlled scenarios require an immutable 40-character Git commit SHA as the Argo CD target revision"
+  [[ "${synchronized_revision}" == "${target_revision}" ]] || \
+    die "the Argo CD synchronized revision does not match its immutable target revision"
+}
+
 kube() {
   command kubectl --context "${RADAR_CONTEXT}" "$@"
 }

@@ -88,6 +88,9 @@ for command_name in kubectl minikube jq curl go; do
 done
 
 "${SCRIPT_DIR}/verify-baseline.sh" --context "${RADAR_CONTEXT}"
+application_target_revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.spec.source.targetRevision}')"
+application_synchronized_revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.status.sync.revision}')"
+assert_frozen_application_revision "${application_target_revision}" "${application_synchronized_revision}"
 
 run_id="run-$(printf '%03d' "${repetition}")"
 run_dir="${output_root}/${scenario}/${run_id}"

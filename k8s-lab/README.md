@@ -34,7 +34,7 @@ k8s-lab/scripts/setup.sh --context radar-lab
 
 Setup preserves the existing kubeconfig current context, installs the pinned Argo CD manifest, configures an API-only least-privilege `radar` account, stores the repository credential only inside `radar-lab`, and writes a short-lived API token to the ignored `.radar-lab-token` file.
 
-`RADAR_TARGET_REVISION` defaults to `main` for environment setup. Controlled runs must use the immutable commit SHA recorded by the evaluation protocol.
+`RADAR_TARGET_REVISION` selects the source used to seed the environment and defaults to `main` for setup. Before injecting drift, the scenario runner requires the Application target and synchronized revision to be the same immutable 40-character commit SHA. It refuses mutable references or a revision mismatch so repository reconciliation cannot erase the observed mutation during a controlled run.
 
 ## Verify and run
 
