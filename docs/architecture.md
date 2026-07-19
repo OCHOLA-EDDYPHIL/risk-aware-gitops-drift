@@ -14,6 +14,8 @@ OPA/Rego is the policy engine. The scan command evaluates every normalized findi
 
 The risk matrix maps drift scenarios to CRITICAL, HIGH, MEDIUM, LOW, and INFO. INFO is used for resource-level OutOfSync findings where field-level change details are unavailable.
 
-The CLI and JSON report are the primary interfaces for the MVP. A dashboard is explicitly post-MVP.
+The CLI and JSON report are the primary interfaces. A dashboard is outside the research prototype scope.
 
-The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. Argo CD has self-heal disabled during observation, exposes its API only through localhost forwarding, and grants RADAR only application/project read access. This lab architecture is implemented as reproducible assets but remains at the implemented evidence tier until the host memory preflight permits a controlled run.
+The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. Argo CD has self-heal disabled during observation, exposes its API only through localhost forwarding, and grants RADAR only application/project read access. The scenario runner verifies the declared baseline, applies one synthetic mutation, observes the drift, deletes the synthetic namespace, performs an explicit Argo CD synchronization, and verifies the restored declared fields before another run.
+
+The cross-cutting lab and evidence decisions are recorded in [ADR 0001](adr/0001-isolated-resettable-research-lab.md) and [ADR 0002](adr/0002-fail-closed-evidence-preparation.md).

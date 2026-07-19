@@ -1,6 +1,6 @@
 # RADAR Research Evidence
 
-This directory stores sanitized, immutable evidence collections and their reviewable metadata. Collection identifiers are research-native and must describe the research stage or environment, not delivery mechanics. For example, the non-formal Codespaces pilot uses `pilot-codespace-v1`.
+This directory stores sanitized, immutable evidence collections and their reviewable metadata. Collection identifiers are research-native and describe the research stage or purpose rather than delivery mechanics.
 
 ## Evidence tiers
 
@@ -23,7 +23,7 @@ Each collection uses the following structure:
         └── radar-result.json
 ```
 
-The index records the collection identifier, scenario, repetition, run status, evidence tier, expected rule and severity, archive checksum, and archive size. Environment manifests record the immutable RADAR commit, GitHub Codespaces provider and region, machine specification and capacity, and dependency versions. They omit working refs, repository identity, and Codespace instance identifiers.
+The index records the collection identifier, scenario, repetition, run status, evidence tier, expected rule and severity, archive checksum, and archive size. Environment manifests record the immutable RADAR commit, execution provider and region where applicable, machine specification and capacity, and dependency versions. They omit working refs, repository identity, and transient instance identifiers.
 
 ## Preparation and storage
 
@@ -32,3 +32,5 @@ Raw run files remain under the ignored lab evidence directory. The evidence prep
 Only immutable `.tar.zst` archives use Git LFS. Small JSON summaries, CSV indexes, and checksum files remain ordinary Git objects for review. Archives and run summaries are append-only and must not be overwritten. Preparing evidence changes local files only; repository publication and review remain separate delivery actions.
 
 Screenshots and other image formats are not sanitized automatically and are rejected. Any future image evidence requires a separately documented manual-review procedure before storage rules are expanded.
+
+The evidence-storage decision and its consequences are recorded in [ADR 0002](../../docs/adr/0002-fail-closed-evidence-preparation.md).

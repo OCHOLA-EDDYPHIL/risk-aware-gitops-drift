@@ -99,15 +99,6 @@ Findings:
 
 Do not commit Argo CD tokens, kubeconfigs, real cluster URLs, screenshots with sensitive data, or real secrets. RADAR must not print tokens or include them in errors. Test data must stay synthetic and sanitized.
 
-## Current Implementation Status
-
-- The Go CLI retrieves Argo CD Application and managed-resource API data.
-- Desired-versus-live state is normalized into deterministic atomic changes.
-- Frozen Rego rules classify the selected security scenarios with explainable impact, likelihood, score, and recommendation fields.
-- Terminal and JSON reports expose the selected rule and retain all matched rule IDs in JSON.
-- Sanitized scan bundles validate the integrated extraction-to-report path.
-- Controlled-lab validation and the formal repeated-run evaluation remain outstanding; fixture results must not be presented as live experimental evidence.
-
 ## License
 
 No license is currently applied to this private repository.
