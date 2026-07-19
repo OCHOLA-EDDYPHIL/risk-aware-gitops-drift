@@ -80,7 +80,7 @@ server_version="$(kube version --output json | jq -r '.serverVersion.gitVersion'
 [[ "${server_version}" == "${KUBERNETES_VERSION}" ]] || die "Kubernetes ${KUBERNETES_VERSION} is required; found ${server_version}"
 
 kube create namespace "${ARGO_NAMESPACE}" --dry-run=client --output yaml | kube apply --filename - >/dev/null
-kube --namespace "${ARGO_NAMESPACE}" apply --filename \
+kube --namespace "${ARGO_NAMESPACE}" apply --server-side --filename \
   "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml" >/dev/null
 kube --namespace "${ARGO_NAMESPACE}" wait --for=condition=Available deployment --all --timeout=600s >/dev/null
 kube --namespace "${ARGO_NAMESPACE}" rollout status statefulset/argocd-application-controller --timeout=600s >/dev/null
