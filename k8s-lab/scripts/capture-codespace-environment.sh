@@ -8,11 +8,13 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
 usage() {
-  printf 'Usage: %s --collection-id <identifier> --output <environment.json>\n' "$0" >&2
+  printf 'Usage: %s --collection-id <identifier> --region <region> --machine-type <type> --output <environment.json>\n' "$0" >&2
   exit 2
 }
 
 collection_id=""
+region=""
+machine_type=""
 output_path=""
 while (($# > 0)); do
   case "$1" in
@@ -26,25 +28,32 @@ while (($# > 0)); do
       output_path="$2"
       shift 2
       ;;
+    --region)
+      (($# >= 2)) || usage
+      region="$2"
+      shift 2
+      ;;
+    --machine-type)
+      (($# >= 2)) || usage
+      machine_type="$2"
+      shift 2
+      ;;
     *) usage ;;
   esac
 done
 
 [[ "${collection_id}" =~ ^[a-z0-9][a-z0-9._-]*$ ]] || die "collection identifier contains unsupported characters"
+[[ "${region}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || die "region contains unsupported characters"
+[[ "${machine_type}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || die "machine type contains unsupported characters"
 [[ -n "${output_path}" ]] || usage
 [[ "${CODESPACES:-false}" == "true" ]] || die "environment capture must run inside GitHub Codespaces"
 [[ -z "$(git -C "${REPO_ROOT}" status --porcelain --untracked-files=normal)" ]] || die "working tree must be clean before environment capture"
 [[ ! -e "${output_path}" ]] || die "environment output already exists: ${output_path}"
 
-for command_name in docker gh git go jq kubectl minikube opa sha256sum; do
+for command_name in docker git go jq kubectl minikube opa sha256sum; do
   require_command "${command_name}"
 done
 git -C "${REPO_ROOT}" lfs version >/dev/null
-
-environment_json="$(gh codespace view --json location,machineName,machineDisplayName)"
-region="$(jq --exit-status --raw-output '.location | select(type == "string" and length > 0)' <<<"${environment_json}")"
-machine_type="$(jq --exit-status --raw-output '.machineName | select(type == "string" and length > 0)' <<<"${environment_json}")"
-machine_display_name="$(jq --exit-status --raw-output '.machineDisplayName | select(type == "string" and length > 0)' <<<"${environment_json}")"
 
 lab_server_version="not-running"
 argocd_server_image="not-running"
@@ -59,7 +68,6 @@ jq --null-input \
   --arg capturedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg region "${region}" \
   --arg machineType "${machine_type}" \
-  --arg machineDisplayName "${machine_display_name}" \
   --argjson hostCpuCount "$(nproc)" \
   --argjson hostMemoryBytes "$(( $(awk '/^MemTotal:/ {print $2}' /proc/meminfo) * 1024 ))" \
   --argjson availableMemoryBytes "$(( $(awk '/^MemAvailable:/ {print $2}' /proc/meminfo) * 1024 ))" \
@@ -82,7 +90,6 @@ jq --null-input \
     environment: {
       region: $region,
       machineType: $machineType,
-      machineDisplayName: $machineDisplayName,
       cpuCount: $hostCpuCount,
       memoryBytes: $hostMemoryBytes,
       availableMemoryBytes: $availableMemoryBytes,
