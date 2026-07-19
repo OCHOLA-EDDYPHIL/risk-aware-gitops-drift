@@ -1,3 +1,3 @@
-# Argo CD Applications
+# Argo CD Application Templates
 
-Future sanitized Argo CD Application manifests for the local lab will live here.
+These templates are rendered by `scripts/setup.sh`. The repository placeholder is never applied directly. The Application uses project `radar`, targets only `radar-demo`, and has automated initial sync with pruning and self-heal disabled so controlled live drift remains observable.

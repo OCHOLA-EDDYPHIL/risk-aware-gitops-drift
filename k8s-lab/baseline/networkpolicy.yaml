@@ -1,0 +1,13 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: radar-demo-default-deny-ingress
+  namespace: radar-demo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: radar-demo
+  policyTypes:
+    - Ingress
+  ingress: []

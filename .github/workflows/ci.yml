@@ -30,6 +30,19 @@ jobs:
       - name: Build
         run: go build ./cmd/radar
 
+      - name: Set up kubectl for lab asset validation
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "v1.35.6"
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+
+      - name: Validate isolated lab assets
+        run: make lab-static-check
+
       - name: Install OPA
         run: |
           curl -L -o opa https://openpolicyagent.org/downloads/v1.17.1/opa_linux_amd64_static

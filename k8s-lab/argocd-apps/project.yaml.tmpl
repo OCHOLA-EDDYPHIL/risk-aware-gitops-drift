@@ -1,0 +1,20 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: radar
+  namespace: argocd
+spec:
+  description: >-
+    Isolated destination and repository scope for the RADAR research lab
+  sourceRepos:
+    - REPLACE_WITH_RADAR_REPOSITORY_URL
+  destinations:
+    - namespace: radar-demo
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
