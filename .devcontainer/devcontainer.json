@@ -7,7 +7,8 @@
       "moby": true,
       "installDockerBuildx": false,
       "dockerDashComposeVersion": "none"
-    }
+    },
+    "ghcr.io/devcontainers/features/sshd:1.0.18": {}
   },
   "hostRequirements": {
     "cpus": 2,
