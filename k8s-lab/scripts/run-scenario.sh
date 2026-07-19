@@ -101,7 +101,7 @@ jq --null-input \
   --arg startedAt "${started_at}" \
   --arg expectedRule "${expected_rule}" \
   --arg expectedSeverity "${expected_severity}" \
-  '{scenario: $scenario, repetition: $repetition, startedAt: $startedAt, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "controlled-lab-observed"}' \
+  '{scenario: $scenario, repetition: $repetition, startedAt: $startedAt, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "implemented"}' \
   >"${run_dir}/metadata.json"
 
 reset_required=false
@@ -116,16 +116,34 @@ reset_baseline() {
 
 cleanup() {
   local exit_code=$?
+  local failed_at
+  local metadata_temporary
+  local reset_verified=false
   trap - EXIT
+  failed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   stop_argocd_forward
   if [[ "${reset_required}" == true ]]; then
     printf 'Attempting fail-safe baseline reset after interrupted run.\n' >&2
-    reset_baseline || printf 'Fail-safe reset failed; verify radar-lab manually.\n' >&2
+    if reset_baseline; then
+      reset_verified=true
+    else
+      printf 'Fail-safe reset failed; verify radar-lab manually.\n' >&2
+    fi
+  elif "${SCRIPT_DIR}/verify-baseline.sh" --context "${RADAR_CONTEXT}" >/dev/null 2>&1; then
+    reset_verified=true
+  fi
+  if [[ -f "${run_dir}/metadata.json" ]]; then
+    metadata_temporary="$(mktemp)"
+    jq --arg failedAt "${failed_at}" --argjson baselineResetVerified "${reset_verified}" \
+      '.status = "failed" | .failedAt = $failedAt | .baselineResetVerified = $baselineResetVerified | .evidenceTier = "implemented"' \
+      "${run_dir}/metadata.json" >"${metadata_temporary}"
+    mv "${metadata_temporary}" "${run_dir}/metadata.json"
   fi
   exit "${exit_code}"
 }
 trap cleanup EXIT
 
+reset_required=true
 case "${scenario}" in
   rbac-wildcard)
     kube --namespace "${RADAR_NAMESPACE}" patch role radar-demo-reader --type json \
@@ -136,7 +154,7 @@ case "${scenario}" in
     ;;
   privileged-container)
     kube --namespace "${RADAR_NAMESPACE}" patch deployment radar-demo --type strategic \
-      --patch='{"spec":{"template":{"spec":{"containers":[{"name":"radar-demo","securityContext":{"privileged":true}}]}}}}' >/dev/null
+      --patch='{"spec":{"template":{"spec":{"containers":[{"name":"radar-demo","securityContext":{"allowPrivilegeEscalation":true,"privileged":true}}]}}}}' >/dev/null
     ;;
   hostpath-addition)
     kube --namespace "${RADAR_NAMESPACE}" patch deployment radar-demo --type json \
@@ -157,7 +175,6 @@ case "${scenario}" in
     kube --namespace "${RADAR_NAMESPACE}" label deployment radar-demo radar.research/scenario=metadata-only --overwrite >/dev/null
     ;;
 esac
-reset_required=true
 
 refresh_application
 wait_for_application_value '{.status.sync.status}' OutOfSync 300s
