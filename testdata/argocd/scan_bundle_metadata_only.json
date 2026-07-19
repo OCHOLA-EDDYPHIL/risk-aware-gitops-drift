@@ -1,0 +1,18 @@
+{
+  "application": {
+    "metadata": {"name": "radar-lab", "namespace": "argocd"},
+    "spec": {"project": "radar"},
+    "status": {"sync": {"status": "OutOfSync"}, "health": {"status": "Healthy"}}
+  },
+  "managedResources": {
+    "items": [{
+      "group": "apps",
+      "kind": "Deployment",
+      "namespace": "radar-demo",
+      "name": "radar-demo",
+      "predictedLiveState": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"name\":\"radar-demo\",\"namespace\":\"radar-demo\"},\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"radar-demo\",\"image\":\"nginx:1.27.5\"}]}}}}",
+      "normalizedLiveState": "{\"apiVersion\":\"apps/v1\",\"kind\":\"Deployment\",\"metadata\":{\"name\":\"radar-demo\",\"namespace\":\"radar-demo\",\"labels\":{\"radar.research/scenario\":\"metadata-only\"}},\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"radar-demo\",\"image\":\"nginx:1.27.5\"}]}}}}",
+      "modified": true
+    }]
+  }
+}

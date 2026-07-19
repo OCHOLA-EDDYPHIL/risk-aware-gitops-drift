@@ -51,4 +51,6 @@ jobs:
           opa version
 
       - name: Test Rego policies
-        run: opa test policies testdata
+        run: |
+          opa test --ignore argocd policies testdata
+          make policy-integration-test

@@ -83,8 +83,17 @@ sanitized_directory="${temporary_directory}/${scenario}-${run_id}"
 python3 "${SCRIPT_DIR}/sanitize-evidence.py" "${run_dir}" "${sanitized_directory}"
 
 jq --exit-status . "${sanitized_directory}/metadata.json" >/dev/null
-[[ ! -f "${sanitized_directory}/environment.json" ]] || jq --exit-status . "${sanitized_directory}/environment.json" >/dev/null
-[[ ! -f "${sanitized_directory}/radar-result.json" ]] || jq --exit-status . "${sanitized_directory}/radar-result.json" >/dev/null
+for json_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
+  [[ ! -f "${sanitized_directory}/${json_name}.json" ]] || jq --exit-status . "${sanitized_directory}/${json_name}.json" >/dev/null
+done
+if [[ "${status}" == "completed" && "${evidence_tier}" == "controlled-lab-observed" ]]; then
+  for required_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
+    [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
+      die "completed controlled-lab evidence is missing ${required_name}.json"
+  done
+  jq --exit-status '.declaredBaselineVerified == true and .syncStatus == "Synced" and .healthStatus == "Healthy"' \
+    "${sanitized_directory}/reset.json" >/dev/null || die "completed evidence does not contain a verified reset"
+fi
 
 staged_archive="${temporary_directory}/${archive_name}"
 tar --create --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
@@ -103,8 +112,10 @@ archive_sha256="$(sha256sum "${staged_archive}" | awk '{print $1}')"
 staged_summary="${temporary_directory}/summary"
 mkdir -p "${staged_summary}"
 cp "${sanitized_directory}/metadata.json" "${staged_summary}/metadata.json"
-[[ ! -f "${sanitized_directory}/environment.json" ]] || cp "${sanitized_directory}/environment.json" "${staged_summary}/environment.json"
-[[ ! -f "${sanitized_directory}/radar-result.json" ]] || cp "${sanitized_directory}/radar-result.json" "${staged_summary}/radar-result.json"
+for summary_name in environment mutation argocd-observation radar-result reset; do
+  [[ ! -f "${sanitized_directory}/${summary_name}.json" ]] || \
+    cp "${sanitized_directory}/${summary_name}.json" "${staged_summary}/${summary_name}.json"
+done
 
 staged_index="${temporary_directory}/index.csv"
 if [[ -f "${index_path}" ]]; then

@@ -1,6 +1,6 @@
 # Guarded Controlled-Drift Scenarios
 
-`scripts/run-scenario.sh` accepts exactly one scenario and one positive repetition number. It refuses any context other than `radar-lab`, refuses a dirty baseline or mutable Application revision, changes only the live synthetic namespace, and never edits Git. The synchronized Argo CD revision must equal the immutable target commit before drift is injected, preventing source reconciliation from clearing the mutation during observation.
+`scripts/run-scenario.sh` accepts exactly one scenario and one positive repetition number. It refuses any context other than `radar-lab`, refuses a dirty baseline or mutable Application revision, changes only the live synthetic namespace, and never edits Git. The synchronized Argo CD revision must equal the immutable target commit before drift is injected, preventing source reconciliation from clearing the mutation during observation. An optional `--environment-file` supplies a pre-captured provenance manifest whose source commit must match that revision.
 
 | Scenario argument | Live mutation | Expected rule | Severity |
 | --- | --- | --- | --- |
@@ -22,6 +22,6 @@ k8s-lab/scripts/run-scenario.sh \
   --repetition 1
 ```
 
-The runner forces an Argo CD refresh, verifies `OutOfSync`, invokes RADAR through a localhost-only port-forward, checks the expected rule, recreates only `radar-demo` from the committed baseline, and verifies `Synced` and `Healthy`. Results are stored as `k8s-lab/evidence/<scenario>/run-NNN/` and are ignored by Git by default.
+The runner records the declared mutation and timestamps, forces an Argo CD refresh, verifies `OutOfSync`, captures the managed-resource response, invokes RADAR through a localhost-only port-forward, and checks the expected rule. It then recreates only `radar-demo` through an explicit Argo CD synchronization and records verified `Synced`, `Healthy`, and declared-field baseline state. Results are stored as `k8s-lab/evidence/<scenario>/run-NNN/` and are ignored by Git by default.
 
 These runs observe configuration drift only. They do not execute attacks, expose services outside Minikube, or use real credentials.

@@ -1,0 +1,18 @@
+{
+  "application": {
+    "metadata": {"name": "radar-lab", "namespace": "argocd"},
+    "spec": {"project": "radar"},
+    "status": {"sync": {"status": "OutOfSync"}, "health": {"status": "Healthy"}}
+  },
+  "managedResources": {
+    "items": [{
+      "group": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "namespace": "radar-demo",
+      "name": "radar-demo-reader",
+      "predictedLiveState": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"Role\",\"metadata\":{\"name\":\"radar-demo-reader\",\"namespace\":\"radar-demo\"}}",
+      "normalizedLiveState": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"Role\",\"metadata\":{\"name\":\"radar-demo-reader\",\"namespace\":\"radar-demo\"},\"rules\":[{\"apiGroups\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"*\"]}]}",
+      "modified": true
+    }]
+  }
+}
