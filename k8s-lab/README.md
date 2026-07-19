@@ -7,7 +7,8 @@ This directory defines the isolated local environment used to validate RADAR. It
 | Component | Version or setting |
 | --- | --- |
 | Minikube | 1.38.1 |
-| Kubernetes | 1.35.6 |
+| Kubernetes server | 1.35.1 |
+| kubectl client | 1.35.6 |
 | Argo CD | 3.4.5 |
 | OPA | 1.17.1 |
 | Go | 1.24.0 |

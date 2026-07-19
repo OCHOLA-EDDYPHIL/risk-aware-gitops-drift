@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
 readonly MINIKUBE_VERSION="v1.38.1"
-readonly KUBERNETES_VERSION="v1.35.6"
+readonly KUBERNETES_VERSION="v1.35.1"
 readonly ARGOCD_VERSION="v3.4.5"
 readonly OPA_VERSION="1.17.1"
 readonly GO_VERSION="go1.24.0"

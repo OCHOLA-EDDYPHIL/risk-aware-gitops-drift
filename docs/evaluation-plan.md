@@ -10,10 +10,10 @@ Policy fixtures establish deterministic implementation behavior only. Controlled
 
 ## Controlled environment
 
-- Minikube 1.38.1 with Kubernetes 1.35.6, Docker driver, 2 CPUs, and 3 GiB RAM.
+- Minikube 1.38.1 with Kubernetes 1.35.1, kubectl 1.35.6, Docker driver, 2 CPUs, and 3 GiB RAM.
 - Dedicated profile and context `radar-lab`; every Kubernetes command names it explicitly.
 - Argo CD 3.4.5 managing the synthetic baseline with self-heal disabled.
-- RADAR CLI built with Go 1.22 compatibility and OPA 1.17.1.
+- RADAR CLI built with Go 1.24.0 and OPA 1.17.1.
 - Localhost-only Argo CD forwarding and a least-privilege API account.
 - No production workloads, real Secrets, or shared cluster resources.
 
