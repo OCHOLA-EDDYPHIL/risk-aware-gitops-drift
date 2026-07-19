@@ -44,6 +44,12 @@ class BaselineVerifierTests(unittest.TestCase):
         with self.assertRaises(MODULE.BaselineMismatch):
             MODULE.assert_declared_fields({"rules": ["get"]}, {"rules": ["get", "list"]})
 
+    def test_allows_api_omission_of_declared_empty_collection(self):
+        MODULE.assert_declared_fields(
+            {"spec": {"ingress": [], "policyTypes": ["Ingress"]}},
+            {"spec": {"policyTypes": ["Ingress"]}},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -38,6 +38,8 @@ def assert_declared_fields(expected: Any, actual: Any, path: str = "$") -> None:
         for key, expected_value in expected.items():
             child_path = f"{path}.{key}"
             if key not in actual:
+                if expected_value in ({}, []):
+                    continue
                 raise BaselineMismatch(f"declared field is missing at {child_path}")
             assert_declared_fields(expected_value, actual[key], child_path)
         return
