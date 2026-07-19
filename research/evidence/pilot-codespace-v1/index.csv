@@ -1,0 +1,4 @@
+collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes
+pilot-codespace-v1,privileged-container,1,failed,implemented,RADAR-WORKLOAD-PRIVILEGED,CRITICAL,1d86d1d90ac994b72264fd2b7efd3d50180c56946484d55b5969397193afec4a,296
+pilot-codespace-v1,privileged-container,2,failed,implemented,RADAR-WORKLOAD-PRIVILEGED,CRITICAL,5a4ac733f63411c287f0da1ba581cedf1f856233b642e70f5cf862444fb280ec,629
+pilot-codespace-v1,privileged-container,3,completed,controlled-lab-observed,RADAR-WORKLOAD-PRIVILEGED,CRITICAL,cd6b3d47cd5ef689e4080641838c6c72f9a18097f4b0da66936d4848131eedad,1614

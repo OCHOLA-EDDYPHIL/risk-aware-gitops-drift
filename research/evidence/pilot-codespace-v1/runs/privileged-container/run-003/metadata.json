@@ -1,0 +1,12 @@
+{
+  "baselineResetVerified": true,
+  "completedAt": "2026-07-19T13:31:07Z",
+  "evidenceTier": "controlled-lab-observed",
+  "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+  "expectedSeverity": "CRITICAL",
+  "observedAt": "2026-07-19T13:30:51Z",
+  "repetition": 3,
+  "scenario": "privileged-container",
+  "startedAt": "2026-07-19T13:30:51Z",
+  "status": "completed"
+}
