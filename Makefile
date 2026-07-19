@@ -25,6 +25,8 @@ rego-test:
 lab-static-check:
 	@command -v shellcheck >/dev/null 2>&1 || (echo "shellcheck is required for lab script validation."; exit 1)
 	@command -v kubectl >/dev/null 2>&1 || (echo "kubectl is required for Kustomize validation."; exit 1)
+	python3 k8s-lab/scripts/sanitize_evidence_test.py
+	python3 k8s-lab/scripts/verify_baseline_test.py
 	bash -n $(LAB_SCRIPTS)
 	shellcheck $(LAB_SCRIPTS)
 	kubectl kustomize k8s-lab/baseline >/dev/null
