@@ -18,7 +18,9 @@ download_verified() {
   local destination="$2"
   local expected_sha256="$3"
 
-  curl --fail --location --silent --show-error "${url}" --output "${destination}"
+  curl --fail --location --silent --show-error \
+    --retry 5 --retry-all-errors --retry-delay 2 \
+    "${url}" --output "${destination}"
   printf '%s  %s\n' "${expected_sha256}" "${destination}" | sha256sum --check --status || {
     printf 'Checksum verification failed for %s\n' "${url}" >&2
     exit 1
