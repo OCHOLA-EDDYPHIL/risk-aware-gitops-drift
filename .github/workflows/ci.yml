@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22.x"
+          go-version: "1.24.0"
 
       - name: Check formatting
         run: test -z "$(gofmt -l $(find . -name '*.go' -not -path './vendor/*'))"

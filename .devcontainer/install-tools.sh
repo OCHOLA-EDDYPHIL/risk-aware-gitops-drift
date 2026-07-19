@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-readonly GO_VERSION="1.22.12"
-readonly GO_SHA256="4fa4f869b0f7fc6bb1eb2660e74657fbf04cdd290b5aef905585c86051b34d43"
+readonly GO_VERSION="1.24.0"
+readonly GO_SHA256="dea9ca38a0b852a74e81c26134671af7c0fbe65d81b0dc1c5bfe22cf7d4c8858"
 readonly MINIKUBE_VERSION="v1.38.1"
 readonly MINIKUBE_SHA256="099477eaf248bcb5bcea8ce78a2898e93ac01461c35189da1848c3de82ecd22e"
 readonly KUBECTL_VERSION="v1.35.6"

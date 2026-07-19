@@ -10,6 +10,7 @@ readonly MINIKUBE_VERSION="v1.38.1"
 readonly KUBERNETES_VERSION="v1.35.6"
 readonly ARGOCD_VERSION="v3.4.5"
 readonly OPA_VERSION="1.17.1"
+readonly GO_VERSION="go1.24.0"
 readonly MIN_AVAILABLE_KIB="${RADAR_MIN_AVAILABLE_KIB:-4194304}"
 
 usage() {
@@ -30,11 +31,8 @@ installed_minikube="$(minikube version --short)"
 installed_opa="$(opa version | awk '/^Version:/ {print $2}')"
 [[ "${installed_opa}" == "${OPA_VERSION}" ]] || die "OPA ${OPA_VERSION} is required; found ${installed_opa}"
 
-go_version="$(go version | sed -E 's/.* go([0-9]+)\.([0-9]+).*/\1 \2/')"
-read -r go_major go_minor <<<"${go_version}"
-if ((go_major < 1 || (go_major == 1 && go_minor < 22))); then
-  die "Go 1.22 or newer is required"
-fi
+installed_go="$(go env GOVERSION)"
+[[ "${installed_go}" == "${GO_VERSION}" ]] || die "Go ${GO_VERSION} is required; found ${installed_go}"
 
 docker info >/dev/null
 

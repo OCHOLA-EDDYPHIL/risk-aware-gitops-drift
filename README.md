@@ -42,7 +42,7 @@ The MVP must consume real Argo CD API data and extract or validate field-level d
 
 ## Requirements
 
-- Go 1.22 or newer.
+- Go 1.24.0.
 - Argo CD API access for real scans.
 - OPA CLI for local Rego policy tests. GitHub Actions installs OPA automatically in CI.
 

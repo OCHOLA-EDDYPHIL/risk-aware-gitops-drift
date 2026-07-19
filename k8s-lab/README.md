@@ -10,7 +10,7 @@ This directory defines the isolated local environment used to validate RADAR. It
 | Kubernetes | 1.35.6 |
 | Argo CD | 3.4.5 |
 | OPA | 1.17.1 |
-| Go | 1.22.12 |
+| Go | 1.24.0 |
 | Minikube profile and context | `radar-lab` |
 | Driver | Docker |
 | Capacity | 2 CPUs, 3 GiB RAM |
