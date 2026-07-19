@@ -20,7 +20,7 @@ The CLI deliberately avoids a CLI framework so the command surface stays small a
 - It is not a Kubernetes admission controller.
 - It is not a Kubernetes operator or CRD system.
 - It is not a SIEM.
-- It does not include a web dashboard yet.
+- It does not include a web dashboard.
 - It does not use ML for risk scoring.
 
 ## Architecture Summary
@@ -33,9 +33,10 @@ The MVP must consume real Argo CD API data and extract or validate field-level d
 
 ## Non-Goals
 
-- Dashboard implementation before MVP.
+- Dashboard implementation.
 - Admission webhooks.
 - Kubernetes controllers/operators.
+- Production deployment manifests or multi-cluster operation.
 - Release packaging.
 - Real cluster credentials or screenshots.
 
@@ -107,13 +108,6 @@ Do not commit Argo CD tokens, kubeconfigs, real cluster URLs, screenshots with s
 - Sanitized scan bundles validate the integrated extraction-to-report path.
 - Controlled-lab validation and the formal repeated-run evaluation remain outstanding; fixture results must not be presented as live experimental evidence.
 
-## Roadmap
-
-1. Foundation: CLI, client, model, policies, reports, CI, docs.
-2. MVP: real Argo CD field-level drift extraction and scenario validation.
-3. Evaluation: local Kubernetes and Argo CD lab, experiment logs, false positive and false negative tracking.
-4. Post-MVP: minimal dashboard, SARIF export, webhooks, packaging, and public release preparation.
-
 ## License
 
-No license is applied while this repository is private. Apache-2.0 is recommended when the repository is made public, but licensing will be finalized at public release.
+No license is currently applied to this private repository.

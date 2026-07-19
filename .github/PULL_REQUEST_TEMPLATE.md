@@ -1,38 +1,23 @@
-## Summary
+## Intent
 
+Explain the research or system need addressed by this change.
 
-## Linked issue
+## Durable behavior
 
-Use "Closes #issue-number" when the PR completes an issue.
+Describe the behavior or durable project state introduced or changed.
 
-## Type of change
+## Evidence tier
 
-- [ ] Research
-- [ ] Architecture
-- [ ] Policy
-- [ ] Backend
-- [ ] Kubernetes
-- [ ] CI
-- [ ] Docs
+State whether the change is proposed, implemented, fixture-validated, controlled-lab observed, or formally evaluated.
 
-## Tests run
+## Material limitations
 
+Record unresolved failures, live-validation gaps, protocol deviations, or constraints that affect interpretation. Omit routine command lists and pass counts.
 
-## Documentation updated
+## Security risks
 
-- [ ] README/docs updated
-- [ ] Backlog or traceability updated
-- [ ] Not applicable
+Describe credential, cluster-isolation, evidence-sanitization, or fail-closed implications.
 
-## Security checklist
+## Linked issues
 
-- [ ] No tokens, kubeconfigs, real cluster URLs, screenshots with sensitive data, or real secrets are included
-- [ ] Test data is synthetic
-- [ ] Error messages do not expose credentials
-
-## Research traceability impact
-
-
-## Screenshots/logs if applicable
-
-Remove secrets and sensitive environment details before adding logs or screenshots.
+Use `Refs` while acceptance or live validation remains pending. Use `Closes` only when the relevant acceptance criteria and required evidence are complete.

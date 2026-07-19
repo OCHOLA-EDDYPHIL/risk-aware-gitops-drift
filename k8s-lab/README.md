@@ -10,7 +10,7 @@ This directory defines the isolated local environment used to validate RADAR. It
 | Kubernetes | 1.35.6 |
 | Argo CD | 3.4.5 |
 | OPA | 1.17.1 |
-| Go compatibility | 1.22 or newer |
+| Go | 1.22.12 |
 | Minikube profile and context | `radar-lab` |
 | Driver | Docker |
 | Capacity | 2 CPUs, 3 GiB RAM |
@@ -33,7 +33,7 @@ k8s-lab/scripts/setup.sh --context radar-lab
 
 Setup preserves the existing kubeconfig current context, installs the pinned Argo CD manifest, configures an API-only least-privilege `radar` account, stores the repository credential only inside `radar-lab`, and writes a short-lived API token to the ignored `.radar-lab-token` file.
 
-`RADAR_TARGET_REVISION` defaults to `main`. A feature branch may be selected only for pre-merge lab validation; formal runs must use the frozen revision recorded by the evaluation protocol.
+`RADAR_TARGET_REVISION` defaults to `main` for environment setup. Controlled runs must use the immutable commit SHA recorded by the evaluation protocol.
 
 ## Verify and run
 

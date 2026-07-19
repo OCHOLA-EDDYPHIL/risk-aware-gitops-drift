@@ -1,30 +1,6 @@
-# Contributing
+# Development Requirements
 
-RADAR uses an issue-first workflow.
-
-## Branch Naming
-
-- `chore/...` for project maintenance.
-- `feat/...` for new functionality.
-- `fix/...` for bug fixes.
-- `docs/...` for documentation-only work.
-- `policy/...` for Rego policy changes.
-- `scenario/...` for drift scenario work.
-
-## Workflow
-
-1. Create or link a GitHub issue before starting implementation.
-2. Create a branch from `main`.
-3. Keep changes scoped to the issue.
-4. Open a pull request and use `Closes #issue-number` when the PR completes the issue.
-5. Request review before merging.
-
-## Pull Request Requirements
-
-- Explain the change and research relevance.
-- Link the issue.
-- Run relevant tests.
-- Update documentation when behavior, policy, or evaluation scope changes.
+Changes must preserve deterministic findings, fail-closed behavior when field-level evidence is unavailable, and the separation between fixture validation and controlled-lab evidence. Update durable documentation when system behavior, policy semantics, the risk model, or the evaluation protocol changes.
 
 ## Tests Required
 
@@ -41,3 +17,7 @@ Run `make rego-test` when the OPA CLI is installed. GitHub Actions installs OPA 
 ## No Secrets Rule
 
 Do not commit tokens, kubeconfigs, real cluster URLs, screenshots with sensitive data, or real secrets. Use synthetic fixtures only.
+
+## Lab Safety
+
+Lab commands must use the explicit `radar-lab` profile and context. Use only synthetic workloads and dummy Secret values, keep Argo CD access least-privileged, and verify baseline reset after every scenario.
