@@ -107,9 +107,23 @@ jq --null-input \
 reset_required=false
 
 reset_baseline() {
+  local reset_id
+  local revision
+  local sync_patch
   kube delete namespace "${RADAR_NAMESPACE}" --ignore-not-found=true --wait=true --timeout=180s >/dev/null
-  kube apply --kustomize "${BASELINE_DIR}" >/dev/null
-  refresh_application
+  revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.spec.source.targetRevision}')"
+  reset_id="radar-reset-$(date -u +%s%N)"
+  sync_patch="$(jq --null-input --compact-output \
+    --arg revision "${revision}" --arg resetId "${reset_id}" \
+    '{operation: {initiatedBy: {username: $resetId}, sync: {revision: $revision, prune: false}}}')"
+  kube --namespace "${ARGO_NAMESPACE}" patch application "${RADAR_APP}" \
+    --type merge --patch "${sync_patch}" >/dev/null
+  kube --namespace "${ARGO_NAMESPACE}" wait "application/${RADAR_APP}" \
+    "--for=jsonpath={.status.operationState.operation.initiatedBy.username}=${reset_id}" \
+    --timeout=300s >/dev/null
+  kube --namespace "${ARGO_NAMESPACE}" wait "application/${RADAR_APP}" \
+    "--for=jsonpath={.status.operationState.phase}=Succeeded" \
+    --timeout=600s >/dev/null
   wait_for_synced_healthy 600s
   "${SCRIPT_DIR}/verify-baseline.sh" --context "${RADAR_CONTEXT}" >/dev/null
 }
