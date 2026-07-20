@@ -30,6 +30,7 @@ lab-static-check:
 	@command -v shellcheck >/dev/null 2>&1 || (echo "shellcheck is required for lab script validation."; exit 1)
 	@command -v kubectl >/dev/null 2>&1 || (echo "kubectl is required for Kustomize validation."; exit 1)
 	python3 k8s-lab/scripts/sanitize_evidence_test.py
+	python3 k8s-lab/scripts/validate_evidence_test.py
 	python3 k8s-lab/scripts/verify_baseline_test.py
 	bash k8s-lab/scripts/common_test.sh
 	bash -n $(LAB_SCRIPTS)
@@ -37,6 +38,7 @@ lab-static-check:
 	kubectl kustomize k8s-lab/baseline >/dev/null
 	@! k8s-lab/scripts/setup.sh --context not-radar-lab >/dev/null 2>&1
 	@! k8s-lab/scripts/run-scenario.sh --context not-radar-lab --scenario privileged-container --repetition 1 >/dev/null 2>&1
+	@! RADAR_BIN=/bin/true k8s-lab/scripts/run-scenario.sh --context radar-lab --collection-id test-run --scenario privileged-container --repetition 1 --environment-file /nonexistent >/dev/null 2>&1
 
 ci: fmt-check test build
 	@if command -v opa >/dev/null 2>&1; then \

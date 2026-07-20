@@ -7,8 +7,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import yaml
-
 
 SCRIPT = Path(__file__).with_name("sanitize-evidence.py")
 SPEC = importlib.util.spec_from_file_location("sanitize_evidence", SCRIPT)
@@ -18,15 +16,17 @@ SPEC.loader.exec_module(MODULE)
 
 
 class SanitizerTests(unittest.TestCase):
-    def test_redacts_credentials_and_secret_data_but_keeps_reference(self):
+    def test_redacts_api_keys_secret_data_and_kubeconfig_exec_env(self):
         value = {
-            "authorization": "Bearer abc.def.ghi",
+            "apiKey": "unsafe",
             "resource": {"kind": "Secret", "data": {"token": "encoded"}},
+            "exec": {"env": [{"name": "TOKEN", "value": "credential"}]},
             "secretKeyRef": {"name": "radar-demo-credentials-v2"},
         }
         result = MODULE.sanitize_value(value)
-        self.assertEqual(result["authorization"], MODULE.REDACTED)
+        self.assertEqual(result["apiKey"], MODULE.REDACTED)
         self.assertEqual(result["resource"]["data"], MODULE.REDACTED)
+        self.assertEqual(result["exec"]["env"][0]["value"], MODULE.REDACTED)
         self.assertEqual(result["secretKeyRef"]["name"], "radar-demo-credentials-v2")
 
     def test_sanitizes_embedded_kubernetes_secret_json(self):
@@ -35,92 +35,68 @@ class SanitizerTests(unittest.TestCase):
         decoded = json.loads(result["liveState"])
         self.assertEqual(decoded["stringData"], MODULE.REDACTED)
 
-    def test_sanitizes_yaml_credentials_and_secret(self):
+    def test_rejects_embedded_yaml_secret_and_control_characters(self):
+        with self.assertRaises(MODULE.UnsafeEvidenceError):
+            MODULE.sanitize_value({"liveState": "apiVersion: v1\nkind: Secret\ndata:\n  token: abc\n"})
+        with self.assertRaises(MODULE.UnsafeEvidenceError):
+            MODULE.sanitize_text("evidence\x01payload")
+
+    def test_rejects_duplicate_json_keys(self):
+        with self.assertRaises(MODULE.UnsafeEvidenceError):
+            MODULE.load_json('{"token":"one","token":"two"}')
+
+    def test_rejects_unexpected_binary_and_hard_linked_artifacts(self):
         with tempfile.TemporaryDirectory() as root:
-            source = Path(root) / "record.yaml"
-            destination = Path(root) / "sanitized.yaml"
-            source.write_text(
-                "kind: Secret\nstringData:\n  password: unsafe\nclientSecret: exposed\n",
-                encoding="utf-8",
-            )
-            MODULE.sanitize_file(source, destination)
-            result = yaml.safe_load(destination.read_text(encoding="utf-8"))
-            self.assertEqual(result["stringData"], MODULE.REDACTED)
-            self.assertEqual(result["clientSecret"], MODULE.REDACTED)
-
-    def test_sanitizes_kubeconfig_material(self):
-        value = {
-            "apiVersion": "v1",
-            "clusters": [{"cluster": {"certificate-authority-data": "encoded"}}],
-            "users": [
-                {
-                    "user": {
-                        "client-certificate-data": "certificate",
-                        "client-key-data": "private-key",
-                        "token": "credential",
-                    }
-                }
-            ],
-        }
-        result = MODULE.sanitize_value(value)
-        self.assertEqual(result["clusters"][0]["cluster"]["certificate-authority-data"], MODULE.REDACTED)
-        user = result["users"][0]["user"]
-        self.assertEqual(user["client-certificate-data"], MODULE.REDACTED)
-        self.assertEqual(user["client-key-data"], MODULE.REDACTED)
-        self.assertEqual(user["token"], MODULE.REDACTED)
-
-    def test_sanitizes_text_credentials(self):
-        text = "password=unsafe\ntoken: abcdefghijkl\nAuthorization: Bearer abc.def.ghi\n"
-        sanitized = MODULE.sanitize_text(text)
-        self.assertNotIn("unsafe", sanitized)
-        self.assertNotIn("abcdefghijkl", sanitized)
-        self.assertNotIn("abc.def.ghi", sanitized)
-        self.assertEqual(sanitized.count(MODULE.REDACTED), 3)
-
-    def test_rejects_binary_file(self):
-        with tempfile.TemporaryDirectory() as root:
-            source = Path(root) / "record.txt"
-            source.write_bytes(b"evidence\x00binary")
+            root_path = Path(root)
+            unexpected = root_path / "record.json"
+            unexpected.write_text("{}", encoding="utf-8")
             with self.assertRaises(MODULE.UnsafeEvidenceError):
-                MODULE.sanitize_file(source, Path(root) / "output.txt")
-
-    def test_rejects_screenshot_and_unsupported_format(self):
-        with tempfile.TemporaryDirectory() as root:
-            screenshot = Path(root) / "screen.png"
-            screenshot.write_bytes(b"not-a-real-image")
+                MODULE.sanitize_file(unexpected, root_path / "output.json")
+            binary = root_path / "metadata.json"
+            binary.write_bytes(b"evidence\x00binary")
             with self.assertRaises(MODULE.UnsafeEvidenceError):
-                MODULE.sanitize_file(screenshot, Path(root) / "output.png")
-            unsupported = Path(root) / "capture.bin"
-            unsupported.write_text("plain text", encoding="utf-8")
+                MODULE.sanitize_file(binary, root_path / "output.json")
+            binary.write_text("{}", encoding="utf-8")
+            hard_link = root_path / "environment.json"
+            os.link(binary, hard_link)
             with self.assertRaises(MODULE.UnsafeEvidenceError):
-                MODULE.sanitize_file(unsupported, Path(root) / "output.bin")
+                MODULE.sanitize_file(hard_link, root_path / "output.json")
 
     @unittest.skipUnless(hasattr(os, "symlink"), "symbolic links are unavailable")
-    def test_rejects_symbolic_link(self):
+    def test_rejects_symbolic_link_and_nested_directory(self):
         with tempfile.TemporaryDirectory() as root:
-            source = Path(root) / "source"
-            destination = Path(root) / "destination"
+            root_path = Path(root)
+            source = root_path / "source"
             source.mkdir()
-            target = Path(root) / "outside.json"
+            target = root_path / "outside.json"
             target.write_text("{}", encoding="utf-8")
-            (source / "linked.json").symlink_to(target)
+            (source / "metadata.json").symlink_to(target)
             with self.assertRaises(MODULE.UnsafeEvidenceError):
-                MODULE.sanitize_directory(source, destination)
-            self.assertFalse(destination.exists())
+                MODULE.sanitize_directory(source, root_path / "destination")
+            (source / "metadata.json").unlink()
+            (source / "metadata.json").write_text("{}", encoding="utf-8")
+            (source / "nested").mkdir()
+            with self.assertRaises(MODULE.UnsafeEvidenceError):
+                MODULE.sanitize_directory(source, root_path / "destination")
 
-    def test_sanitizes_and_checks_directory_atomically(self):
+    def test_sanitizes_known_directory_atomically_and_updates_hashes(self):
         with tempfile.TemporaryDirectory() as root:
-            source = Path(root) / "source"
-            destination = Path(root) / "destination"
+            root_path = Path(root)
+            source = root_path / "source"
+            destination = root_path / "destination"
             source.mkdir()
-            (source / "record.json").write_text(
-                json.dumps({"password": "unsafe", "name": "guestbook"}), encoding="utf-8"
+            (source / "metadata.json").write_text(
+                json.dumps({"environmentSha256": "0" * 64, "password": "unsafe"}),
+                encoding="utf-8",
+            )
+            (source / "environment.json").write_text(
+                json.dumps({"provider": "GitHub Codespaces"}), encoding="utf-8"
             )
             MODULE.sanitize_directory(source, destination)
             MODULE.assert_sanitized(destination)
-            result = json.loads((destination / "record.json").read_text(encoding="utf-8"))
-            self.assertEqual(result["password"], MODULE.REDACTED)
-            self.assertEqual(result["name"], "guestbook")
+            metadata = json.loads((destination / "metadata.json").read_text(encoding="utf-8"))
+            self.assertEqual(metadata["password"], MODULE.REDACTED)
+            self.assertRegex(metadata["environmentSha256"], r"^[0-9a-f]{64}$")
 
 
 if __name__ == "__main__":

@@ -16,39 +16,26 @@ collection_id=""
 run_dir=""
 while (($# > 0)); do
   case "$1" in
-    --collection-id)
-      (($# >= 2)) || usage
-      collection_id="$2"
-      shift 2
-      ;;
-    --run-dir)
-      (($# >= 2)) || usage
-      run_dir="$2"
-      shift 2
-      ;;
+    --collection-id) collection_id="${2:-}"; shift 2 ;;
+    --run-dir) run_dir="${2:-}"; shift 2 ;;
     *) usage ;;
   esac
 done
 
 [[ "${collection_id}" =~ ^[a-z0-9][a-z0-9._-]*$ ]] || die "invalid collection identifier"
-[[ -d "${run_dir}" ]] || die "run directory does not exist: ${run_dir}"
-
+[[ -d "${run_dir}" && ! -L "${run_dir}" ]] || die "run directory does not exist or is unsafe"
 for command_name in git jq python3 sha256sum stat tar zstd; do
   require_command "${command_name}"
 done
 git -C "${REPO_ROOT}" lfs version >/dev/null
+python3 "${SCRIPT_DIR}/validate-evidence.py" "${run_dir}"
 
 metadata_path="${run_dir}/metadata.json"
-[[ -f "${metadata_path}" && ! -L "${metadata_path}" ]] || die "regular run metadata is required"
-jq --exit-status \
-  'type == "object" and
-   (.scenario | type == "string") and
-   (.repetition | type == "number") and
-   (.status | type == "string") and
-   (.evidenceTier | type == "string") and
-   (.expectedRule | type == "string") and
-   (.expectedSeverity | type == "string")' \
-  "${metadata_path}" >/dev/null || die "run metadata is incomplete or invalid"
+jq --exit-status --arg collection "${collection_id}" \
+  '.evidenceSchemaVersion == 3 and .collectionId == $collection and
+   (.status == "completed" or .status == "failed") and
+   (.evidenceTier == "controlled-lab-observed" or .evidenceTier == "implemented")' \
+  "${metadata_path}" >/dev/null || die "run metadata does not match schema-v3 storage rules"
 
 scenario="$(jq --raw-output '.scenario' "${metadata_path}")"
 repetition="$(jq --raw-output '.repetition' "${metadata_path}")"
@@ -56,16 +43,6 @@ status="$(jq --raw-output '.status' "${metadata_path}")"
 evidence_tier="$(jq --raw-output '.evidenceTier' "${metadata_path}")"
 expected_rule="$(jq --raw-output '.expectedRule' "${metadata_path}")"
 expected_severity="$(jq --raw-output '.expectedSeverity' "${metadata_path}")"
-evidence_schema_version="$(jq --raw-output '.evidenceSchemaVersion // 1' "${metadata_path}")"
-
-[[ "${scenario}" =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "invalid scenario in metadata"
-[[ "${repetition}" =~ ^[1-9][0-9]*$ ]] || die "invalid repetition in metadata"
-[[ "${status}" =~ ^[a-z][a-z0-9-]*$ ]] || die "invalid status in metadata"
-[[ "${evidence_tier}" =~ ^[a-z][a-z0-9-]*$ ]] || die "invalid evidence tier in metadata"
-[[ "${expected_rule}" =~ ^[A-Z0-9][A-Z0-9-]*$ ]] || die "invalid expected rule in metadata"
-[[ "${expected_severity}" =~ ^(INFO|LOW|MEDIUM|HIGH|CRITICAL)$ ]] || die "invalid expected severity in metadata"
-[[ "${evidence_schema_version}" =~ ^(1|2)$ ]] || die "unsupported evidence schema version"
-
 run_id="run-$(printf '%03d' "${repetition}")"
 relative_evidence_root="research/evidence/${collection_id}"
 evidence_root="${REPO_ROOT}/${relative_evidence_root}"
@@ -83,25 +60,7 @@ temporary_directory="$(mktemp --directory)"
 trap 'rm -rf "${temporary_directory}"' EXIT
 sanitized_directory="${temporary_directory}/${scenario}-${run_id}"
 python3 "${SCRIPT_DIR}/sanitize-evidence.py" "${run_dir}" "${sanitized_directory}"
-
-jq --exit-status . "${sanitized_directory}/metadata.json" >/dev/null
-for json_name in environment mutation argocd-observation argocd-application argocd-managed-resources scan-input radar-result reset; do
-  [[ ! -f "${sanitized_directory}/${json_name}.json" ]] || jq --exit-status . "${sanitized_directory}/${json_name}.json" >/dev/null
-done
-if [[ "${status}" == "completed" && "${evidence_tier}" == "controlled-lab-observed" ]]; then
-  for required_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
-    [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
-      die "completed controlled-lab evidence is missing ${required_name}.json"
-  done
-  if [[ "${evidence_schema_version}" == "2" ]]; then
-    for required_name in argocd-application scan-input; do
-      [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
-        die "evidence schema v2 is missing ${required_name}.json"
-    done
-  fi
-  jq --exit-status '.declaredBaselineVerified == true and .syncStatus == "Synced" and .healthStatus == "Healthy"' \
-    "${sanitized_directory}/reset.json" >/dev/null || die "completed evidence does not contain a verified reset"
-fi
+python3 "${SCRIPT_DIR}/validate-evidence.py" "${sanitized_directory}"
 
 staged_archive="${temporary_directory}/${archive_name}"
 tar --create --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
@@ -109,9 +68,8 @@ tar --create --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
   zstd --quiet -T1 --ultra -19 -o "${staged_archive}"
 [[ -s "${staged_archive}" ]] || die "archive creation produced no data"
 zstd --quiet -t "${staged_archive}"
-
 archive_bytes="$(stat --format '%s' "${staged_archive}")"
-((archive_bytes <= 10485760)) || die "archive exceeds the 10 MiB evidence ceiling: ${archive_bytes} bytes"
+((archive_bytes <= 10485760)) || die "archive exceeds the 10 MiB evidence ceiling"
 if ((archive_bytes > 5242880)); then
   printf 'Warning: archive exceeds 5 MiB and requires review: %s\n' "${archive_name}" >&2
 fi
@@ -119,8 +77,7 @@ archive_sha256="$(sha256sum "${staged_archive}" | awk '{print $1}')"
 
 staged_summary="${temporary_directory}/summary"
 mkdir -p "${staged_summary}"
-cp "${sanitized_directory}/metadata.json" "${staged_summary}/metadata.json"
-for summary_name in environment mutation argocd-observation radar-result reset; do
+for summary_name in metadata environment mutation argocd-observation radar-result reset; do
   [[ ! -f "${sanitized_directory}/${summary_name}.json" ]] || \
     cp "${sanitized_directory}/${summary_name}.json" "${staged_summary}/${summary_name}.json"
 done
@@ -144,9 +101,8 @@ cp "${staged_archive}" "${archive_path}"
 printf '%s  %s\n' "${archive_sha256}" "${archive_name}" >"${archive_path}.sha256"
 cp -R "${staged_summary}" "${summary_dir}"
 cp "${staged_index}" "${index_path}"
-
 (
   cd "$(dirname -- "${archive_path}")"
   sha256sum --check --status "$(basename -- "${archive_path}.sha256")"
 )
-printf 'Prepared sanitized evidence for %s %s at %s\n' "${scenario}" "${run_id}" "${evidence_root}"
+printf 'Prepared sanitized evidence for %s %s.\n' "${scenario}" "${run_id}"

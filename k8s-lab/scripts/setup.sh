@@ -44,10 +44,10 @@ fi
 
 repo_url="${RADAR_REPO_URL:-}"
 repo_key="${RADAR_REPO_SSH_KEY_FILE:-}"
-target_revision="${RADAR_TARGET_REVISION:-main}"
+target_revision="${RADAR_TARGET_REVISION:-}"
 [[ -n "${repo_url}" ]] || die "RADAR_REPO_URL must identify the private Git repository"
 [[ "${repo_url}" != *[[:space:]]* ]] || die "RADAR_REPO_URL must not contain whitespace"
-[[ "${target_revision}" =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] || die "RADAR_TARGET_REVISION contains unsupported characters"
+[[ "${target_revision}" =~ ^[0-9a-f]{40}$ ]] || die "RADAR_TARGET_REVISION must be an immutable 40-character commit SHA"
 [[ -f "${repo_key}" ]] || die "RADAR_REPO_SSH_KEY_FILE must point to a read-only deploy key"
 key_mode="$(stat -c '%a' "${repo_key}")"
 [[ "${key_mode: -2}" == "00" ]] || die "repository key must not be readable or writable by group or others"
@@ -75,6 +75,7 @@ if [[ "${current_context_after}" != "${current_context_before}" ]]; then
   die "Minikube changed the current context unexpectedly; the previous context was restored"
 fi
 kubectl config get-contexts "${RADAR_CONTEXT}" >/dev/null 2>&1 || die "Minikube did not create context ${RADAR_CONTEXT}"
+record_lab_cluster_identity
 
 server_version="$(kube version --output json | jq -r '.serverVersion.gitVersion')"
 [[ "${server_version}" == "${KUBERNETES_VERSION}" ]] || die "Kubernetes ${KUBERNETES_VERSION} is required; found ${server_version}"

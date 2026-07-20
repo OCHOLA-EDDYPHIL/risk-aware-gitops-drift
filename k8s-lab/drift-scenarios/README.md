@@ -1,6 +1,6 @@
 # Guarded Controlled-Drift Scenarios
 
-`scripts/run-scenario.sh` accepts exactly one scenario and one positive repetition number. It refuses any context other than `radar-lab`, refuses a dirty baseline or mutable Application revision, changes only the live synthetic namespace, and never edits Git. The synchronized revision and latest successful Argo CD sync operation must equal the immutable target commit before drift is injected, preventing source reconciliation from clearing the mutation during observation. An optional `--environment-file` supplies a pre-captured provenance manifest whose source commit must match that revision.
+`scripts/run-scenario.sh` requires a research collection identifier, one scenario, one positive repetition number and a checksummed environment manifest. It refuses any context not bound to the `radar-lab` Minikube profile, any dirty worktree, mutable or mismatched Application revision, and any external scanner binary. The scanner and policy are built from the immutable synchronized commit before drift is injected.
 
 | Scenario argument | Live mutation | Expected rule | Severity |
 | --- | --- | --- | --- |
@@ -18,10 +18,12 @@ Example:
 ```sh
 k8s-lab/scripts/run-scenario.sh \
   --context radar-lab \
+  --collection-id runner-integrity-v1 \
   --scenario networkpolicy-removal \
-  --repetition 1
+  --repetition 1 \
+  --environment-file k8s-lab/evidence/runner-integrity-v1/environment.json
 ```
 
-The runner records the declared mutation and timestamps, forces an Argo CD refresh, verifies `OutOfSync`, and captures one Application and managed-resource snapshot through a localhost-only port-forward. RADAR classifies that exact captured bundle before the runner checks the expected rule. The runner then recreates only `radar-demo` through an explicit Argo CD synchronization and records verified `Synced`, `Healthy`, and declared-field baseline state. Results are stored as `k8s-lab/evidence/<scenario>/run-NNN/` and are ignored by Git by default.
+The runner records the declared mutation and timestamps, forces an Argo CD refresh, verifies `OutOfSync`, and accepts managed-resource evidence only when equal-resource-version Application snapshots bracket its capture. A dynamically allocated localhost port must belong to the spawned forwarding process. RADAR classifies the exact captured bundle before the expected rule is checked. Reset uses the original immutable revision and records the successful operation, `Synced`, `Healthy`, and declared-field baseline state. Raw results are stored under `k8s-lab/evidence/<collection-id>/` and are ignored by Git by default.
 
 These runs observe configuration drift only. They do not execute attacks, expose services outside Minikube, or use real credentials.

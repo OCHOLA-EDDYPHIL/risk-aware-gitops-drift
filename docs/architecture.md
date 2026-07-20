@@ -16,6 +16,8 @@ The risk matrix maps drift scenarios to CRITICAL, HIGH, MEDIUM, LOW, and INFO. I
 
 The CLI and JSON report are the primary interfaces. A dashboard is outside the research prototype scope.
 
-The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. Argo CD has self-heal disabled during observation, exposes its API only through localhost forwarding, and grants RADAR only application/project read access. The scenario runner verifies the declared baseline, applies one synthetic mutation, observes the drift, deletes the synthetic namespace, performs an explicit Argo CD synchronization, and verifies the restored declared fields before another run.
+The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. The context server, CA and cluster UID must match an identity recorded immediately after the profile is created. Argo CD has self-heal disabled during observation, exposes its API through a process-owned, dynamically allocated localhost port, and grants RADAR only application/project read access.
+
+The scenario runner requires a clean source commit equal to the immutable Argo CD revision. It builds the scanner and policy from that commit, records their hashes, applies one synthetic mutation, and accepts a scan bundle only when Application snapshots bracketing managed-resource capture have the same resource version and frozen synchronization state. Reset uses the original revision, requires explicit success from every operation, and verifies the restored declared fields before another run.
 
 The cross-cutting lab and evidence decisions are recorded in [ADR 0001](adr/0001-isolated-resettable-research-lab.md) and [ADR 0002](adr/0002-fail-closed-evidence-preparation.md).
