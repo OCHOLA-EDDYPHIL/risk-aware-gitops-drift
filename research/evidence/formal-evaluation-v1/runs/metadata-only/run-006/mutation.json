@@ -1,0 +1,17 @@
+{
+  "action": "label",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T17:18:50Z",
+  "patch": {
+    "app.kubernetes.io/part-of": "metadata-only"
+  },
+  "patchType": null,
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "metadata-only",
+  "startedAt": "2026-07-20T17:18:50Z"
+}

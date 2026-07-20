@@ -1,0 +1,57 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": null,
+        "before": {
+          "apiVersion": "networking.k8s.io/v1",
+          "kind": "NetworkPolicy",
+          "metadata": {
+            "annotations": {
+              "argocd.argoproj.io/tracking-id": "radar-lab:networking.k8s.io/NetworkPolicy:radar-demo/radar-demo-default-deny-ingress"
+            },
+            "name": "radar-demo-default-deny-ingress",
+            "namespace": "radar-demo"
+          },
+          "spec": {
+            "podSelector": {
+              "matchLabels": {
+                "app.kubernetes.io/name": "radar-demo"
+              }
+            },
+            "policyTypes": [
+              "Ingress"
+            ]
+          }
+        },
+        "confidence": "field-level",
+        "operation": "remove",
+        "path": ""
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-C7686267ECD1",
+      "impact": 4,
+      "likelihood": 4,
+      "matchedRuleIds": [
+        "RADAR-NETPOL-REMOVED"
+      ],
+      "observedAt": "2026-07-20T16:42:02.299198209Z",
+      "reason": "The live cluster no longer contains an intended NetworkPolicy.",
+      "recommendation": "Restore the intended NetworkPolicy and review the period without the declared isolation control.",
+      "resource": {
+        "group": "networking.k8s.io",
+        "kind": "NetworkPolicy",
+        "name": "radar-demo-default-deny-ingress",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-NETPOL-REMOVED",
+      "score": 64,
+      "severity": "HIGH"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

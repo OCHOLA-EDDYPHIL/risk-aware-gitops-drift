@@ -1,0 +1,21 @@
+{
+  "action": "patch",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T17:15:21Z",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name",
+      "value": "radar-demo-credentials-v2"
+    }
+  ],
+  "patchType": "json",
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "secret-reference",
+  "startedAt": "2026-07-20T17:15:20Z"
+}

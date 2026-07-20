@@ -1,0 +1,12 @@
+{
+  "completedAt": "2026-07-20T16:40:05Z",
+  "declaredBaselineVerified": true,
+  "healthStatus": "Healthy",
+  "method": "namespace-delete-explicit-argocd-sync",
+  "operationInitiator": "radar-reset-1784565592742593425",
+  "operationPhase": "Succeeded",
+  "operationRevision": "7966d77366d5bcc99612adfa0c2c7a534e03eab9",
+  "startedAt": "2026-07-20T16:39:41Z",
+  "syncStatus": "Synced",
+  "targetRevision": "7966d77366d5bcc99612adfa0c2c7a534e03eab9"
+}

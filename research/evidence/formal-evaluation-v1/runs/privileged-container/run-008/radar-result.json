@@ -1,0 +1,60 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": true,
+        "before": false,
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/spec/template/spec/containers/0/securityContext/allowPrivilegeEscalation"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-E2AFB884D834",
+      "observedAt": "2026-07-20T16:50:17.615436316Z",
+      "reason": "Field-level drift was extracted, but no configured security rule matched.",
+      "recommendation": "Review the change and add a policy only if the selected research scope requires classification.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "score": 0,
+      "severity": "INFO"
+    },
+    {
+      "change": {
+        "after": true,
+        "before": false,
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/spec/template/spec/containers/0/securityContext/privileged"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-490908282ABA",
+      "impact": 5,
+      "likelihood": 5,
+      "matchedRuleIds": [
+        "RADAR-WORKLOAD-PRIVILEGED"
+      ],
+      "observedAt": "2026-07-20T16:50:17.615436316Z",
+      "reason": "A workload container was changed to run in privileged mode.",
+      "recommendation": "Disable privileged mode unless a documented exception and compensating controls exist.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-WORKLOAD-PRIVILEGED",
+      "score": 100,
+      "severity": "CRITICAL"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

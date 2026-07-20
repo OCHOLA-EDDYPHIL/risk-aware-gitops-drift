@@ -1,0 +1,63 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": null,
+        "before": {},
+        "confidence": "field-level",
+        "operation": "remove",
+        "path": "/spec/template/spec/volumes/0/emptyDir"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-E83801D4FB17",
+      "observedAt": "2026-07-20T16:56:16.920313836Z",
+      "reason": "Field-level drift was extracted, but no configured security rule matched.",
+      "recommendation": "Review the change and add a policy only if the selected research scope requires classification.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "score": 0,
+      "severity": "INFO"
+    },
+    {
+      "change": {
+        "after": {
+          "path": "/var/log",
+          "type": "Directory"
+        },
+        "before": null,
+        "confidence": "field-level",
+        "operation": "add",
+        "path": "/spec/template/spec/volumes/0/hostPath"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-DC6488CD7A5C",
+      "impact": 5,
+      "likelihood": 3,
+      "matchedRuleIds": [
+        "RADAR-VOLUME-HOSTPATH"
+      ],
+      "observedAt": "2026-07-20T16:56:16.920313836Z",
+      "reason": "A hostPath volume was added and can expose node filesystem paths to a workload.",
+      "recommendation": "Remove hostPath unless it is explicitly required and constrained to the minimum safe path and permissions.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-VOLUME-HOSTPATH",
+      "score": 60,
+      "severity": "HIGH"
+    }
+  ],
+  "healthStatus": "Progressing",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}
