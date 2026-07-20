@@ -1,0 +1,17 @@
+{
+  "application": {
+    "metadata": {"name": "radar-lab", "namespace": "argocd"},
+    "spec": {"project": "radar"},
+    "status": {"sync": {"status": "OutOfSync"}, "health": {"status": "Healthy"}}
+  },
+  "managedResources": {
+    "items": [{
+      "kind": "Service",
+      "namespace": "radar-demo",
+      "name": "radar-demo",
+      "predictedLiveState": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"name\":\"radar-demo\",\"namespace\":\"radar-demo\"},\"spec\":{\"type\":\"ClusterIP\"}}",
+      "normalizedLiveState": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"name\":\"radar-demo\",\"namespace\":\"radar-demo\"},\"spec\":{\"type\":\"NodePort\"}}",
+      "modified": true
+    }]
+  }
+}

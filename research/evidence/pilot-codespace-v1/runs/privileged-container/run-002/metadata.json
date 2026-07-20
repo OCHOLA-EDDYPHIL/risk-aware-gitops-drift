@@ -1,0 +1,11 @@
+{
+  "baselineResetVerified": true,
+  "evidenceTier": "implemented",
+  "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+  "expectedSeverity": "CRITICAL",
+  "failedAt": "2026-07-19T13:17:33Z",
+  "repetition": 2,
+  "scenario": "privileged-container",
+  "startedAt": "2026-07-19T13:17:18Z",
+  "status": "failed"
+}

@@ -1,0 +1,20 @@
+{
+  "argoOperationPhase": "Succeeded",
+  "argoOperationRevision": "d0296303d3c39630ca204b49d5618bacc71cd67d",
+  "argoSynchronizedRevision": "d0296303d3c39630ca204b49d5618bacc71cd67d",
+  "argoTargetRevision": "d0296303d3c39630ca204b49d5618bacc71cd67d",
+  "baselineResetVerified": true,
+  "completedAt": "2026-07-20T10:01:55Z",
+  "evidenceSchemaVersion": 2,
+  "evidenceTier": "controlled-lab-observed",
+  "expectedRule": "RADAR-METADATA-ONLY",
+  "expectedSeverity": "LOW",
+  "mutationAt": "2026-07-20T10:01:39Z",
+  "observedAt": "2026-07-20T10:01:40Z",
+  "radarCompletedAt": "2026-07-20T10:01:40Z",
+  "repetition": 3,
+  "scenario": "metadata-only",
+  "sourceCommit": "d0296303d3c39630ca204b49d5618bacc71cd67d",
+  "startedAt": "2026-07-20T10:01:39Z",
+  "status": "completed"
+}

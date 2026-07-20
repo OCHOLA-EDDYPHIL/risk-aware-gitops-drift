@@ -1,0 +1,28 @@
+{
+  "name": "RADAR controlled research lab",
+  "image": "mcr.microsoft.com/devcontainers/base@sha256:bb7b81b6e5be17b5267f92f4ffda534fea37dab1df97b5e86c1f9b91da5c0b5d",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {
+      "version": "29.6.2",
+      "moby": true,
+      "installDockerBuildx": false,
+      "dockerDashComposeVersion": "none"
+    },
+    "ghcr.io/devcontainers/features/sshd:1.1.0": {}
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "postCreateCommand": "bash .devcontainer/install-tools.sh",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
+}

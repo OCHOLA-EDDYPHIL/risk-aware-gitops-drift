@@ -1,0 +1,17 @@
+{
+  "argoSynchronizedRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "argoTargetRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "baselineResetVerified": true,
+  "evidenceSchemaVersion": 1,
+  "evidenceTier": "implemented",
+  "exitCode": 1,
+  "expectedRule": "RADAR-METADATA-ONLY",
+  "expectedSeverity": "LOW",
+  "failedAt": "2026-07-19T20:37:07Z",
+  "failureStage": "observe-argocd",
+  "repetition": 1,
+  "scenario": "metadata-only",
+  "sourceCommit": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "startedAt": "2026-07-19T20:32:07Z",
+  "status": "failed"
+}

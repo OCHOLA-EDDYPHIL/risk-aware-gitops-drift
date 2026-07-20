@@ -1,0 +1,18 @@
+{
+  "argoSynchronizedRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "argoTargetRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "baselineResetVerified": true,
+  "completedAt": "2026-07-19T20:30:52Z",
+  "evidenceSchemaVersion": 1,
+  "evidenceTier": "controlled-lab-observed",
+  "expectedRule": "RADAR-NETPOL-REMOVED",
+  "expectedSeverity": "HIGH",
+  "mutationAt": "2026-07-19T20:30:37Z",
+  "observedAt": "2026-07-19T20:30:37Z",
+  "radarCompletedAt": "2026-07-19T20:30:38Z",
+  "repetition": 1,
+  "scenario": "networkpolicy-removal",
+  "sourceCommit": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "startedAt": "2026-07-19T20:30:37Z",
+  "status": "completed"
+}

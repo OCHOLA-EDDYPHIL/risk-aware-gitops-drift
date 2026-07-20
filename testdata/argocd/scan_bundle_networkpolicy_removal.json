@@ -1,0 +1,18 @@
+{
+  "application": {
+    "metadata": {"name": "radar-lab", "namespace": "argocd"},
+    "spec": {"project": "radar"},
+    "status": {"sync": {"status": "OutOfSync"}, "health": {"status": "Healthy"}}
+  },
+  "managedResources": {
+    "items": [{
+      "group": "networking.k8s.io",
+      "kind": "NetworkPolicy",
+      "namespace": "radar-demo",
+      "name": "radar-demo-default-deny-ingress",
+      "predictedLiveState": "{\"apiVersion\":\"networking.k8s.io/v1\",\"kind\":\"NetworkPolicy\",\"metadata\":{\"name\":\"radar-demo-default-deny-ingress\",\"namespace\":\"radar-demo\"},\"spec\":{\"podSelector\":{},\"policyTypes\":[\"Ingress\"]}}",
+      "normalizedLiveState": "",
+      "modified": true
+    }]
+  }
+}

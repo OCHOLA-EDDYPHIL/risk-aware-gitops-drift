@@ -20,7 +20,7 @@ The CLI deliberately avoids a CLI framework so the command surface stays small a
 - It is not a Kubernetes admission controller.
 - It is not a Kubernetes operator or CRD system.
 - It is not a SIEM.
-- It does not include a web dashboard yet.
+- It does not include a web dashboard.
 - It does not use ML for risk scoring.
 
 ## Architecture Summary
@@ -33,15 +33,16 @@ The MVP must consume real Argo CD API data and extract or validate field-level d
 
 ## Non-Goals
 
-- Dashboard implementation before MVP.
+- Dashboard implementation.
 - Admission webhooks.
 - Kubernetes controllers/operators.
+- Production deployment manifests or multi-cluster operation.
 - Release packaging.
 - Real cluster credentials or screenshots.
 
 ## Requirements
 
-- Go 1.22 or newer.
+- Go 1.24.0.
 - Argo CD API access for real scans.
 - OPA CLI for local Rego policy tests. GitHub Actions installs OPA automatically in CI.
 
@@ -76,7 +77,7 @@ go run ./cmd/radar scan --fixture testdata/argocd/application_outofsync.json --o
 go run ./cmd/radar scan --fixture testdata/argocd/scan_bundle_privileged.json --output json
 ```
 
-The fixture mode supports two sanitized formats. A legacy Application-only fixture demonstrates the explicit INFO fallback when field-level evidence is unavailable. A scan-bundle fixture contains both Application and managed-resource responses and exercises deterministic extraction, policy evaluation, and reporting without claiming that a live cluster was observed. Fixtures are development evidence, not experimental results.
+The file-input mode supports two formats through `--fixture`. A legacy Application-only record demonstrates the explicit INFO fallback when field-level evidence is unavailable. A scan bundle contains both Application and managed-resource responses and exercises deterministic extraction, policy evaluation, and reporting. Stored synthetic bundles are development evidence. A bundle captured from a controlled lab inherits its evidence tier only from the preserved mutation, timestamps, environment, reset, and sanitization chain; the flag itself does not establish live evidence.
 
 ## Example Output
 
@@ -98,22 +99,6 @@ Findings:
 
 Do not commit Argo CD tokens, kubeconfigs, real cluster URLs, screenshots with sensitive data, or real secrets. RADAR must not print tokens or include them in errors. Test data must stay synthetic and sanitized.
 
-## Current Implementation Status
-
-- The Go CLI retrieves Argo CD Application and managed-resource API data.
-- Desired-versus-live state is normalized into deterministic atomic changes.
-- Frozen Rego rules classify the selected security scenarios with explainable impact, likelihood, score, and recommendation fields.
-- Terminal and JSON reports expose the selected rule and retain all matched rule IDs in JSON.
-- Sanitized scan bundles validate the integrated extraction-to-report path.
-- Controlled-lab validation and the formal repeated-run evaluation remain outstanding; fixture results must not be presented as live experimental evidence.
-
-## Roadmap
-
-1. Foundation: CLI, client, model, policies, reports, CI, docs.
-2. MVP: real Argo CD field-level drift extraction and scenario validation.
-3. Evaluation: local Kubernetes and Argo CD lab, experiment logs, false positive and false negative tracking.
-4. Post-MVP: minimal dashboard, SARIF export, webhooks, packaging, and public release preparation.
-
 ## License
 
-No license is applied while this repository is private. Apache-2.0 is recommended when the repository is made public, but licensing will be finalized at public release.
+No license is currently applied to this private repository.

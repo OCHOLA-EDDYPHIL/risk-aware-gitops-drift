@@ -1,0 +1,28 @@
+{
+  "assessmentVersion": 1,
+  "collectionId": "pilot-codespace-v1",
+  "records": [
+    {
+      "scenario": "privileged-container",
+      "repetitions": [1, 2],
+      "recordedStatus": "failed",
+      "resetClaim": "unverified",
+      "reason": "The legacy fail-safe reset could continue after an earlier reset command failed."
+    },
+    {
+      "archiveSha256": "cd6b3d47cd5ef689e4080641838c6c72f9a18097f4b0da66936d4848131eedad",
+      "scenario": "privileged-container",
+      "repetition": 3,
+      "recordedTier": "controlled-lab-observed",
+      "claimableTier": "implemented",
+      "disposition": "legacy-incomplete-evidence-chain",
+      "includedInControlledLabAggregates": false,
+      "limitations": [
+        "The run metadata does not bind execution to an immutable source commit.",
+        "The preserved reviewable summaries omit the declared mutation and verified reset.",
+        "The environment manifest was captured after the run completed.",
+        "The fixed-port forwarding process was not proven to own the listener used for collection."
+      ]
+    }
+  ]
+}

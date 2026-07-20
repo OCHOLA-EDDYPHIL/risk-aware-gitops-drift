@@ -1,9 +1,8 @@
 # Research Traceability
 
-| Research Objective | Implementation Component | Test Scenario | Evaluation Metric | Report Chapter |
-| ------------------ | ------------------------ | ------------- | ----------------- | -------------- |
-| Identify security-relevant GitOps drift | Argo CD client and normalized drift model | Resource-level OutOfSync | Detection coverage | Ch3, Ch4 |
-| Classify drift by security risk | OPA/Rego policy engine | RBAC, NetworkPolicy, privileged container, hostPath, Service exposure, image tag, metadata | Expected versus observed severity | Ch4, Ch5 |
-| Produce explainable evidence | Terminal and JSON reports | All scenarios | Explanation quality and reproducibility | Ch5 |
-| Evaluate against raw Argo CD reporting | Evaluation plan and experiment logs | Full MVP scenario set | Added context, false positives, false negatives, time-to-detect | Ch5, Ch6 |
-| Prepare responsible release | Security docs and release checklist | Public release readiness | Secret hygiene and documentation completeness | Ch6 |
+| Research objective | Implemented component or durable artifact | Evidence interface | Report chapter |
+| --- | --- | --- | --- |
+| Identify security-relevant GitOps drift | Argo CD client and deterministic managed-resource comparison | Atomic resource, operation, path, before/after, confidence and observation fields | Ch3, Ch4, Ch5 |
+| Classify selected drift by security risk | OPA/Rego policy set and frozen risk matrix | Rule identifier, impact, likelihood, score, severity, reason and recommendation | Ch4, Ch5 |
+| Produce explainable and reproducible evidence | Terminal/JSON reports and the sanitized evidence schema | Stable finding identifiers, matched rules, immutable archives, checksums and indexes | Ch4, Ch5 |
+| Compare RADAR interpretation with raw Argo CD drift status | Isolated resettable research lab and controlled scenario set | Application status, managed-resource evidence, RADAR result and verified reset record | Ch5 |

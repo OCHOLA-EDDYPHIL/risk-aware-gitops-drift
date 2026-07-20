@@ -1,0 +1,18 @@
+{
+  "argoSynchronizedRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "argoTargetRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "baselineResetVerified": true,
+  "completedAt": "2026-07-19T20:30:35Z",
+  "evidenceSchemaVersion": 1,
+  "evidenceTier": "controlled-lab-observed",
+  "expectedRule": "RADAR-RBAC-WILDCARD",
+  "expectedSeverity": "CRITICAL",
+  "mutationAt": "2026-07-19T20:30:18Z",
+  "observedAt": "2026-07-19T20:30:18Z",
+  "radarCompletedAt": "2026-07-19T20:30:20Z",
+  "repetition": 1,
+  "scenario": "rbac-wildcard",
+  "sourceCommit": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "startedAt": "2026-07-19T20:30:17Z",
+  "status": "completed"
+}

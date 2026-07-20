@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.22.x"
+          go-version: "1.24.0"
 
       - name: Check formatting
         run: test -z "$(gofmt -l $(find . -name '*.go' -not -path './vendor/*'))"
@@ -30,6 +30,19 @@ jobs:
       - name: Build
         run: go build ./cmd/radar
 
+      - name: Set up kubectl for lab asset validation
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "v1.35.6"
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+
+      - name: Validate isolated lab assets
+        run: make lab-static-check
+
       - name: Install OPA
         run: |
           curl -L -o opa https://openpolicyagent.org/downloads/v1.17.1/opa_linux_amd64_static
@@ -38,4 +51,6 @@ jobs:
           opa version
 
       - name: Test Rego policies
-        run: opa test policies testdata
+        run: |
+          opa test --ignore argocd policies testdata
+          make policy-integration-test

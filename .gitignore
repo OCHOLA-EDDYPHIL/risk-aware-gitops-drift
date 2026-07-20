@@ -14,3 +14,7 @@ kubeconfig
 *.pem
 *.key
 *.crt
+.radar-lab-token
+k8s-lab/evidence/
+__pycache__/
+*.pyc
