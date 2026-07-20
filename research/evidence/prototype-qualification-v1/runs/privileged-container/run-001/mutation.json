@@ -1,0 +1,31 @@
+{
+  "action": "patch",
+  "collectionId": "prototype-qualification-v1",
+  "completedAt": "2026-07-20T15:52:14Z",
+  "patch": {
+    "spec": {
+      "template": {
+        "spec": {
+          "containers": [
+            {
+              "name": "radar-demo",
+              "securityContext": {
+                "allowPrivilegeEscalation": true,
+                "privileged": true
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "patchType": "strategic",
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "privileged-container",
+  "startedAt": "2026-07-20T15:52:13Z"
+}
