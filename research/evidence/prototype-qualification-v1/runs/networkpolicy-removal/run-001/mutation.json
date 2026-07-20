@@ -1,0 +1,15 @@
+{
+  "action": "delete",
+  "collectionId": "prototype-qualification-v1",
+  "completedAt": "2026-07-20T15:51:38Z",
+  "patch": null,
+  "patchType": null,
+  "resource": {
+    "group": "networking.k8s.io",
+    "kind": "NetworkPolicy",
+    "name": "radar-demo-default-deny-ingress",
+    "namespace": "radar-demo"
+  },
+  "scenario": "networkpolicy-removal",
+  "startedAt": "2026-07-20T15:51:37Z"
+}

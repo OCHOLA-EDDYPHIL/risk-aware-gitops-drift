@@ -1,0 +1,31 @@
+{
+  "assessmentVersion": 1,
+  "collectionId": "qualification-scenarios-v1",
+  "collectionDisposition": "legacy-pre-runner-integrity-qualification",
+  "includedInControlledLabAggregates": false,
+  "claimableTier": "implemented",
+  "reason": "The collection preserves genuine lab observations, but its completed records predate the enforced frozen-executable, process-owned forwarding, stable schema-v3 input and fully bound reset-operation chain.",
+  "completedRecords": [
+    {"scenario": "hostpath-addition", "repetition": 1, "archiveSha256": "1f38806510a77525acb1cf7b97c8a5586ee1610519848b99aad4960965a736c6"},
+    {"scenario": "metadata-only", "repetition": 3, "archiveSha256": "3048407ae59fc2aff200b301f60c8b3f1dfd62e3199dde524a3cadb2b2818bb8"},
+    {"scenario": "networkpolicy-removal", "repetition": 1, "archiveSha256": "65746ba13efac976a5f9244e94ad97fc735e77481daa1870d5c5806fdc0f7f5d"},
+    {"scenario": "rbac-wildcard", "repetition": 1, "archiveSha256": "f3e9e6b933984381c1cbc431e7ce92fdd6214863bd257bc3600f4379c2495db8"},
+    {"scenario": "secret-reference", "repetition": 1, "archiveSha256": "420c1b95dbed311b4d987f7f6f15a0a089d4d87963690427f8fe2c8ae126b4db"},
+    {"scenario": "service-exposure", "repetition": 1, "archiveSha256": "012d2ce1e19e3c584ae7c822a03d088a32225f07190d54d938cf5c43a529d9e9"},
+    {"scenario": "unsafe-image-tag", "repetition": 1, "archiveSha256": "70f5e4da5c2d8186d7f95a6198e126b3e2dfdd07092b8ec471b2b2dda7b0e27c"}
+  ],
+  "failedRecords": [
+    {
+      "scenario": "metadata-only",
+      "repetitions": [1, 2],
+      "resetClaim": "unverified",
+      "reason": "The legacy fail-safe reset could continue after an earlier reset command failed."
+    }
+  ],
+  "limitations": [
+    "Schema-version-1 records did not preserve the Application response and classified scan input as one atomic bundle.",
+    "The schema-version-2 metadata record preserved the classified bundle but did not bind the executed scanner and policy hashes.",
+    "The fixed forwarding process was not proven to own the listener used for collection.",
+    "Reset summaries were not bound to the frozen source revision and unique Argo CD reset initiator under the current schema-v3 rules."
+  ]
+}

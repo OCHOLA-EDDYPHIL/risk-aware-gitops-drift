@@ -55,6 +55,26 @@ Valid scenarios are listed in [drift-scenarios/README.md](drift-scenarios/README
 
 Local evidence is written below the ignored `k8s-lab/evidence/` directory. Review it before moving selected, sanitized records into any formal research evidence location.
 
+## Frozen formal collection
+
+Formal evaluation uses the decision-complete manifest under `research/protocols/`. The manifest declares all 80 run identifiers and their ground truth before execution. The collection executor runs only the explicit `radar-lab` context, preserves terminal failures, skips an existing run only after validating its declared identity, and stops when reset verification is absent.
+
+```sh
+k8s-lab/scripts/capture-codespace-environment.sh \
+  --collection-id formal-evaluation-v1 --region WestEurope \
+  --machine-type basicLinux32gb \
+  --output k8s-lab/evidence/formal-evaluation-v1/environment.json
+python3 k8s-lab/scripts/run-collection.py \
+  --context radar-lab \
+  --protocol-file research/protocols/formal-evaluation-v1.json \
+  --environment-file k8s-lab/evidence/formal-evaluation-v1/environment.json \
+  --output-dir k8s-lab/evidence/formal-evaluation-v1
+```
+
+Supplying the protocol creates schema-v4 evidence and binds each run to the protocol checksum, predeclared run ID, ground truth and risk-matrix checksum. Omitting it retains schema-v3 qualification behavior. A formal collection must use one immutable source commit and environment; material changes require a versioned replacement rather than continuation.
+
+After all declared runs are sanitized and indexed, `summarize-evaluation.py` derives run accounting, detection, classification, timing and explanation metrics from the reviewable summaries. Generated values never replace or edit the immutable run records.
+
 ## Teardown
 
 ```sh

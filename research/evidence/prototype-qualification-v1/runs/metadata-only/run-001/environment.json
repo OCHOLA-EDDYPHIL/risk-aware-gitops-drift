@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-07-20T15:49:46Z",
+  "collectionId": "prototype-qualification-v1",
+  "environment": {
+    "availableMemoryBytes": 5426622464,
+    "cpuCount": 2,
+    "machineType": "basicLinux32gb",
+    "memoryBytes": 8329404416,
+    "region": "WestEurope",
+    "workspaceAvailableBytes": 23999037440
+  },
+  "evidenceTier": "environment-provenance",
+  "provider": "GitHub Codespaces",
+  "source": {
+    "commit": "19a98fb4bcbafb2936318c4721bdee50e5dfc93c"
+  },
+  "versions": {
+    "argocdServerImage": "quay.io/argoproj/argocd:v3.4.5",
+    "dockerClient": "29.6.2-1",
+    "dockerServer": "29.6.2-1",
+    "gitLfs": "git-lfs/3.7.1",
+    "go": "go version go1.24.0 linux/amd64",
+    "kubectlClient": "v1.35.6",
+    "kubernetesServer": "v1.35.1",
+    "minikube": "v1.38.1",
+    "opa": "1.17.1"
+  }
+}

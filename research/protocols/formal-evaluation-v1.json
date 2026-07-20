@@ -1,0 +1,827 @@
+{
+  "protocolVersion": 1,
+  "protocolId": "formal-evaluation-v1",
+  "collectionId": "formal-evaluation-v1",
+  "evidenceSchemaVersion": 4,
+  "scenarioCount": 8,
+  "repetitionsPerScenario": 10,
+  "declaredRunCount": 80,
+  "runs": [
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r01",
+      "scenario": "rbac-wildcard",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r02",
+      "scenario": "rbac-wildcard",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r03",
+      "scenario": "rbac-wildcard",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r04",
+      "scenario": "rbac-wildcard",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r05",
+      "scenario": "rbac-wildcard",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r06",
+      "scenario": "rbac-wildcard",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r07",
+      "scenario": "rbac-wildcard",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r08",
+      "scenario": "rbac-wildcard",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r09",
+      "scenario": "rbac-wildcard",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-rbac-wildcard-r10",
+      "scenario": "rbac-wildcard",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-RBAC-WILDCARD",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/rules/0/apiGroups/0"
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r01",
+      "scenario": "networkpolicy-removal",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r02",
+      "scenario": "networkpolicy-removal",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r03",
+      "scenario": "networkpolicy-removal",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r04",
+      "scenario": "networkpolicy-removal",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r05",
+      "scenario": "networkpolicy-removal",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r06",
+      "scenario": "networkpolicy-removal",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r07",
+      "scenario": "networkpolicy-removal",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r08",
+      "scenario": "networkpolicy-removal",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r09",
+      "scenario": "networkpolicy-removal",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-networkpolicy-removal-r10",
+      "scenario": "networkpolicy-removal",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-NETPOL-REMOVED",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": ""
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r01",
+      "scenario": "privileged-container",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r02",
+      "scenario": "privileged-container",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r03",
+      "scenario": "privileged-container",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r04",
+      "scenario": "privileged-container",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r05",
+      "scenario": "privileged-container",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r06",
+      "scenario": "privileged-container",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r07",
+      "scenario": "privileged-container",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r08",
+      "scenario": "privileged-container",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r09",
+      "scenario": "privileged-container",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-privileged-container-r10",
+      "scenario": "privileged-container",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-WORKLOAD-PRIVILEGED",
+      "expectedSeverity": "CRITICAL",
+      "expectedScore": 100,
+      "expectedPath": "/spec/template/spec/containers/0/securityContext/privileged"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r01",
+      "scenario": "hostpath-addition",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r02",
+      "scenario": "hostpath-addition",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r03",
+      "scenario": "hostpath-addition",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r04",
+      "scenario": "hostpath-addition",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r05",
+      "scenario": "hostpath-addition",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r06",
+      "scenario": "hostpath-addition",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r07",
+      "scenario": "hostpath-addition",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r08",
+      "scenario": "hostpath-addition",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r09",
+      "scenario": "hostpath-addition",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-hostpath-addition-r10",
+      "scenario": "hostpath-addition",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-VOLUME-HOSTPATH",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 60,
+      "expectedPath": "/spec/template/spec/volumes/0/hostPath"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r01",
+      "scenario": "service-exposure",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r02",
+      "scenario": "service-exposure",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r03",
+      "scenario": "service-exposure",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r04",
+      "scenario": "service-exposure",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r05",
+      "scenario": "service-exposure",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r06",
+      "scenario": "service-exposure",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r07",
+      "scenario": "service-exposure",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r08",
+      "scenario": "service-exposure",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r09",
+      "scenario": "service-exposure",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-service-exposure-r10",
+      "scenario": "service-exposure",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SERVICE-EXPOSURE",
+      "expectedSeverity": "HIGH",
+      "expectedScore": 64,
+      "expectedPath": "/spec/type"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r01",
+      "scenario": "unsafe-image-tag",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r02",
+      "scenario": "unsafe-image-tag",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r03",
+      "scenario": "unsafe-image-tag",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r04",
+      "scenario": "unsafe-image-tag",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r05",
+      "scenario": "unsafe-image-tag",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r06",
+      "scenario": "unsafe-image-tag",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r07",
+      "scenario": "unsafe-image-tag",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r08",
+      "scenario": "unsafe-image-tag",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r09",
+      "scenario": "unsafe-image-tag",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-unsafe-image-tag-r10",
+      "scenario": "unsafe-image-tag",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-IMAGE-LATEST",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 36,
+      "expectedPath": "/spec/template/spec/containers/0/image"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r01",
+      "scenario": "secret-reference",
+      "repetition": 1,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r02",
+      "scenario": "secret-reference",
+      "repetition": 2,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r03",
+      "scenario": "secret-reference",
+      "repetition": 3,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r04",
+      "scenario": "secret-reference",
+      "repetition": 4,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r05",
+      "scenario": "secret-reference",
+      "repetition": 5,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r06",
+      "scenario": "secret-reference",
+      "repetition": 6,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r07",
+      "scenario": "secret-reference",
+      "repetition": 7,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r08",
+      "scenario": "secret-reference",
+      "repetition": 8,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r09",
+      "scenario": "secret-reference",
+      "repetition": 9,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-secret-reference-r10",
+      "scenario": "secret-reference",
+      "repetition": 10,
+      "groundTruth": "security",
+      "expectedRule": "RADAR-SECRET-REFERENCE",
+      "expectedSeverity": "MEDIUM",
+      "expectedScore": 32,
+      "expectedPath": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r01",
+      "scenario": "metadata-only",
+      "repetition": 1,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r02",
+      "scenario": "metadata-only",
+      "repetition": 2,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r03",
+      "scenario": "metadata-only",
+      "repetition": 3,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r04",
+      "scenario": "metadata-only",
+      "repetition": 4,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r05",
+      "scenario": "metadata-only",
+      "repetition": 5,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r06",
+      "scenario": "metadata-only",
+      "repetition": 6,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r07",
+      "scenario": "metadata-only",
+      "repetition": 7,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r08",
+      "scenario": "metadata-only",
+      "repetition": 8,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r09",
+      "scenario": "metadata-only",
+      "repetition": 9,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    },
+    {
+      "runId": "formal-evaluation-v1-metadata-only-r10",
+      "scenario": "metadata-only",
+      "repetition": 10,
+      "groundTruth": "control",
+      "expectedRule": "RADAR-METADATA-ONLY",
+      "expectedSeverity": "LOW",
+      "expectedScore": 4,
+      "expectedPath": "/metadata/labels/app.kubernetes.io~1part-of"
+    }
+  ],
+  "metrics": {
+    "detectionAccuracy": "expected security-rule detections divided by 70 declared security runs",
+    "falseNegative": "declared security run without its expected security classification",
+    "falsePositive": "metadata control classified MEDIUM or higher",
+    "exactSeverityAccuracy": "exact expected severity matches divided by completed runs",
+    "timeToDetect": "radarCompletedAt minus mutationAt",
+    "processingLatency": "radarCompletedAt minus observedAt",
+    "explanationCompleteness": "expected finding has resource, change, severity, reason, and recommendation",
+    "percentile": "nearest-rank p95 over valid completed timings"
+  },
+  "restartRules": {
+    "materialChange": "A code, policy, risk-matrix, protocol, or material environment change ends this corpus and requires a versioned replacement protocol.",
+    "failedRun": "Failed and interrupted runs remain declared results and are never overwritten.",
+    "unsafeReset": "Execution stops immediately when the declared baseline cannot be verified.",
+    "resume": "An interrupted collection may resume only missing declared run IDs at the same immutable source and environment."
+  }
+}

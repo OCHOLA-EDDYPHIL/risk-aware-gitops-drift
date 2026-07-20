@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate one schema-v3 RADAR run and its cross-artifact evidence chain."""
+"""Validate a RADAR qualification or protocol-bound formal evidence chain."""
 
 from __future__ import annotations
 
@@ -53,6 +53,16 @@ SCENARIOS = {
         "LOW",
         "/metadata/labels/app.kubernetes.io~1part-of",
     ),
+}
+FORMAL_EXPECTATIONS = {
+    "rbac-wildcard": ("RADAR-RBAC-WILDCARD", "CRITICAL", 100, "/rules/0/apiGroups/0", "security"),
+    "networkpolicy-removal": ("RADAR-NETPOL-REMOVED", "HIGH", 64, "", "security"),
+    "privileged-container": ("RADAR-WORKLOAD-PRIVILEGED", "CRITICAL", 100, "/spec/template/spec/containers/0/securityContext/privileged", "security"),
+    "hostpath-addition": ("RADAR-VOLUME-HOSTPATH", "HIGH", 60, "/spec/template/spec/volumes/0/hostPath", "security"),
+    "service-exposure": ("RADAR-SERVICE-EXPOSURE", "HIGH", 64, "/spec/type", "security"),
+    "unsafe-image-tag": ("RADAR-IMAGE-LATEST", "MEDIUM", 36, "/spec/template/spec/containers/0/image", "security"),
+    "secret-reference": ("RADAR-SECRET-REFERENCE", "MEDIUM", 32, "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name", "security"),
+    "metadata-only": ("RADAR-METADATA-ONLY", "LOW", 4, "/metadata/labels/app.kubernetes.io~1part-of", "control"),
 }
 SHA_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
@@ -132,7 +142,7 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def validate_run(root: Path) -> None:
+def validate_run(root: Path, protocol_file: Path | None = None) -> None:
     require(root.is_dir() and not root.is_symlink(), "run directory is unsafe")
     entries = list(root.iterdir())
     for entry in entries:
@@ -145,7 +155,8 @@ def validate_run(root: Path) -> None:
     metadata = load(files["metadata.json"])
     environment = load(files["environment.json"])
     require(isinstance(metadata, dict) and isinstance(environment, dict), "metadata and environment must be objects")
-    require(metadata.get("evidenceSchemaVersion") == 3, "schema version 3 is required")
+    schema_version = metadata.get("evidenceSchemaVersion")
+    require(schema_version in {3, 4}, "evidence schema version 3 or 4 is required")
     collection = metadata.get("collectionId")
     scenario = metadata.get("scenario")
     repetition = metadata.get("repetition")
@@ -156,7 +167,8 @@ def validate_run(root: Path) -> None:
     require(scenario in SCENARIOS, "unknown scenario")
     require(type(repetition) is int and repetition > 0, "invalid repetition")
     require(status in {"completed", "failed"}, "invalid status")
-    require(tier == ("controlled-lab-observed" if status == "completed" else "implemented"), "status and evidence tier disagree")
+    expected_tier = "formally-evaluated" if schema_version == 4 else ("controlled-lab-observed" if status == "completed" else "implemented")
+    require(tier == expected_tier, "status, schema, and evidence tier disagree")
     require(isinstance(source_commit, str) and COMMIT_PATTERN.fullmatch(source_commit) is not None, "invalid source commit")
     for field in ("scannerSha256", "policySha256", "environmentSha256"):
         require(isinstance(metadata.get(field), str) and SHA_PATTERN.fullmatch(metadata[field]) is not None, f"invalid hash: {field}")
@@ -170,6 +182,40 @@ def validate_run(root: Path) -> None:
     expected_rule, expected_severity, expected_path = SCENARIOS[scenario]
     require(metadata.get("expectedRule") == expected_rule, "expected rule mismatch")
     require(metadata.get("expectedSeverity") == expected_severity, "expected severity mismatch")
+    if schema_version == 4:
+        require(protocol_file is not None, "schema-v4 evidence requires its frozen protocol")
+        require(protocol_file.is_file() and not protocol_file.is_symlink(), "formal protocol is unsafe")
+        protocol = load(protocol_file)
+        require(isinstance(protocol, dict), "formal protocol must be an object")
+        protocol_id = metadata.get("protocolId")
+        declared_run_id = metadata.get("declaredRunId")
+        formal_rule, formal_severity, formal_score, formal_path, formal_truth = FORMAL_EXPECTATIONS[scenario]
+        require(isinstance(protocol_id, str) and IDENTIFIER_PATTERN.fullmatch(protocol_id) is not None, "invalid protocol identifier")
+        require(isinstance(declared_run_id, str) and IDENTIFIER_PATTERN.fullmatch(declared_run_id) is not None, "invalid declared run identifier")
+        for field in ("protocolSha256", "riskMatrixSha256"):
+            require(isinstance(metadata.get(field), str) and SHA_PATTERN.fullmatch(metadata[field]) is not None, f"invalid hash: {field}")
+        require(metadata["protocolSha256"] == sha256(protocol_file), "formal protocol hash mismatch")
+        require(protocol.get("protocolVersion") == 1 and protocol.get("evidenceSchemaVersion") == 4, "formal protocol version mismatch")
+        require(protocol.get("protocolId") == protocol_id and protocol.get("collectionId") == collection, "formal protocol identity mismatch")
+        require(protocol.get("declaredRunCount") == 80 and isinstance(protocol.get("runs"), list) and len(protocol["runs"]) == 80, "formal protocol must declare 80 runs")
+        require(
+            metadata.get("expectedRule") == formal_rule
+            and metadata.get("expectedSeverity") == formal_severity
+            and metadata.get("expectedScore") == formal_score
+            and metadata.get("expectedPath") == formal_path
+            and metadata.get("groundTruth") == formal_truth,
+            "formal ground truth mismatch",
+        )
+        declared = [
+            run
+            for run in protocol.get("runs", [])
+            if isinstance(run, dict)
+            and run.get("scenario") == scenario
+            and run.get("repetition") == repetition
+        ]
+        require(len(declared) == 1 and declared[0].get("runId") == declared_run_id, "formal run is not uniquely declared")
+        for field in ("expectedRule", "expectedSeverity", "expectedScore", "expectedPath", "groundTruth"):
+            require(declared[0].get(field) == metadata.get(field), f"formal declaration mismatch: {field}")
     started = timestamp(metadata.get("startedAt"), "startedAt")
     captured = timestamp(environment.get("capturedAt"), "environment.capturedAt")
     require(captured <= started, "environment was captured after the run started")
@@ -278,16 +324,24 @@ def validate_run(root: Path) -> None:
     require(result.get("application") == "radar-lab" and result.get("syncStatus") == "OutOfSync", "RADAR result application mismatch")
     findings = result.get("findings")
     require(isinstance(findings, list), "RADAR findings are invalid")
-    require(
-        any(
-            finding.get("ruleId") == expected_rule
-            and finding.get("severity") == expected_severity
-            and finding.get("change", {}).get("path") == expected_path
-            for finding in findings
-            if isinstance(finding, dict)
-        ),
-        "expected decision and field path are absent",
-    )
+    matched_findings = [
+        finding
+        for finding in findings
+        if isinstance(finding, dict)
+        and finding.get("ruleId") == expected_rule
+        and finding.get("severity") == expected_severity
+        and finding.get("change", {}).get("path") == expected_path
+    ]
+    if schema_version == 3:
+        require(bool(matched_findings), "expected decision and field path are absent")
+    else:
+        require(all(isinstance(finding, dict) for finding in findings), "formal result contains malformed findings")
+        for finding in findings:
+            require(isinstance(finding.get("resource"), dict), "formal finding lacks resource identity")
+            require(isinstance(finding.get("change"), dict) and isinstance(finding["change"].get("operation"), str), "formal finding lacks atomic change")
+            require(finding.get("severity") in {"INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"}, "formal finding has invalid severity")
+            require(type(finding.get("score")) is int and 0 <= finding["score"] <= 100, "formal finding has invalid score")
+            require(bool(finding.get("reason")) and bool(finding.get("recommendation")), "formal finding lacks explanation")
     require(metadata.get("baselineResetVerified") is True, "completed run lacks verified reset")
     require(reset.get("declaredBaselineVerified") is True, "reset baseline is not verified")
     require(reset.get("targetRevision") == source_commit and reset.get("operationRevision") == source_commit, "reset revision mismatch")
@@ -310,10 +364,12 @@ def validate_run(root: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--protocol-file", type=Path)
     parser.add_argument("run_dir", type=Path)
     args = parser.parse_args()
     try:
-        validate_run(args.run_dir.resolve())
+        protocol = args.protocol_file.resolve() if args.protocol_file else None
+        validate_run(args.run_dir.resolve(), protocol)
     except EvidenceValidationError as error:
         print(f"evidence validation failed: {error}", file=sys.stderr)
         return 1

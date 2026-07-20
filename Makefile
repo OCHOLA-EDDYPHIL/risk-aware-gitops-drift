@@ -1,7 +1,7 @@
 GOFILES := $(shell find . -name '*.go' -not -path './vendor/*')
 LAB_SCRIPTS := $(shell find k8s-lab/scripts -name '*.sh' -type f | sort)
 
-.PHONY: fmt fmt-check test build run-example rego-test policy-integration-test lab-static-check ci
+.PHONY: fmt fmt-check test build run-example rego-test policy-integration-test protocol-check lab-static-check ci
 
 fmt:
 	gofmt -w $(GOFILES)
@@ -26,12 +26,20 @@ policy-integration-test:
 	@command -v opa >/dev/null 2>&1 || (echo "OPA CLI is required for managed-resource policy integration tests."; exit 1)
 	go test ./cmd/radar -run '^TestRunScanScenarioBundlesWithRealOPA$$'
 
+protocol-check:
+	@temporary="$$(mktemp)"; trap 'rm -f "$$temporary"' EXIT; \
+		python3 k8s-lab/scripts/generate-formal-protocol.py "$$temporary"; \
+		cmp "$$temporary" research/protocols/formal-evaluation-v1.json
+	python3 k8s-lab/scripts/run_collection_test.py
+	python3 k8s-lab/scripts/summarize_evaluation_test.py
+
 lab-static-check:
 	@command -v shellcheck >/dev/null 2>&1 || (echo "shellcheck is required for lab script validation."; exit 1)
 	@command -v kubectl >/dev/null 2>&1 || (echo "kubectl is required for Kustomize validation."; exit 1)
 	python3 k8s-lab/scripts/sanitize_evidence_test.py
 	python3 k8s-lab/scripts/validate_evidence_test.py
 	python3 k8s-lab/scripts/verify_baseline_test.py
+	$(MAKE) protocol-check
 	bash k8s-lab/scripts/common_test.sh
 	bash -n $(LAB_SCRIPTS)
 	shellcheck $(LAB_SCRIPTS)
