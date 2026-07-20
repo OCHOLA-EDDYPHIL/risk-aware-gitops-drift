@@ -1,0 +1,33 @@
+{
+  "action": "patch",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T16:39:02Z",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/rules",
+      "value": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "resources": [
+            "*"
+          ],
+          "verbs": [
+            "*"
+          ]
+        }
+      ]
+    }
+  ],
+  "patchType": "json",
+  "resource": {
+    "group": "rbac.authorization.k8s.io",
+    "kind": "Role",
+    "name": "radar-demo-reader",
+    "namespace": "radar-demo"
+  },
+  "scenario": "rbac-wildcard",
+  "startedAt": "2026-07-20T16:39:01Z"
+}

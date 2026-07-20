@@ -1,0 +1,15 @@
+{
+  "action": "delete",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T16:42:34Z",
+  "patch": null,
+  "patchType": null,
+  "resource": {
+    "group": "networking.k8s.io",
+    "kind": "NetworkPolicy",
+    "name": "radar-demo-default-deny-ingress",
+    "namespace": "radar-demo"
+  },
+  "scenario": "networkpolicy-removal",
+  "startedAt": "2026-07-20T16:42:33Z"
+}

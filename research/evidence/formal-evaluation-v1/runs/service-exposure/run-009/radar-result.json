@@ -1,0 +1,37 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": "NodePort",
+        "before": "ClusterIP",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/spec/type"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-88ED22BD63DB",
+      "impact": 4,
+      "likelihood": 4,
+      "matchedRuleIds": [
+        "RADAR-SERVICE-EXPOSURE"
+      ],
+      "observedAt": "2026-07-20T17:02:46.750829706Z",
+      "reason": "The Service changed from ClusterIP to a type that expands workload exposure.",
+      "recommendation": "Restore ClusterIP or confirm that the broader exposure is approved and protected.",
+      "resource": {
+        "group": "",
+        "kind": "Service",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-SERVICE-EXPOSURE",
+      "score": 64,
+      "severity": "HIGH"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

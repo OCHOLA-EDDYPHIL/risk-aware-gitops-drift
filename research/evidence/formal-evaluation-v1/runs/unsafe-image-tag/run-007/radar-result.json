@@ -1,0 +1,37 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": "nginx:latest",
+        "before": "nginx:1.27.5-alpine",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/spec/template/spec/containers/0/image"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-6F8B17447935",
+      "impact": 3,
+      "likelihood": 3,
+      "matchedRuleIds": [
+        "RADAR-IMAGE-LATEST"
+      ],
+      "observedAt": "2026-07-20T17:07:37.507987362Z",
+      "reason": "A versioned workload image changed to the mutable latest tag.",
+      "recommendation": "Restore an immutable version or digest and verify the intended image provenance.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-IMAGE-LATEST",
+      "score": 36,
+      "severity": "MEDIUM"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

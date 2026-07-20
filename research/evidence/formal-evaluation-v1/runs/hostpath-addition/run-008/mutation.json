@@ -1,0 +1,28 @@
+{
+  "action": "patch",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T16:56:13Z",
+  "patch": [
+    {
+      "op": "remove",
+      "path": "/spec/template/spec/volumes/0/emptyDir"
+    },
+    {
+      "op": "add",
+      "path": "/spec/template/spec/volumes/0/hostPath",
+      "value": {
+        "path": "/var/log",
+        "type": "Directory"
+      }
+    }
+  ],
+  "patchType": "json",
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "hostpath-addition",
+  "startedAt": "2026-07-20T16:56:12Z"
+}

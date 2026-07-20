@@ -1,0 +1,37 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": "metadata-only",
+        "before": "radar-lab",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/metadata/labels/app.kubernetes.io~1part-of"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-B390D5743D04",
+      "impact": 1,
+      "likelihood": 1,
+      "matchedRuleIds": [
+        "RADAR-METADATA-ONLY"
+      ],
+      "observedAt": "2026-07-20T17:20:02.38354323Z",
+      "reason": "Only a metadata label or annotation changed, with minimal direct security impact in the selected model.",
+      "recommendation": "Confirm that ownership labels and automation selectors remain correct.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-METADATA-ONLY",
+      "score": 4,
+      "severity": "LOW"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

@@ -1,0 +1,19 @@
+{
+  "action": "patch",
+  "collectionId": "formal-evaluation-v1",
+  "completedAt": "2026-07-20T17:00:22Z",
+  "patch": {
+    "spec": {
+      "type": "NodePort"
+    }
+  },
+  "patchType": "merge",
+  "resource": {
+    "group": "",
+    "kind": "Service",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "service-exposure",
+  "startedAt": "2026-07-20T17:00:22Z"
+}

@@ -1,0 +1,39 @@
+{
+  "protocolId": "formal-evaluation-v1",
+  "declaredRuns": 80,
+  "completedRuns": 80,
+  "evaluableRuns": 80,
+  "missingOrIncompleteRuns": 0,
+  "securityRuns": 70,
+  "controlRuns": 10,
+  "detectedSecurityRuns": 70,
+  "falseNegatives": 0,
+  "falsePositives": 0,
+  "detectionAccuracy": 1.0,
+  "falsePositiveRatePerDeclaredControl": 0.0,
+  "exactSeverityAccuracy": 1.0,
+  "explanationCompleteness": 1.0,
+  "confusionMatrixEvaluable": {
+    "truePositive": 70,
+    "falseNegative": 0,
+    "falsePositive": 0,
+    "trueNegative": 10
+  },
+  "timeToDetectSeconds": {
+    "count": 80,
+    "median": 4.0,
+    "p95NearestRank": 4.0
+  },
+  "processingLatencySeconds": {
+    "count": 80,
+    "median": 0.0,
+    "p95NearestRank": 1.0
+  },
+  "freezeProvenance": {
+    "sourceCommit": "7966d77366d5bcc99612adfa0c2c7a534e03eab9",
+    "scannerSha256": "339856d1fa0654b057c9370dac37d6460fcb927ed0d99b8bf8aa04e4815ff117",
+    "policySha256": "0c6e301a24bd1e2b90241db7678a164da28c3a1c9eb980d71065ed25e2067667",
+    "riskMatrixSha256": "cb0294b0845e70731f68a37972ac0e2258afd0e6c2a3885356ff42aba3a006a4",
+    "environmentSha256": "f8f610bb037917f55064422b843ab720714c7f6b9a13c4e7a8bd6d59b9221d29"
+  }
+}

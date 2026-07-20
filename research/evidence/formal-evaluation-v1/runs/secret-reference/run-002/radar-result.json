@@ -1,0 +1,37 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": "radar-demo-credentials-v2",
+        "before": "radar-demo-credentials-v1",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-F33940616336",
+      "impact": 4,
+      "likelihood": 2,
+      "matchedRuleIds": [
+        "RADAR-SECRET-REFERENCE"
+      ],
+      "observedAt": "2026-07-20T17:10:37.927359687Z",
+      "reason": "A workload Secret reference changed and may alter the credential or sensitive configuration path.",
+      "recommendation": "Validate the referenced Secret and confirm that the change was reviewed and intended.",
+      "resource": {
+        "group": "apps",
+        "kind": "Deployment",
+        "name": "radar-demo",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-SECRET-REFERENCE",
+      "score": 32,
+      "severity": "MEDIUM"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}

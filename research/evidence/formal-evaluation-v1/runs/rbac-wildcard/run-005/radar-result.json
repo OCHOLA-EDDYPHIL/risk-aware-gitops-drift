@@ -1,0 +1,118 @@
+{
+  "application": "radar-lab",
+  "findings": [
+    {
+      "change": {
+        "after": "*",
+        "before": "",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/rules/0/apiGroups/0"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-0542DC593EC0",
+      "impact": 5,
+      "likelihood": 5,
+      "matchedRuleIds": [
+        "RADAR-RBAC-WILDCARD"
+      ],
+      "observedAt": "2026-07-20T16:36:44.990576363Z",
+      "reason": "RBAC drift expands a Role or ClusterRole with wildcard privileges.",
+      "recommendation": "Revert the wildcard permission and require review for privilege-bearing RBAC manifests.",
+      "resource": {
+        "group": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "radar-demo-reader",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-RBAC-WILDCARD",
+      "score": 100,
+      "severity": "CRITICAL"
+    },
+    {
+      "change": {
+        "after": "*",
+        "before": "configmaps",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/rules/0/resources/0"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-123710D4FBBD",
+      "impact": 5,
+      "likelihood": 5,
+      "matchedRuleIds": [
+        "RADAR-RBAC-WILDCARD"
+      ],
+      "observedAt": "2026-07-20T16:36:44.990576363Z",
+      "reason": "RBAC drift expands a Role or ClusterRole with wildcard privileges.",
+      "recommendation": "Revert the wildcard permission and require review for privilege-bearing RBAC manifests.",
+      "resource": {
+        "group": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "radar-demo-reader",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-RBAC-WILDCARD",
+      "score": 100,
+      "severity": "CRITICAL"
+    },
+    {
+      "change": {
+        "after": "*",
+        "before": "get",
+        "confidence": "field-level",
+        "operation": "replace",
+        "path": "/rules/0/verbs/0"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-79E2FD242C74",
+      "impact": 5,
+      "likelihood": 5,
+      "matchedRuleIds": [
+        "RADAR-RBAC-WILDCARD"
+      ],
+      "observedAt": "2026-07-20T16:36:44.990576363Z",
+      "reason": "RBAC drift expands a Role or ClusterRole with wildcard privileges.",
+      "recommendation": "Revert the wildcard permission and require review for privilege-bearing RBAC manifests.",
+      "resource": {
+        "group": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "radar-demo-reader",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "ruleId": "RADAR-RBAC-WILDCARD",
+      "score": 100,
+      "severity": "CRITICAL"
+    },
+    {
+      "change": {
+        "after": null,
+        "before": "list",
+        "confidence": "field-level",
+        "operation": "remove",
+        "path": "/rules/0/verbs/1"
+      },
+      "evidenceSource": "argocd-managed-resources",
+      "id": "RADAR-E89B4D4734B6",
+      "observedAt": "2026-07-20T16:36:44.990576363Z",
+      "reason": "Field-level drift was extracted, but no configured security rule matched.",
+      "recommendation": "Review the change and add a policy only if the selected research scope requires classification.",
+      "resource": {
+        "group": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "radar-demo-reader",
+        "namespace": "radar-demo",
+        "version": "v1"
+      },
+      "score": 0,
+      "severity": "INFO"
+    }
+  ],
+  "healthStatus": "Healthy",
+  "project": "radar",
+  "syncStatus": "OutOfSync"
+}
