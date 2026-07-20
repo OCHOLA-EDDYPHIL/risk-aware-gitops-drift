@@ -77,7 +77,7 @@ go run ./cmd/radar scan --fixture testdata/argocd/application_outofsync.json --o
 go run ./cmd/radar scan --fixture testdata/argocd/scan_bundle_privileged.json --output json
 ```
 
-The fixture mode supports two sanitized formats. A legacy Application-only fixture demonstrates the explicit INFO fallback when field-level evidence is unavailable. A scan-bundle fixture contains both Application and managed-resource responses and exercises deterministic extraction, policy evaluation, and reporting without claiming that a live cluster was observed. Fixtures are development evidence, not experimental results.
+The file-input mode supports two formats through `--fixture`. A legacy Application-only record demonstrates the explicit INFO fallback when field-level evidence is unavailable. A scan bundle contains both Application and managed-resource responses and exercises deterministic extraction, policy evaluation, and reporting. Stored synthetic bundles are development evidence. A bundle captured from a controlled lab inherits its evidence tier only from the preserved mutation, timestamps, environment, reset, and sanitization chain; the flag itself does not establish live evidence.
 
 ## Example Output
 

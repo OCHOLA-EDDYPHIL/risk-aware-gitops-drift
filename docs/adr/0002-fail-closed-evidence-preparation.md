@@ -10,7 +10,7 @@ Controlled-run artifacts can contain credentials, Kubernetes Secret material, lo
 
 Keep raw run output in an ignored workspace and prepare a separate sanitized collection. Accept only declared JSON, YAML, text, CSV, checksum, and log formats. Redact recognized credentials and embedded Secret data; reject symbolic links, binaries, images, private keys, unsupported formats, and malformed structured data.
 
-Create deterministic compressed archives, verify them, enforce the declared size ceiling, generate SHA-256 checksums and a reviewable index, and treat run summaries and archives as append-only. Store only immutable compressed archives through selective Git LFS; keep small metadata, result, index, and checksum files as ordinary Git objects. Evidence preparation does not create branches, commit, push, or query delivery state.
+Preserve the exact captured Application and managed-resource snapshot supplied to RADAR. Create deterministic compressed archives, verify them, enforce the declared size ceiling, generate SHA-256 checksums and a reviewable index, and treat run summaries and archives as append-only. Store only immutable compressed archives through selective Git LFS; keep small metadata, result, index, and checksum files as ordinary Git objects. Evidence preparation does not create branches, commit, push, or query delivery state.
 
 ## Consequences
 

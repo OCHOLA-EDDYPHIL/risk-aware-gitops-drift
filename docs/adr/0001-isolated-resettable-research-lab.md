@@ -10,7 +10,7 @@ RADAR must observe deliberate Kubernetes configuration drift without operating o
 
 Use one dedicated Minikube profile and Kubernetes context named `radar-lab`. Require the explicit context on every Kubernetes command, limit workloads to the synthetic `radar-demo` namespace, expose Argo CD only through localhost forwarding, and use least-privilege API and repository credentials. Keep Argo CD self-heal disabled during observation.
 
-Before mutation, verify that the Application is Synced and Healthy, its declared fields match the baseline, and its immutable target commit equals the synchronized revision. Apply one declared mutation, collect the resulting drift, then delete the synthetic namespace, request an explicit Argo CD synchronization at the same revision, and verify every declared baseline resource and field.
+Before mutation, verify that the Application is Synced and Healthy, its declared fields match the baseline, and its immutable target commit equals both the synchronized revision and the latest successful sync operation. Apply one declared mutation, collect the resulting drift, then delete the synthetic namespace, request an explicit Argo CD synchronization at the same revision, and verify every declared baseline resource and field.
 
 ## Consequences
 

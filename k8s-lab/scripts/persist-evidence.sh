@@ -83,11 +83,11 @@ sanitized_directory="${temporary_directory}/${scenario}-${run_id}"
 python3 "${SCRIPT_DIR}/sanitize-evidence.py" "${run_dir}" "${sanitized_directory}"
 
 jq --exit-status . "${sanitized_directory}/metadata.json" >/dev/null
-for json_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
+for json_name in environment mutation argocd-observation argocd-application argocd-managed-resources scan-input radar-result reset; do
   [[ ! -f "${sanitized_directory}/${json_name}.json" ]] || jq --exit-status . "${sanitized_directory}/${json_name}.json" >/dev/null
 done
 if [[ "${status}" == "completed" && "${evidence_tier}" == "controlled-lab-observed" ]]; then
-  for required_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
+  for required_name in environment mutation argocd-observation argocd-application argocd-managed-resources scan-input radar-result reset; do
     [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
       die "completed controlled-lab evidence is missing ${required_name}.json"
   done

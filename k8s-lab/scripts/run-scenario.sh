@@ -96,7 +96,10 @@ done
 "${SCRIPT_DIR}/verify-baseline.sh" --context "${RADAR_CONTEXT}"
 application_target_revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.spec.source.targetRevision}')"
 application_synchronized_revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.status.sync.revision}')"
-assert_frozen_application_revision "${application_target_revision}" "${application_synchronized_revision}"
+application_operation_revision="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.status.operationState.syncResult.revision}')"
+application_operation_phase="$(kube --namespace "${ARGO_NAMESPACE}" get application "${RADAR_APP}" --output jsonpath='{.status.operationState.phase}')"
+assert_frozen_application_revision "${application_target_revision}" "${application_synchronized_revision}" \
+  "${application_operation_revision}" "${application_operation_phase}"
 if [[ -n "${environment_file}" ]]; then
   [[ -f "${environment_file}" && ! -L "${environment_file}" ]] || die "environment file must be a regular JSON file"
   jq --exit-status --arg commit "${application_target_revision}" \
@@ -120,9 +123,11 @@ jq --null-input \
   --arg sourceCommit "${application_target_revision}" \
   --arg argoTargetRevision "${application_target_revision}" \
   --arg argoSynchronizedRevision "${application_synchronized_revision}" \
+  --arg argoOperationRevision "${application_operation_revision}" \
+  --arg argoOperationPhase "${application_operation_phase}" \
   --arg expectedRule "${expected_rule}" \
   --arg expectedSeverity "${expected_severity}" \
-  '{scenario: $scenario, repetition: $repetition, startedAt: $startedAt, sourceCommit: $sourceCommit, argoTargetRevision: $argoTargetRevision, argoSynchronizedRevision: $argoSynchronizedRevision, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "implemented"}' \
+  '{scenario: $scenario, repetition: $repetition, startedAt: $startedAt, sourceCommit: $sourceCommit, argoTargetRevision: $argoTargetRevision, argoSynchronizedRevision: $argoSynchronizedRevision, argoOperationRevision: $argoOperationRevision, argoOperationPhase: $argoOperationPhase, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "implemented"}' \
   >"${run_dir}/metadata.json"
 
 reset_required=false
@@ -307,24 +312,31 @@ chmod 600 "${auth_header_file}"
 printf 'Authorization: Bearer %s\n' "${radar_token}" >"${auth_header_file}"
 curl --fail --silent --show-error \
   --header "@${auth_header_file}" \
+  "http://127.0.0.1:18080/api/v1/applications/${RADAR_APP}" \
+  >"${run_dir}/argocd-application.json"
+jq --exit-status '.status.sync.status == "OutOfSync"' "${run_dir}/argocd-application.json" >/dev/null || \
+  die "captured Argo CD Application is not OutOfSync"
+curl --fail --silent --show-error \
+  --header "@${auth_header_file}" \
   "http://127.0.0.1:18080/api/v1/applications/${RADAR_APP}/managed-resources" \
   >"${run_dir}/argocd-managed-resources.json"
+jq --null-input \
+  --slurpfile application "${run_dir}/argocd-application.json" \
+  --slurpfile managedResources "${run_dir}/argocd-managed-resources.json" \
+  '{application: $application[0], managedResources: $managedResources[0]}' \
+  >"${run_dir}/scan-input.json"
 rm -f "${auth_header_file}"
 auth_header_file=""
 
 current_stage="scan-radar"
 if [[ -n "${RADAR_BIN:-}" ]]; then
-  ARGOCD_SERVER=http://127.0.0.1:18080 \
-  ARGOCD_AUTH_TOKEN="${radar_token}" \
   RADAR_POLICY_PATH="${REPO_ROOT}/policies/risk.rego" \
-    "${RADAR_BIN}" scan --app "${RADAR_APP}" --output json >"${run_dir}/radar-result.json"
+    "${RADAR_BIN}" scan --fixture "${run_dir}/scan-input.json" --output json >"${run_dir}/radar-result.json"
 else
   (
     cd "${REPO_ROOT}"
-    ARGOCD_SERVER=http://127.0.0.1:18080 \
-    ARGOCD_AUTH_TOKEN="${radar_token}" \
     RADAR_POLICY_PATH="${REPO_ROOT}/policies/risk.rego" \
-      go run ./cmd/radar scan --app "${RADAR_APP}" --output json
+      go run ./cmd/radar scan --fixture "${run_dir}/scan-input.json" --output json
   ) >"${run_dir}/radar-result.json"
 fi
 radar_completed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"

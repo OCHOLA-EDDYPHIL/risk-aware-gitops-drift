@@ -36,11 +36,15 @@ assert_context() {
 assert_frozen_application_revision() {
   local target_revision="${1:-}"
   local synchronized_revision="${2:-}"
+  local operation_revision="${3:-}"
+  local operation_phase="${4:-}"
 
   [[ "${target_revision}" =~ ^[0-9a-f]{40}$ ]] || \
     die "controlled scenarios require an immutable 40-character Git commit SHA as the Argo CD target revision"
   [[ "${synchronized_revision}" == "${target_revision}" ]] || \
     die "the Argo CD synchronized revision does not match its immutable target revision"
+  [[ "${operation_revision}" == "${target_revision}" && "${operation_phase}" == "Succeeded" ]] || \
+    die "the latest successful Argo CD sync operation does not match the immutable target revision"
 }
 
 kube() {

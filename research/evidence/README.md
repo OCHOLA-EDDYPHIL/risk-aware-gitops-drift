@@ -26,7 +26,7 @@ Each collection uses the following structure:
         └── reset.json
 ```
 
-The index records the collection identifier, scenario, repetition, run status, evidence tier, expected rule and severity, archive checksum, and archive size. Environment manifests record the immutable RADAR commit, execution provider and region where applicable, machine specification and capacity, and dependency versions. They omit working refs, repository identity, and transient instance identifiers. Completed controlled-lab records also retain the declared mutation, minimal Argo CD observation, RADAR result, and machine-verifiable reset summary. The sanitized managed-resource response is retained inside the immutable archive because it can be larger and may contain embedded state requiring redaction.
+The index records the collection identifier, scenario, repetition, run status, evidence tier, expected rule and severity, archive checksum, and archive size. Environment manifests record the immutable RADAR commit, execution provider and region where applicable, machine specification and capacity, and dependency versions. They omit working refs, repository identity, and transient instance identifiers. Completed controlled-lab records also retain the declared mutation, minimal Argo CD observation, RADAR result, and machine-verifiable reset summary. The sanitized Application response, managed-resource response, and exact scan-input bundle remain inside the immutable archive because they can be larger and may contain embedded state requiring redaction.
 
 ## Preparation and storage
 
