@@ -57,6 +57,38 @@ SCENARIOS = {
 SHA_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 IDENTIFIER_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
+FAILED_STAGE_ARTIFACTS = {
+    "prepare-mutation": set(),
+    "inject-drift": {"reset.json"},
+    "observe-argocd": {"mutation.json", "reset.json"},
+    "capture-managed-resources": {"mutation.json", "reset.json"},
+    "scan-radar": {
+        "mutation.json",
+        "argocd-observation.json",
+        "argocd-application.json",
+        "argocd-managed-resources.json",
+        "scan-input.json",
+        "reset.json",
+    },
+    "verify-decision": {
+        "mutation.json",
+        "argocd-observation.json",
+        "argocd-application.json",
+        "argocd-managed-resources.json",
+        "scan-input.json",
+        "radar-result.json",
+        "reset.json",
+    },
+    "reset-baseline": {
+        "mutation.json",
+        "argocd-observation.json",
+        "argocd-application.json",
+        "argocd-managed-resources.json",
+        "scan-input.json",
+        "radar-result.json",
+        "reset.json",
+    },
+}
 
 
 class EvidenceValidationError(ValueError):
@@ -143,13 +175,74 @@ def validate_run(root: Path) -> None:
     require(captured <= started, "environment was captured after the run started")
 
     if status == "failed":
-        timestamp(metadata.get("failedAt"), "failedAt")
-        require(isinstance(metadata.get("failureStage"), str), "failed run lacks failure stage")
+        failed_at = timestamp(metadata.get("failedAt"), "failedAt")
+        failure_stage = metadata.get("failureStage")
+        require(failure_stage in FAILED_STAGE_ARTIFACTS, "failed run has unknown failure stage")
+        require(type(metadata.get("exitCode")) is int and metadata["exitCode"] != 0, "failed run lacks a nonzero exit code")
         require(type(metadata.get("baselineResetVerified")) is bool, "failed run lacks reset status")
+        require(started <= failed_at, "failedAt precedes startedAt")
+        require(FAILED_STAGE_ARTIFACTS[failure_stage].issubset(files), "failed run lacks artifacts required by its failure stage")
+        mutation_completed = None
+        if "mutation.json" in files:
+            mutation = load(files["mutation.json"])
+            require(isinstance(mutation, dict), "failed-run mutation is invalid")
+            require(mutation.get("collectionId") == collection and mutation.get("scenario") == scenario, "failed-run mutation identity mismatch")
+            mutation_started = timestamp(mutation.get("startedAt"), "mutation.startedAt")
+            mutation_completed = timestamp(mutation.get("completedAt"), "mutation.completedAt")
+            require(started <= mutation_started <= mutation_completed <= failed_at, "failed-run mutation chronology mismatch")
+        if "argocd-observation.json" in files:
+            observation = load(files["argocd-observation.json"])
+            require(isinstance(observation, dict), "failed-run observation is invalid")
+            require(observation.get("application") == "radar-lab" and observation.get("project") == "radar", "failed-run observation application mismatch")
+            require(observation.get("targetRevision") == source_commit, "failed-run observation target mismatch")
+            require(observation.get("synchronizedRevision") == source_commit, "failed-run observation revision mismatch")
+            require(observation.get("operationRevision") == source_commit and observation.get("operationPhase") == "Succeeded", "failed-run observation operation mismatch")
+            require(observation.get("syncStatus") == "OutOfSync", "failed-run observation is not OutOfSync")
+            observation_at = timestamp(observation.get("observedAt"), "observation.observedAt")
+            require((mutation_completed or started) <= observation_at <= failed_at, "failed-run observation chronology mismatch")
+        application = load(files["argocd-application.json"]) if "argocd-application.json" in files else None
+        managed = load(files["argocd-managed-resources.json"]) if "argocd-managed-resources.json" in files else None
+        if application is not None:
+            require(isinstance(application, dict), "failed-run Application is invalid")
+            require(application.get("spec", {}).get("source", {}).get("targetRevision") == source_commit, "failed-run Application target mismatch")
+            require(application.get("status", {}).get("sync", {}).get("revision") == source_commit, "failed-run Application revision mismatch")
+            require(application.get("status", {}).get("operationState", {}).get("syncResult", {}).get("revision") == source_commit, "failed-run Application operation revision mismatch")
+            require(application.get("status", {}).get("operationState", {}).get("phase") == "Succeeded", "failed-run Application operation did not succeed")
+            require((application.get("spec", {}).get("syncPolicy", {}).get("automated", {}).get("selfHeal") or False) is False, "failed-run Application has self-heal enabled")
+        if managed is not None:
+            require(isinstance(managed, dict) and isinstance(managed.get("items"), list), "failed-run managed-resource response is invalid")
+        if "scan-input.json" in files:
+            require(application is not None and managed is not None, "failed-run scan input lacks component artifacts")
+            scan_input = load(files["scan-input.json"])
+            require(scan_input == {"application": application, "managedResources": managed}, "failed-run scan input mismatch")
+            if "capturedInputSha256" in metadata:
+                require(metadata["capturedInputSha256"] == sha256(files["scan-input.json"]), "failed-run scan-input hash mismatch")
+        if "radar-result.json" in files:
+            result = load(files["radar-result.json"])
+            require(isinstance(result, dict), "failed-run RADAR result is invalid")
+            require(result.get("application") == "radar-lab" and result.get("syncStatus") == "OutOfSync", "failed-run RADAR application mismatch")
+            findings = result.get("findings")
+            require(isinstance(findings, list), "failed-run RADAR findings are invalid")
         if metadata["baselineResetVerified"]:
-            require("reset.json" in files, "verified failed-run reset lacks reset artifact")
+            if "reset.json" not in files:
+                require(failure_stage == "prepare-mutation", "verified failed-run reset lacks reset artifact")
+            else:
+                reset = load(files["reset.json"])
+                require(isinstance(reset, dict), "failed-run reset is invalid")
+                require(reset.get("declaredBaselineVerified") is True, "failed-run reset is not verified")
+                require(reset.get("targetRevision") == source_commit and reset.get("operationRevision") == source_commit, "failed-run reset revision mismatch")
+                require(reset.get("operationPhase") == "Succeeded", "failed-run reset operation did not succeed")
+                require(reset.get("syncStatus") == "Synced" and reset.get("healthStatus") == "Healthy", "failed-run reset state mismatch")
+                require(isinstance(reset.get("operationInitiator"), str) and reset["operationInitiator"].startswith("radar-reset-"), "failed-run reset initiator mismatch")
+                reset_started = timestamp(reset.get("startedAt"), "reset.startedAt")
+                reset_completed = timestamp(reset.get("completedAt"), "reset.completedAt")
+                require((mutation_completed or started) <= reset_started <= reset_completed, "failed-run reset chronology mismatch")
+        elif "reset.json" in files:
             reset = load(files["reset.json"])
-            require(reset.get("declaredBaselineVerified") is True, "failed-run reset is not verified")
+            require(isinstance(reset, dict), "failed-run reset is invalid")
+            require(reset.get("declaredBaselineVerified") is False, "unverified failed-run reset claims success")
+            require(reset.get("targetRevision") in {None, source_commit}, "failed-run reset target mismatch")
+            require(reset.get("operationRevision") in {None, source_commit}, "failed-run reset operation revision mismatch")
         return
 
     required = {

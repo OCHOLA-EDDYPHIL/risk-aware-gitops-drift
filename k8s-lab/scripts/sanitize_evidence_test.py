@@ -44,6 +44,12 @@ class SanitizerTests(unittest.TestCase):
     def test_rejects_duplicate_json_keys(self):
         with self.assertRaises(MODULE.UnsafeEvidenceError):
             MODULE.load_json('{"token":"one","token":"two"}')
+        with self.assertRaises(MODULE.UnsafeEvidenceError):
+            MODULE.sanitize_value(
+                {"liveState": '{"kind":"Secret","data":{"token":"one"},"data":{"token":"two"}}'}
+            )
+        with self.assertRaises(MODULE.UnsafeEvidenceError):
+            MODULE.sanitize_value({"liveState": "[1,]"})
 
     def test_rejects_unexpected_binary_and_hard_linked_artifacts(self):
         with tempfile.TemporaryDirectory() as root:

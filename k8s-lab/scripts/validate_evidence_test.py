@@ -214,6 +214,92 @@ class EvidenceValidatorTests(unittest.TestCase):
             with self.assertRaises(MODULE.EvidenceValidationError):
                 MODULE.validate_run(root)
 
+    def test_failed_run_validates_present_reset_and_artifacts(self):
+        temporary, root = self.with_run()
+        with temporary:
+            metadata = json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+            metadata.update(
+                status="failed",
+                evidenceTier="implemented",
+                failedAt="2026-07-20T10:00:03Z",
+                failureStage="reset-baseline",
+                exitCode=1,
+                baselineResetVerified=True,
+            )
+            write_json(root, "metadata.json", metadata)
+            MODULE.validate_run(root)
+        mutations = (
+            ("argocd-observation.json", lambda value: value.update(targetRevision="f" * 40)),
+            ("argocd-observation.json", lambda value: value.update(observedAt="2026-07-20T09:00:00Z")),
+            ("argocd-application.json", lambda value: value["status"]["operationState"]["syncResult"].update(revision="f" * 40)),
+            ("scan-input.json", lambda value: value.update(managedResources={"items": [{}]})),
+            ("radar-result.json", lambda value: value.update(application="other-lab")),
+            ("reset.json", lambda value: value.update(operationRevision="f" * 40)),
+            ("reset.json", lambda value: value.update(startedAt="2026-07-20T09:00:00Z")),
+        )
+        for filename, mutate in mutations:
+            with self.subTest(filename=filename):
+                temporary, root = self.with_run()
+                with temporary:
+                    metadata = json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+                    metadata.update(
+                        status="failed",
+                        evidenceTier="implemented",
+                        failedAt="2026-07-20T10:00:03Z",
+                        failureStage="reset-baseline",
+                        exitCode=1,
+                        baselineResetVerified=True,
+                    )
+                    write_json(root, "metadata.json", metadata)
+                    value = json.loads((root / filename).read_text(encoding="utf-8"))
+                    mutate(value)
+                    write_json(root, filename, value)
+                    with self.assertRaises(MODULE.EvidenceValidationError):
+                        MODULE.validate_run(root)
+
+    def test_failed_run_requires_stage_complete_artifacts_and_nonzero_exit(self):
+        temporary, root = self.with_run()
+        with temporary:
+            metadata = json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+            metadata.update(
+                status="failed",
+                evidenceTier="implemented",
+                failedAt="2026-07-20T10:00:03Z",
+                failureStage="reset-baseline",
+                exitCode=1,
+                baselineResetVerified=True,
+            )
+            write_json(root, "metadata.json", metadata)
+            (root / "mutation.json").unlink()
+            with self.assertRaises(MODULE.EvidenceValidationError):
+                MODULE.validate_run(root)
+            metadata["failureStage"] = "unknown-stage"
+            write_json(root, "metadata.json", metadata)
+            with self.assertRaises(MODULE.EvidenceValidationError):
+                MODULE.validate_run(root)
+            metadata["failureStage"] = "reset-baseline"
+            metadata["exitCode"] = 0
+            write_json(root, "metadata.json", metadata)
+            with self.assertRaises(MODULE.EvidenceValidationError):
+                MODULE.validate_run(root)
+
+    def test_failed_run_before_mutation_preserves_minimal_evidence(self):
+        temporary, root = self.with_run()
+        with temporary:
+            for artifact in MODULE.ALLOWED_FILES - {"metadata.json", "environment.json"}:
+                (root / artifact).unlink()
+            metadata = json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+            metadata.update(
+                status="failed",
+                evidenceTier="implemented",
+                failedAt="2026-07-20T10:00:01Z",
+                failureStage="prepare-mutation",
+                exitCode=1,
+                baselineResetVerified=True,
+            )
+            write_json(root, "metadata.json", metadata)
+            MODULE.validate_run(root)
+
 
 if __name__ == "__main__":
     unittest.main()

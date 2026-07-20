@@ -119,8 +119,8 @@ def sanitize_value(value: Any, parent_kind: str = "", path: tuple[str, ...] = ()
         if stripped.startswith(("{", "[")):
             try:
                 decoded = load_json(value)
-            except UnsafeEvidenceError:
-                pass
+            except UnsafeEvidenceError as error:
+                raise UnsafeEvidenceError("malformed embedded JSON rejected") from error
             else:
                 return json.dumps(
                     sanitize_value(decoded, parent_kind, path),
