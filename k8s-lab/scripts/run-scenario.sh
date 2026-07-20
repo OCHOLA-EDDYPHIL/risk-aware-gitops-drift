@@ -247,7 +247,7 @@ case "${scenario}" in
     ;;
   metadata-only)
     mutation_action="label"
-    mutation_patch='{"radar.research/scenario":"metadata-only"}'
+    mutation_patch='{"app.kubernetes.io/part-of":"metadata-only"}'
     ;;
 esac
 
@@ -268,7 +268,7 @@ case "${scenario}" in
     kube --namespace "${RADAR_NAMESPACE}" patch service "${mutation_name}" --type "${mutation_patch_type}" --patch="${mutation_patch}" >/dev/null
     ;;
   metadata-only)
-    kube --namespace "${RADAR_NAMESPACE}" label deployment "${mutation_name}" radar.research/scenario=metadata-only --overwrite >/dev/null
+    kube --namespace "${RADAR_NAMESPACE}" label deployment "${mutation_name}" app.kubernetes.io/part-of=metadata-only --overwrite >/dev/null
     ;;
 esac
 mutation_completed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"

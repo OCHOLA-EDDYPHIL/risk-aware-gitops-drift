@@ -11,7 +11,7 @@
 | `service-exposure` | Change the Service from ClusterIP to NodePort | `RADAR-SERVICE-EXPOSURE` | HIGH |
 | `unsafe-image-tag` | Change the versioned image to `nginx:latest` | `RADAR-IMAGE-LATEST` | MEDIUM |
 | `secret-reference` | Change the dummy Secret reference from v1 to v2 | `RADAR-SECRET-REFERENCE` | MEDIUM |
-| `metadata-only` | Add one research label to the Deployment | `RADAR-METADATA-ONLY` | LOW |
+| `metadata-only` | Change one existing non-security Deployment label | `RADAR-METADATA-ONLY` | LOW |
 
 Example:
 

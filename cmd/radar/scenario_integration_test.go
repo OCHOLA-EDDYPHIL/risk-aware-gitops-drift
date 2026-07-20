@@ -32,7 +32,7 @@ func TestRunScanScenarioBundlesWithRealOPA(t *testing.T) {
 		{name: "service exposure", fixture: "scan_bundle_service_exposure.json", ruleID: "RADAR-SERVICE-EXPOSURE", severity: "HIGH", path: "/spec/type", before: "ClusterIP", after: "NodePort"},
 		{name: "unsafe image tag", fixture: "scan_bundle_unsafe_image_tag.json", ruleID: "RADAR-IMAGE-LATEST", severity: "MEDIUM", path: "/spec/template/spec/containers/0/image", before: "nginx:1.27.5", after: "nginx:latest"},
 		{name: "secret reference", fixture: "scan_bundle_secret_reference.json", ruleID: "RADAR-SECRET-REFERENCE", severity: "MEDIUM", path: "/spec/template/spec/containers/0/env/0/valueFrom/secretKeyRef/name", before: "radar-demo-credentials-v1", after: "radar-demo-credentials-v2"},
-		{name: "metadata control", fixture: "scan_bundle_metadata_only.json", ruleID: "RADAR-METADATA-ONLY", severity: "LOW", path: "/metadata/labels", before: nil, after: map[string]any{"radar.research/scenario": "metadata-only"}},
+		{name: "metadata control", fixture: "scan_bundle_metadata_only.json", ruleID: "RADAR-METADATA-ONLY", severity: "LOW", path: "/metadata/labels/app.kubernetes.io~1part-of", before: "radar-lab", after: "metadata-only"},
 	}
 
 	for _, test := range tests {
