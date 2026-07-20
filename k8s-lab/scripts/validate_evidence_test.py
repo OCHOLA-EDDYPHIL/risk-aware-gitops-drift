@@ -20,6 +20,11 @@ SANITIZER_SPEC = importlib.util.spec_from_file_location("sanitize_evidence_for_v
 SANITIZER = importlib.util.module_from_spec(SANITIZER_SPEC)
 assert SANITIZER_SPEC.loader
 SANITIZER_SPEC.loader.exec_module(SANITIZER)
+GENERATOR_SCRIPT = Path(__file__).with_name("generate-formal-protocol.py")
+GENERATOR_SPEC = importlib.util.spec_from_file_location("generate_protocol_for_validation", GENERATOR_SCRIPT)
+GENERATOR = importlib.util.module_from_spec(GENERATOR_SPEC)
+assert GENERATOR_SPEC.loader
+GENERATOR_SPEC.loader.exec_module(GENERATOR)
 
 
 COMMIT = "0123456789abcdef0123456789abcdef01234567"
@@ -299,6 +304,56 @@ class EvidenceValidatorTests(unittest.TestCase):
             )
             write_json(root, "metadata.json", metadata)
             MODULE.validate_run(root)
+
+    def test_schema_v4_binds_protocol_and_formal_ground_truth(self):
+        temporary, root = self.with_run()
+        with temporary, tempfile.TemporaryDirectory() as protocol_root:
+            protocol_path = Path(protocol_root) / "formal-evaluation-v1.json"
+            protocol = GENERATOR.build_protocol()
+            protocol_path.write_text(json.dumps(protocol, indent=2) + "\n", encoding="utf-8")
+            environment = json.loads((root / "environment.json").read_text(encoding="utf-8"))
+            environment["collectionId"] = "formal-evaluation-v1"
+            write_json(root, "environment.json", environment)
+            metadata = json.loads((root / "metadata.json").read_text(encoding="utf-8"))
+            declaration = next(
+                run
+                for run in protocol["runs"]
+                if run["scenario"] == "privileged-container" and run["repetition"] == 1
+            )
+            metadata.update(
+                evidenceSchemaVersion=4,
+                collectionId="formal-evaluation-v1",
+                evidenceTier="formally-evaluated",
+                environmentSha256=hashlib.sha256((root / "environment.json").read_bytes()).hexdigest(),
+                protocolId="formal-evaluation-v1",
+                protocolSha256=hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+                declaredRunId=declaration["runId"],
+                groundTruth=declaration["groundTruth"],
+                expectedScore=declaration["expectedScore"],
+                expectedPath=declaration["expectedPath"],
+                riskMatrixSha256="3" * 64,
+            )
+            write_json(root, "metadata.json", metadata)
+            mutation = json.loads((root / "mutation.json").read_text(encoding="utf-8"))
+            mutation["collectionId"] = "formal-evaluation-v1"
+            write_json(root, "mutation.json", mutation)
+            result = json.loads((root / "radar-result.json").read_text(encoding="utf-8"))
+            result["findings"][0].update(
+                score=declaration["expectedScore"],
+                resource={"kind": "Deployment", "name": "radar-demo"},
+                reason="Declared formal decision",
+                recommendation="Restore the declared baseline",
+            )
+            result["findings"][0]["change"]["operation"] = "replace"
+            write_json(root, "radar-result.json", result)
+            MODULE.validate_run(root, protocol_path)
+            result["findings"] = []
+            write_json(root, "radar-result.json", result)
+            MODULE.validate_run(root, protocol_path)
+            metadata["protocolSha256"] = "4" * 64
+            write_json(root, "metadata.json", metadata)
+            with self.assertRaises(MODULE.EvidenceValidationError):
+                MODULE.validate_run(root, protocol_path)
 
 
 if __name__ == "__main__":

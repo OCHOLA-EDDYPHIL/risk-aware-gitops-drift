@@ -8,16 +8,18 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
 usage() {
-  printf 'Usage: %s --collection-id <identifier> --run-dir <raw-run-directory>\n' "$0" >&2
+  printf 'Usage: %s --collection-id <identifier> --run-dir <raw-run-directory> [--protocol-file <formal-protocol.json>]\n' "$0" >&2
   exit 2
 }
 
 collection_id=""
 run_dir=""
+protocol_file=""
 while (($# > 0)); do
   case "$1" in
     --collection-id) collection_id="${2:-}"; shift 2 ;;
     --run-dir) run_dir="${2:-}"; shift 2 ;;
+    --protocol-file) protocol_file="${2:-}"; shift 2 ;;
     *) usage ;;
   esac
 done
@@ -28,19 +30,25 @@ for command_name in git jq python3 sha256sum stat tar zstd; do
   require_command "${command_name}"
 done
 git -C "${REPO_ROOT}" lfs version >/dev/null
-python3 "${SCRIPT_DIR}/validate-evidence.py" "${run_dir}"
+validator_args=()
+[[ -z "${protocol_file}" ]] || validator_args+=(--protocol-file "${protocol_file}")
+python3 "${SCRIPT_DIR}/validate-evidence.py" "${validator_args[@]}" "${run_dir}"
 
 metadata_path="${run_dir}/metadata.json"
 jq --exit-status --arg collection "${collection_id}" \
-  '.evidenceSchemaVersion == 3 and .collectionId == $collection and
+  '(.evidenceSchemaVersion == 3 or .evidenceSchemaVersion == 4) and .collectionId == $collection and
    (.status == "completed" or .status == "failed") and
-   (.evidenceTier == "controlled-lab-observed" or .evidenceTier == "implemented")' \
-  "${metadata_path}" >/dev/null || die "run metadata does not match schema-v3 storage rules"
+   (.evidenceTier == "controlled-lab-observed" or .evidenceTier == "implemented" or
+    .evidenceTier == "formally-evaluated")' \
+  "${metadata_path}" >/dev/null || die "run metadata does not match schema-v3/v4 storage rules"
 
 scenario="$(jq --raw-output '.scenario' "${metadata_path}")"
 repetition="$(jq --raw-output '.repetition' "${metadata_path}")"
 status="$(jq --raw-output '.status' "${metadata_path}")"
 evidence_tier="$(jq --raw-output '.evidenceTier' "${metadata_path}")"
+evidence_schema_version="$(jq --raw-output '.evidenceSchemaVersion' "${metadata_path}")"
+protocol_id="$(jq --raw-output '.protocolId // ""' "${metadata_path}")"
+declared_run_id="$(jq --raw-output '.declaredRunId // ""' "${metadata_path}")"
 expected_rule="$(jq --raw-output '.expectedRule' "${metadata_path}")"
 expected_severity="$(jq --raw-output '.expectedSeverity' "${metadata_path}")"
 run_id="run-$(printf '%03d' "${repetition}")"
@@ -60,7 +68,7 @@ temporary_directory="$(mktemp --directory)"
 trap 'rm -rf "${temporary_directory}"' EXIT
 sanitized_directory="${temporary_directory}/${scenario}-${run_id}"
 python3 "${SCRIPT_DIR}/sanitize-evidence.py" "${run_dir}" "${sanitized_directory}"
-python3 "${SCRIPT_DIR}/validate-evidence.py" "${sanitized_directory}"
+python3 "${SCRIPT_DIR}/validate-evidence.py" "${validator_args[@]}" "${sanitized_directory}"
 
 staged_archive="${temporary_directory}/${archive_name}"
 tar --create --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
@@ -86,15 +94,26 @@ staged_index="${temporary_directory}/index.csv"
 if [[ -f "${index_path}" ]]; then
   cp "${index_path}" "${staged_index}"
 else
-  printf 'collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes\n' >"${staged_index}"
+  if [[ "${evidence_schema_version}" == 4 ]]; then
+    printf 'collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes,evidence_schema_version,protocol_id,declared_run_id\n' >"${staged_index}"
+  else
+    printf 'collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes\n' >"${staged_index}"
+  fi
 fi
 if awk -F, -v scenario="${scenario}" -v repetition="${repetition}" \
   'NR > 1 && $2 == scenario && $3 == repetition {found = 1} END {exit !found}' "${staged_index}"; then
   die "index already contains ${scenario} repetition ${repetition}"
 fi
-printf '%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
-  "${collection_id}" "${scenario}" "${repetition}" "${status}" "${evidence_tier}" \
-  "${expected_rule}" "${expected_severity}" "${archive_sha256}" "${archive_bytes}" >>"${staged_index}"
+if [[ "${evidence_schema_version}" == 4 ]]; then
+  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+    "${collection_id}" "${scenario}" "${repetition}" "${status}" "${evidence_tier}" \
+    "${expected_rule}" "${expected_severity}" "${archive_sha256}" "${archive_bytes}" \
+    "${evidence_schema_version}" "${protocol_id}" "${declared_run_id}" >>"${staged_index}"
+else
+  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+    "${collection_id}" "${scenario}" "${repetition}" "${status}" "${evidence_tier}" \
+    "${expected_rule}" "${expected_severity}" "${archive_sha256}" "${archive_bytes}" >>"${staged_index}"
+fi
 
 mkdir -p "$(dirname -- "${archive_path}")" "$(dirname -- "${summary_dir}")"
 cp "${staged_archive}" "${archive_path}"
