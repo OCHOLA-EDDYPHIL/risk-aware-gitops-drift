@@ -56,6 +56,7 @@ status="$(jq --raw-output '.status' "${metadata_path}")"
 evidence_tier="$(jq --raw-output '.evidenceTier' "${metadata_path}")"
 expected_rule="$(jq --raw-output '.expectedRule' "${metadata_path}")"
 expected_severity="$(jq --raw-output '.expectedSeverity' "${metadata_path}")"
+evidence_schema_version="$(jq --raw-output '.evidenceSchemaVersion // 1' "${metadata_path}")"
 
 [[ "${scenario}" =~ ^[a-z0-9][a-z0-9-]*$ ]] || die "invalid scenario in metadata"
 [[ "${repetition}" =~ ^[1-9][0-9]*$ ]] || die "invalid repetition in metadata"
@@ -63,6 +64,7 @@ expected_severity="$(jq --raw-output '.expectedSeverity' "${metadata_path}")"
 [[ "${evidence_tier}" =~ ^[a-z][a-z0-9-]*$ ]] || die "invalid evidence tier in metadata"
 [[ "${expected_rule}" =~ ^[A-Z0-9][A-Z0-9-]*$ ]] || die "invalid expected rule in metadata"
 [[ "${expected_severity}" =~ ^(INFO|LOW|MEDIUM|HIGH|CRITICAL)$ ]] || die "invalid expected severity in metadata"
+[[ "${evidence_schema_version}" =~ ^(1|2)$ ]] || die "unsupported evidence schema version"
 
 run_id="run-$(printf '%03d' "${repetition}")"
 relative_evidence_root="research/evidence/${collection_id}"
@@ -87,10 +89,16 @@ for json_name in environment mutation argocd-observation argocd-application argo
   [[ ! -f "${sanitized_directory}/${json_name}.json" ]] || jq --exit-status . "${sanitized_directory}/${json_name}.json" >/dev/null
 done
 if [[ "${status}" == "completed" && "${evidence_tier}" == "controlled-lab-observed" ]]; then
-  for required_name in environment mutation argocd-observation argocd-application argocd-managed-resources scan-input radar-result reset; do
+  for required_name in environment mutation argocd-observation argocd-managed-resources radar-result reset; do
     [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
       die "completed controlled-lab evidence is missing ${required_name}.json"
   done
+  if [[ "${evidence_schema_version}" == "2" ]]; then
+    for required_name in argocd-application scan-input; do
+      [[ -f "${sanitized_directory}/${required_name}.json" ]] || \
+        die "evidence schema v2 is missing ${required_name}.json"
+    done
+  fi
   jq --exit-status '.declaredBaselineVerified == true and .syncStatus == "Synced" and .healthStatus == "Healthy"' \
     "${sanitized_directory}/reset.json" >/dev/null || die "completed evidence does not contain a verified reset"
 fi

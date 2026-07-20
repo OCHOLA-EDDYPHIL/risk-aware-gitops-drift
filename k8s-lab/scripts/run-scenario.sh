@@ -127,7 +127,7 @@ jq --null-input \
   --arg argoOperationPhase "${application_operation_phase}" \
   --arg expectedRule "${expected_rule}" \
   --arg expectedSeverity "${expected_severity}" \
-  '{scenario: $scenario, repetition: $repetition, startedAt: $startedAt, sourceCommit: $sourceCommit, argoTargetRevision: $argoTargetRevision, argoSynchronizedRevision: $argoSynchronizedRevision, argoOperationRevision: $argoOperationRevision, argoOperationPhase: $argoOperationPhase, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "implemented"}' \
+  '{evidenceSchemaVersion: 2, scenario: $scenario, repetition: $repetition, startedAt: $startedAt, sourceCommit: $sourceCommit, argoTargetRevision: $argoTargetRevision, argoSynchronizedRevision: $argoSynchronizedRevision, argoOperationRevision: $argoOperationRevision, argoOperationPhase: $argoOperationPhase, expectedRule: $expectedRule, expectedSeverity: $expectedSeverity, status: "in-progress", evidenceTier: "implemented"}' \
   >"${run_dir}/metadata.json"
 
 reset_required=false
