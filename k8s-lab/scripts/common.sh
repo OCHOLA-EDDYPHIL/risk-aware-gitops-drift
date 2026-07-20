@@ -192,7 +192,7 @@ start_argocd_forward() {
       stop_argocd_forward
       die "Argo CD localhost port-forward exited before readiness; inspect ${log_file}"
     fi
-    forwarding_line="$(sed -n 's/^Forwarding from 127\.0\.0\.1:\([0-9][0-9]*\) -> 80$/\1/p' "${log_file}" | head -n 1)"
+    forwarding_line="$(sed -n 's/^Forwarding from 127\.0\.0\.1:\([0-9][0-9]*\) -> [0-9][0-9]*$/\1/p' "${log_file}" | head -n 1)"
     if [[ "${forwarding_line}" =~ ^[1-9][0-9]{0,4}$ ]] && ((forwarding_line <= 65535)); then
       port="${forwarding_line}"
       if socket_owned_by_pid "${PORT_FORWARD_PID}" "${port}" && \
