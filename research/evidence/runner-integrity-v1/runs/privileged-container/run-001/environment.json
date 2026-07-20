@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-07-20T13:04:08Z",
+  "collectionId": "runner-integrity-v1",
+  "environment": {
+    "availableMemoryBytes": 5495029760,
+    "cpuCount": 2,
+    "machineType": "basicLinux32gb",
+    "memoryBytes": 8329408512,
+    "region": "WestEurope",
+    "workspaceAvailableBytes": 24094642176
+  },
+  "evidenceTier": "environment-provenance",
+  "provider": "GitHub Codespaces",
+  "source": {
+    "commit": "2aca97bcfd23e3bf588d433526df57af5860bf6b"
+  },
+  "versions": {
+    "argocdServerImage": "quay.io/argoproj/argocd:v3.4.5",
+    "dockerClient": "29.6.2-1",
+    "dockerServer": "29.6.2-1",
+    "gitLfs": "git-lfs/3.7.1",
+    "go": "go version go1.24.0 linux/amd64",
+    "kubectlClient": "v1.35.6",
+    "kubernetesServer": "v1.35.1",
+    "minikube": "v1.38.1",
+    "opa": "1.17.1"
+  }
+}

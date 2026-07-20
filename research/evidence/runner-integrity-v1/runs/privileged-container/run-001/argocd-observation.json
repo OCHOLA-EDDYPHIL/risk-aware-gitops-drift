@@ -1,0 +1,12 @@
+{
+  "application": "radar-lab",
+  "applicationResourceVersion": "968",
+  "healthStatus": "Healthy",
+  "observedAt": "2026-07-20T13:05:17Z",
+  "operationPhase": "Succeeded",
+  "operationRevision": "2aca97bcfd23e3bf588d433526df57af5860bf6b",
+  "project": "radar",
+  "syncStatus": "OutOfSync",
+  "synchronizedRevision": "2aca97bcfd23e3bf588d433526df57af5860bf6b",
+  "targetRevision": "2aca97bcfd23e3bf588d433526df57af5860bf6b"
+}

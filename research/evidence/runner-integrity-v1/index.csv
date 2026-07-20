@@ -1,0 +1,2 @@
+collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes
+runner-integrity-v1,privileged-container,1,completed,controlled-lab-observed,RADAR-WORKLOAD-PRIVILEGED,CRITICAL,440ca6b7152c3a66b5f6395e9add7515608681c5ed65f2c339281b56a2ad618c,8799
