@@ -1,0 +1,16 @@
+{
+  "action": "label",
+  "completedAt": "2026-07-19T20:32:07Z",
+  "patch": {
+    "radar.research/scenario": "metadata-only"
+  },
+  "patchType": null,
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "metadata-only",
+  "startedAt": "2026-07-19T20:32:07Z"
+}

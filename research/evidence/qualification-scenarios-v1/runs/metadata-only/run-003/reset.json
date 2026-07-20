@@ -1,0 +1,9 @@
+{
+  "completedAt": "2026-07-20T10:01:55Z",
+  "declaredBaselineVerified": true,
+  "healthStatus": "Healthy",
+  "method": "namespace-delete-explicit-argocd-sync",
+  "startedAt": "2026-07-20T10:01:40Z",
+  "syncStatus": "Synced",
+  "targetRevision": "d0296303d3c39630ca204b49d5618bacc71cd67d"
+}

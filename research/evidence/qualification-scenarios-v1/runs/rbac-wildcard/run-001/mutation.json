@@ -1,0 +1,32 @@
+{
+  "action": "patch",
+  "completedAt": "2026-07-19T20:30:18Z",
+  "patch": [
+    {
+      "op": "replace",
+      "path": "/rules",
+      "value": [
+        {
+          "apiGroups": [
+            "*"
+          ],
+          "resources": [
+            "*"
+          ],
+          "verbs": [
+            "*"
+          ]
+        }
+      ]
+    }
+  ],
+  "patchType": "json",
+  "resource": {
+    "group": "rbac.authorization.k8s.io",
+    "kind": "Role",
+    "name": "radar-demo-reader",
+    "namespace": "radar-demo"
+  },
+  "scenario": "rbac-wildcard",
+  "startedAt": "2026-07-19T20:30:17Z"
+}

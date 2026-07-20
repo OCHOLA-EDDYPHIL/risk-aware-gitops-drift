@@ -1,0 +1,27 @@
+{
+  "action": "patch",
+  "completedAt": "2026-07-19T20:31:30Z",
+  "patch": {
+    "spec": {
+      "template": {
+        "spec": {
+          "containers": [
+            {
+              "image": "nginx:latest",
+              "name": "radar-demo"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "patchType": "strategic",
+  "resource": {
+    "group": "apps",
+    "kind": "Deployment",
+    "name": "radar-demo",
+    "namespace": "radar-demo"
+  },
+  "scenario": "unsafe-image-tag",
+  "startedAt": "2026-07-19T20:31:30Z"
+}

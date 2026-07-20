@@ -1,0 +1,10 @@
+collection_id,scenario,repetition,status,evidence_tier,expected_rule,expected_severity,archive_sha256,archive_bytes
+qualification-scenarios-v1,hostpath-addition,1,completed,controlled-lab-observed,RADAR-VOLUME-HOSTPATH,HIGH,1f38806510a77525acb1cf7b97c8a5586ee1610519848b99aad4960965a736c6,5862
+qualification-scenarios-v1,metadata-only,1,failed,implemented,RADAR-METADATA-ONLY,LOW,18e782d05750f2180e8ed329424eda6ce4c0ef053d9105dd0070d6c05f8c50e8,998
+qualification-scenarios-v1,metadata-only,2,failed,implemented,RADAR-METADATA-ONLY,LOW,e2a722a9e20559c9cfd7353fb0f1a0eab825db05af236a235c954c6fb4f48034,5368
+qualification-scenarios-v1,metadata-only,3,completed,controlled-lab-observed,RADAR-METADATA-ONLY,LOW,3048407ae59fc2aff200b301f60c8b3f1dfd62e3199dde524a3cadb2b2818bb8,8828
+qualification-scenarios-v1,networkpolicy-removal,1,completed,controlled-lab-observed,RADAR-NETPOL-REMOVED,HIGH,65746ba13efac976a5f9244e94ad97fc735e77481daa1870d5c5806fdc0f7f5d,5541
+qualification-scenarios-v1,rbac-wildcard,1,completed,controlled-lab-observed,RADAR-RBAC-WILDCARD,CRITICAL,f3e9e6b933984381c1cbc431e7ce92fdd6214863bd257bc3600f4379c2495db8,5851
+qualification-scenarios-v1,secret-reference,1,completed,controlled-lab-observed,RADAR-SECRET-REFERENCE,MEDIUM,420c1b95dbed311b4d987f7f6f15a0a089d4d87963690427f8fe2c8ae126a4db,5662
+qualification-scenarios-v1,service-exposure,1,completed,controlled-lab-observed,RADAR-SERVICE-EXPOSURE,HIGH,012d2ce1e19e3c584ae7c822a03d088a32225f07190d54d938cf5c43a529d9e9,5646
+qualification-scenarios-v1,unsafe-image-tag,1,completed,controlled-lab-observed,RADAR-IMAGE-LATEST,MEDIUM,70f5e4da5c2d8186d7f95a6198e126b3e2dfdd07092b8ec471b2b2dda7b0e27c,5670

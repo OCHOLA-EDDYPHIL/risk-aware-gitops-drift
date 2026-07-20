@@ -1,0 +1,9 @@
+{
+  "application": "radar-lab",
+  "healthStatus": "Healthy",
+  "observedAt": "2026-07-19T20:30:18Z",
+  "project": "radar",
+  "syncStatus": "OutOfSync",
+  "synchronizedRevision": "9486b913e0de7337d441cf59e0293151c53c53f8",
+  "targetRevision": "9486b913e0de7337d441cf59e0293151c53c53f8"
+}
