@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version: "1.24.0"
 
@@ -25,13 +25,25 @@ jobs:
         run: test -z "$(gofmt -l $(find . -name '*.go' -not -path './vendor/*'))"
 
       - name: Test
-        run: go test ./...
+        run: make test
+
+      - name: Vet
+        run: make vet
+
+      - name: Race test
+        run: make race
 
       - name: Build
-        run: go build ./cmd/radar
+        run: make build
+
+      - name: Validate documentation links
+        run: make docs-check
+
+      - name: Validate release packaging
+        run: make release-check
 
       - name: Set up kubectl for lab asset validation
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@776406bce94f63e41d621b960d78ee25c8b76ede # v4
         with:
           version: "v1.35.6"
 

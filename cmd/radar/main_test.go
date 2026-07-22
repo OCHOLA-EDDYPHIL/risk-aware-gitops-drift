@@ -14,6 +14,7 @@ import (
 	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/argocd"
 	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/drift"
 	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/policy"
+	"github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version"
 )
 
 var fixedScanTime = time.Date(2026, 7, 19, 14, 30, 0, 0, time.FixedZone("EAT", 3*60*60))
@@ -240,6 +241,25 @@ func TestRunScanPropagatesEvaluatorFailureAndTimeout(t *testing.T) {
 			t.Fatalf("run() error = %v, want deadline exceeded", err)
 		}
 	})
+}
+
+func TestRunVersionReportsInjectedBuildMetadata(t *testing.T) {
+	originalVersion, originalCommit, originalDate := version.Version, version.Commit, version.Date
+	version.Version = "0.4.0"
+	version.Commit = "0123456789abcdef0123456789abcdef01234567"
+	version.Date = "2026-07-22T12:00:00Z"
+	t.Cleanup(func() {
+		version.Version, version.Commit, version.Date = originalVersion, originalCommit, originalDate
+	})
+
+	var stdout bytes.Buffer
+	if err := run([]string{"version"}, &stdout, &bytes.Buffer{}, scanDependencies{}); err != nil {
+		t.Fatalf("run(version) error = %v", err)
+	}
+	want := "radar 0.4.0 (0123456789abcdef0123456789abcdef01234567, 2026-07-22T12:00:00Z)\n"
+	if stdout.String() != want {
+		t.Fatalf("version output = %q, want %q", stdout.String(), want)
+	}
 }
 
 func TestRunScanDoesNotLeakTokenInErrorsOrOutput(t *testing.T) {

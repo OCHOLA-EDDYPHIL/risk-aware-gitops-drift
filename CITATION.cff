@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use RADAR or its research evidence, cite this software and retain the evidence provenance."
+type: software
+title: "RADAR: Risk-Aware Drift Assessment for Reconciliation"
+abstract: >-
+  A Go research prototype that converts Argo CD desired-versus-live
+  managed-resource evidence into deterministic, field-level security findings
+  evaluated with OPA/Rego.
+authors:
+  - family-names: Odhiambo
+    given-names: "Ochola Eddyphil"
+repository-code: "https://github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift"
+keywords:
+  - GitOps
+  - Kubernetes
+  - Argo CD
+  - configuration drift
+  - Open Policy Agent
+  - security research
