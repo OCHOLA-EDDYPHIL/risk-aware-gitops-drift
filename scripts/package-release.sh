@@ -19,13 +19,17 @@ commit="$(git -C "${repo_root}" rev-parse --verify HEAD)"
 build_date="$(git -C "${repo_root}" show -s --format=%cI HEAD)"
 display_version="${version#v}"
 
-if [[ "${display_version}" != *-test* ]]; then
+if [[ "${display_version}" != "0.0.0-test" ]]; then
   for license_file in LICENSE LICENSE-DOCUMENTATION; do
     [[ -f "${repo_root}/${license_file}" ]] || {
       printf 'Refusing to prepare a release without %s\n' "${license_file}" >&2
       exit 1
     }
   done
+  [[ -z "$(git -C "${repo_root}" status --porcelain)" ]] || {
+    printf 'Refusing to prepare a release from a dirty working tree\n' >&2
+    exit 1
+  }
 fi
 
 mkdir -p "${dist_dir}"
