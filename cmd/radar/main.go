@@ -20,6 +20,19 @@ import (
 
 const defaultPolicyPath = "policies/risk.rego"
 
+const rootUsage = `Usage:
+  radar version
+  radar scan [options]
+  radar help [scan]
+`
+
+const scanUsage = `Usage:
+  radar scan --app <argo-app-name> [--server <url>] [--policy <rego-path>] [--output table|json]
+  radar scan --fixture <sanitized-fixture> [--policy <rego-path>] [--output table|json]
+
+Use ARGOCD_SERVER and ARGOCD_AUTH_TOKEN for a live scan. Flags override environment variables.
+`
+
 type argoAPI interface {
 	GetApplication(context.Context, string) (*argocd.Application, error)
 	GetManagedResources(context.Context, string) (*argocd.ManagedResourcesResponse, error)
@@ -63,6 +76,16 @@ func run(args []string, stdout, stderr io.Writer, dependencies scanDependencies)
 	}
 
 	switch args[0] {
+	case "help", "--help", "-h":
+		if len(args) == 1 {
+			_, err := io.WriteString(stdout, rootUsage)
+			return err
+		}
+		if args[0] == "help" && len(args) == 2 && args[1] == "scan" {
+			_, err := io.WriteString(stdout, scanUsage)
+			return err
+		}
+		return usageError("unknown help topic")
 	case "version":
 		_, err := fmt.Fprintf(stdout, "%s %s (%s, %s)\n", version.Name, version.Version, version.Commit, version.Date)
 		return err
@@ -76,6 +99,9 @@ func run(args []string, stdout, stderr io.Writer, dependencies scanDependencies)
 func runScan(args []string, stdout, stderr io.Writer, dependencies scanDependencies) error {
 	flags := flag.NewFlagSet("scan", flag.ContinueOnError)
 	flags.SetOutput(stderr)
+	flags.Usage = func() {
+		_, _ = io.WriteString(stdout, scanUsage)
+	}
 
 	var appName string
 	var serverURL string
@@ -93,7 +119,9 @@ func runScan(args []string, stdout, stderr io.Writer, dependencies scanDependenc
 	flags.StringVar(&policyPath, "policy", "", "OPA/Rego policy path")
 	flags.DurationVar(&timeout, "timeout", 30*time.Second, "Overall scan timeout")
 
-	if err := flags.Parse(args); err != nil {
+	if err := flags.Parse(args); errors.Is(err, flag.ErrHelp) {
+		return nil
+	} else if err != nil {
 		return err
 	}
 
@@ -228,5 +256,5 @@ func firstConfigured(flagValue, environmentName, defaultValue string) string {
 }
 
 func usageError(message string) error {
-	return errors.New(message + "\n\nUsage:\n  radar version\n  radar scan --app <argo-app-name> --server <argocd-server-url> --token <argocd-auth-token> --policy <rego-path> --output table\n  radar scan --fixture <sanitized-fixture> --policy <rego-path> --output json")
+	return errors.New(message + "\n\n" + strings.TrimSpace(rootUsage))
 }

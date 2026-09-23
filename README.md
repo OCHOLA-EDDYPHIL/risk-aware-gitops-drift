@@ -60,7 +60,7 @@ make build
 ./bin/radar scan \
   --fixture testdata/argocd/scan_bundle_privileged.json \
   --policy policies/risk.rego \
-  --output table
+  --output json
 ```
 
 The representative finding identifies:
@@ -74,13 +74,13 @@ rule:      RADAR-WORKLOAD-PRIVILEGED
 decision:  CRITICAL / 100
 ```
 
-Use JSON output when integrating with other tools:
+Use table output for a compact terminal view:
 
 ```sh
 ./bin/radar scan \
   --fixture testdata/argocd/scan_bundle_metadata_only.json \
   --policy policies/risk.rego \
-  --output json
+  --output table
 ```
 
 Stored fixtures are **fixture-validated evidence**, not live-cluster observations. See [Getting Started](docs/getting-started.md) for expected behavior and troubleshooting.

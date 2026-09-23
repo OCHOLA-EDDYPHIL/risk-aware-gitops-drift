@@ -6,12 +6,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh disable=SC1091
 source "${SCRIPT_DIR}/common.sh"
 
-readonly MINIKUBE_VERSION="v1.38.1"
 readonly KUBERNETES_VERSION="v1.35.1"
 readonly ARGOCD_VERSION="v3.4.5"
-readonly OPA_VERSION="1.17.1"
-readonly GO_VERSION="go1.24.0"
-readonly MIN_AVAILABLE_KIB="${RADAR_MIN_AVAILABLE_KIB:-4194304}"
 
 usage() {
   printf 'Usage: %s --context radar-lab\n' "$0" >&2
@@ -20,27 +16,7 @@ usage() {
 
 [[ $# -eq 2 && "$1" == "--context" ]] || usage
 assert_context "$2"
-
-for command_name in minikube kubectl docker jq opa go sed stat; do
-  require_command "${command_name}"
-done
-
-installed_minikube="$(minikube version --short)"
-[[ "${installed_minikube}" == "${MINIKUBE_VERSION}" ]] || die "Minikube ${MINIKUBE_VERSION} is required; found ${installed_minikube}"
-
-installed_opa="$(opa version | awk '/^Version:/ {print $2}')"
-[[ "${installed_opa}" == "${OPA_VERSION}" ]] || die "OPA ${OPA_VERSION} is required; found ${installed_opa}"
-
-installed_go="$(go env GOVERSION)"
-[[ "${installed_go}" == "${GO_VERSION}" ]] || die "Go ${GO_VERSION} is required; found ${installed_go}"
-
-docker info >/dev/null
-
-available_kib="$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)"
-[[ "${available_kib}" =~ ^[0-9]+$ ]] || die "could not read available host memory"
-if ((available_kib < MIN_AVAILABLE_KIB)); then
-  die "at least $((MIN_AVAILABLE_KIB / 1024)) MiB available memory is required; found $((available_kib / 1024)) MiB"
-fi
+"${SCRIPT_DIR}/preflight.sh" --context "$2"
 
 repo_url="${RADAR_REPO_URL:-}"
 repo_key="${RADAR_REPO_SSH_KEY_FILE:-}"
@@ -51,11 +27,6 @@ target_revision="${RADAR_TARGET_REVISION:-}"
 [[ -f "${repo_key}" ]] || die "RADAR_REPO_SSH_KEY_FILE must point to a read-only deploy key"
 key_mode="$(stat -c '%a' "${repo_key}")"
 [[ "${key_mode: -2}" == "00" ]] || die "repository key must not be readable or writable by group or others"
-
-if minikube profile list --output json | jq -e --arg profile "${RADAR_PROFILE}" \
-  '[.valid[]?, .invalid[]?] | any(.Name == $profile)' >/dev/null; then
-  die "Minikube profile ${RADAR_PROFILE} already exists; verify or tear it down explicitly"
-fi
 
 current_context_before="$(kubectl config current-context 2>/dev/null || true)"
 
