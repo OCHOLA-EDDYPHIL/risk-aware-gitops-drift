@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="radar-drift-record-model" name="RADAR drift-record model">
+    <mxGraphModel dx="1200" dy="680" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="680" background="#f5f2ea" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="eyebrow" value="JSON OUTPUT MODEL" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Courier New;fontSize=16;fontStyle=1;fontColor=#5f6257;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="300" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="title" value="One finding, one atomic change, one selected decision" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Georgia;fontSize=34;fontStyle=1;fontColor=#24251f;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="900" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="report" value="&lt;b&gt;Drift report [1]&lt;/b&gt;&lt;br&gt;application · project · syncStatus · healthStatus" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="130" width="440" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="finding" value="&lt;b&gt;Finding [0..*]&lt;/b&gt;&lt;br&gt;id · observedAt · evidenceSource · matchedRuleIds" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="295" width="440" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="resource" value="&lt;b&gt;Resource [1]&lt;/b&gt;&lt;br&gt;group · version · kind&lt;br&gt;namespace · name" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="485" width="330" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="change" value="&lt;b&gt;Atomic change [1]&lt;/b&gt;&lt;br&gt;operation · path · before · after&lt;br&gt;confidence" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="435" y="485" width="330" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="decision" value="&lt;b&gt;Risk decision [1]&lt;/b&gt;&lt;br&gt;ruleId · impact · likelihood&lt;br&gt;score · severity · reason / recommendation" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ead8d4;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="485" width="330" height="125" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-report-finding" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="report" target="finding"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-finding-resource" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="finding" target="resource"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-finding-change" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="finding" target="change"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-finding-decision" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="finding" target="decision"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

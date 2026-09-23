@@ -12,21 +12,7 @@ It supports reproducible research and practitioner experimentation. It is not a 
 
 RADAR adds that bounded interpretation:
 
-```text
-Git desired state + Kubernetes live state
-                    │
-                    ▼
-Argo CD Application + managed-resource evidence
-                    │
-                    ▼
-Atomic field changes: resource + operation + JSON Pointer + values
-                    │
-                    ▼
-OPA/Rego rules + transparent impact–likelihood matrix
-                    │
-                    ▼
-Explainable table or JSON findings
-```
+![RADAR architecture: Git supplies desired manifests to Argo CD, while the read-only RADAR CLI evaluates Argo CD drift evidence with OPA and produces an explainable report.](diagrams/exports/radar-system-architecture.svg)
 
 If Argo CD does not provide usable field-level state, RADAR returns `INFO`. It does not infer a security severity from resource-level status alone.
 
@@ -150,6 +136,7 @@ The formal corpus is under `research/evidence/formal-evaluation-v1/`. Archive ch
 
 - [Getting Started](docs/getting-started.md)
 - [Architecture](docs/architecture.md)
+- [Diagram Sources](diagrams/README.md)
 - [Policy Authoring](docs/policy-authoring.md)
 - [Risk Matrix](docs/risk-matrix.md)
 - [Evidence and Results](docs/evidence-and-results.md)

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="radar-evaluation-workflow" name="RADAR evaluation workflow">
+    <mxGraphModel dx="1200" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="720" background="#f5f2ea" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="eyebrow" value="FAIL-CLOSED COLLECTION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Courier New;fontSize=16;fontStyle=1;fontColor=#5f6257;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="360" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="title" value="Controlled evaluation workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Georgia;fontSize=34;fontStyle=1;fontColor=#24251f;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="620" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="baseline" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;01&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Verify clean baseline&lt;/b&gt;&lt;br&gt;Synced · Healthy · declared fields" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="165" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="change" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;02&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Apply one declared change&lt;/b&gt;&lt;br&gt;synthetic workload only" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="450" y="165" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="wait" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;03&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Wait for stable drift&lt;/b&gt;&lt;br&gt;bounded observation window" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="855" y="165" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="capture" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;04&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Capture stable evidence&lt;/b&gt;&lt;br&gt;bracketed Argo CD observations" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="855" y="390" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="evaluate" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;05&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Evaluate and record&lt;/b&gt;&lt;br&gt;finding · decision · checksums" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ead8d4;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="450" y="390" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="reset" value="&lt;font face=&quot;Courier New&quot;&gt;&lt;b&gt;06&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;b&gt;Reset and verify baseline&lt;/b&gt;&lt;br&gt;continue only after verification" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="390" width="300" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="stop" value="&lt;b&gt;Stop collection&lt;/b&gt;&lt;br&gt;if reset verification fails" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ead8d4;strokeColor=#5b2b24;strokeWidth=2;fontColor=#5b2b24;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="45" y="575" width="300" height="86" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="baseline" target="change"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="change" target="wait"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="wait" target="capture"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="capture" target="evaluate"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="evaluate" target="reset"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-loop" value="next declared run" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;dashed=1;dashPattern=8 7;endArrow=block;endFill=1;fontColor=#5f6257;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="reset" target="baseline"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge-stop" value="verification failed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#5b2b24;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5b2b24;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="reset" target="stop"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

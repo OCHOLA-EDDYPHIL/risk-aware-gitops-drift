@@ -10,6 +10,12 @@ RADAR separates development fixtures, controlled-lab observations, and formal ev
 4. **Controlled-lab observed** — exercised against a real isolated Kubernetes and Argo CD testbed.
 5. **Formally evaluated** — collected across all predeclared runs under a frozen protocol.
 
+## Controlled Evaluation Workflow
+
+![Controlled RADAR evaluation workflow showing baseline verification, one declared change, stable evidence capture, evaluation, recording, and fail-closed reset verification.](../diagrams/exports/radar-evaluation-workflow.svg)
+
+Each declared run starts from a verified baseline and applies one synthetic change. Collection continues only after stable Argo CD evidence is captured. The runner records the finding and resets the workload, then verifies the declared baseline before another run. A failed reset stops collection.
+
 ## Formal Corpus
 
 The authoritative formal collection is `research/evidence/formal-evaluation-v1/`. Its implementation freeze is immutable commit `7966d77366d5bcc99612adfa0c2c7a534e03eab9`. The corpus was later added to the repository without changing that executed source.

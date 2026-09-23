@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">RADAR logical drift-record model</title>
+  <desc id="desc">One drift report contains application status and zero or more findings. Each finding retains trace fields and contains one resource identity, one atomic change, and one selected risk decision.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#24251f"/>
+    </marker>
+    <style>
+      .eyebrow { font: 600 16px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 3px; fill: #5f6257; }
+      .heading { font: 700 34px Georgia, serif; fill: #24251f; }
+      .label { font: 700 20px Arial, sans-serif; fill: #24251f; }
+      .copy { font: 16px Arial, sans-serif; fill: #5f6257; }
+      .line { fill: none; stroke: #24251f; stroke-width: 2.5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="680" fill="#f5f2ea"/>
+  <text class="eyebrow" x="40" y="48">JSON OUTPUT MODEL</text>
+  <text class="heading" x="40" y="88">One finding, one atomic change, one selected decision</text>
+
+  <rect x="380" y="130" width="440" height="105" rx="18" fill="#dfe8d8" stroke="#24251f" stroke-width="2"/>
+  <text class="label" x="600" y="170" text-anchor="middle">Drift report [1]</text>
+  <text class="copy" x="600" y="201" text-anchor="middle">application · project · syncStatus · healthStatus</text>
+
+  <rect x="380" y="295" width="440" height="105" rx="18" fill="#e8dfd3" stroke="#24251f" stroke-width="2"/>
+  <text class="label" x="600" y="335" text-anchor="middle">Finding [0..*]</text>
+  <text class="copy" x="600" y="366" text-anchor="middle">id · observedAt · evidenceSource · matchedRuleIds</text>
+
+  <rect x="40" y="485" width="330" height="125" rx="18" fill="#dfe8d8" stroke="#24251f" stroke-width="2"/>
+  <text class="label" x="205" y="525" text-anchor="middle">Resource [1]</text>
+  <text class="copy" x="205" y="556" text-anchor="middle">group · version · kind</text>
+  <text class="copy" x="205" y="580" text-anchor="middle">namespace · name</text>
+
+  <rect x="435" y="485" width="330" height="125" rx="18" fill="#e8dfd3" stroke="#24251f" stroke-width="2"/>
+  <text class="label" x="600" y="525" text-anchor="middle">Atomic change [1]</text>
+  <text class="copy" x="600" y="556" text-anchor="middle">operation · path · before · after</text>
+  <text class="copy" x="600" y="580" text-anchor="middle">confidence</text>
+
+  <rect x="830" y="485" width="330" height="125" rx="18" fill="#ead8d4" stroke="#24251f" stroke-width="2"/>
+  <text class="label" x="995" y="525" text-anchor="middle">Risk decision [1]</text>
+  <text class="copy" x="995" y="556" text-anchor="middle">ruleId · impact · likelihood</text>
+  <text class="copy" x="995" y="580" text-anchor="middle">score · severity · reason / recommendation</text>
+
+  <path class="line" d="M600 235 V295"/>
+  <path class="line" d="M600 400 V442 H205 V485"/>
+  <path class="line" d="M600 400 V485"/>
+  <path class="line" d="M600 400 V442 H995 V485"/>
+</svg>

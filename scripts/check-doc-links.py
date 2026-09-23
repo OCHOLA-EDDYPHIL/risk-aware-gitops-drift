@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when a repository Markdown link points to a missing local file."""
+"""Fail when a repository Markdown link or image points to a missing local file."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
-LINK = re.compile(r"(?<!!)\[[^]]*\]\(([^)]+)\)")
+LINK = re.compile(r"!?\[[^]]*\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "#")
 
 
@@ -32,7 +32,7 @@ def main() -> int:
                 if not candidate.exists() or not candidate.is_relative_to(ROOT):
                     failures.append(f"{document.relative_to(ROOT)}:{line_number}: {target}")
     if failures:
-        print("Broken or out-of-repository Markdown links:", file=sys.stderr)
+        print("Broken or out-of-repository Markdown targets:", file=sys.stderr)
         for failure in failures:
             print(f"  {failure}", file=sys.stderr)
         return 1
