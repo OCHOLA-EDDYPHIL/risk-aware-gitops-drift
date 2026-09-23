@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="radar-system-architecture" name="RADAR system architecture">
+    <mxGraphModel dx="1200" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="720" background="#f5f2ea" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="eyebrow" value="READ-ONLY INTERPRETATION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Courier New;fontSize=16;fontStyle=1;fontColor=#5f6257;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="24" width="360" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="title" value="RADAR system architecture" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Georgia;fontSize=34;fontStyle=1;fontColor=#24251f;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="560" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="git" value="&lt;b&gt;Git repository&lt;/b&gt;&lt;br&gt;source, policy&lt;br&gt;and desired manifests" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="220" width="215" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="cluster" value="&lt;b&gt;Isolated Kubernetes laboratory&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#fffdf8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=18;align=left;verticalAlign=top;spacingTop=18;spacingLeft=20;" vertex="1" parent="1">
+          <mxGeometry x="295" y="115" width="400" height="450" as="geometry"/>
+        </mxCell>
+        <mxCell id="argo" value="&lt;b&gt;Argo CD&lt;/b&gt;&lt;br&gt;comparison and read-only API" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="205" width="310" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="workload" value="&lt;b&gt;Synthetic workload&lt;/b&gt;&lt;br&gt;desired and live resource state" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="405" width="310" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="host" value="&lt;b&gt;Provider-neutral execution host&lt;/b&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#fffdf8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=18;align=left;verticalAlign=top;spacingTop=18;spacingLeft=20;" vertex="1" parent="1">
+          <mxGeometry x="745" y="115" width="420" height="450" as="geometry"/>
+        </mxCell>
+        <mxCell id="radar" value="&lt;b&gt;RADAR CLI&lt;/b&gt;&lt;br&gt;collect · diff&lt;br&gt;coordinate" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#e8dfd3;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="790" y="190" width="170" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="opa" value="&lt;b&gt;OPA&lt;/b&gt;&lt;br&gt;Rego policy" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#ead8d4;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="190" width="120" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="report" value="&lt;b&gt;Explainable report&lt;/b&gt;&lt;br&gt;terminal or JSON" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#dfe8d8;strokeColor=#24251f;strokeWidth=2;fontColor=#24251f;fontFamily=Arial;fontSize=17;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="835" y="405" width="240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="note" value="Argo CD reconciles. RADAR reads evidence and never writes to Kubernetes." style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#fffdf8;strokeColor=#24251f;strokeWidth=1.5;fontColor=#5f6257;fontFamily=Arial;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="295" y="615" width="570" height="54" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-git-argo" value="desired manifests" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="git" target="argo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-argo-workload" value="reconciles" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="argo" target="workload">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-workload-argo" value="live state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;dashed=1;dashPattern=8 7;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;exitX=0.15;exitY=0;exitDx=0;exitDy=0;entryX=0.15;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="workload" target="argo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-argo-radar" value="read-only evidence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="argo" target="radar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-radar-opa" value="policy query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="radar" target="opa">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-opa-radar" value="decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;dashed=1;dashPattern=8 7;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="opa" target="radar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge-radar-report" value="finding" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#24251f;strokeWidth=2;endArrow=block;endFill=1;fontColor=#5f6257;labelBackgroundColor=#f5f2ea;fontFamily=Arial;fontSize=15;" edge="1" parent="1" source="radar" target="report">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
