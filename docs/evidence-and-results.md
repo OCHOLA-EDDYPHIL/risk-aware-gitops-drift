@@ -68,8 +68,8 @@ Verify the reviewable index and derived outputs:
 ```sh
 cd research/evidence/formal-evaluation-v1
 sha256sum --check index.csv.sha256
-sha256sum --check results/metrics.json.sha256
-sha256sum --check results/run-accounting.csv.sha256
+(cd results && sha256sum --check metrics.json.sha256)
+(cd results && sha256sum --check run-accounting.csv.sha256)
 ```
 
 Verify every immutable archive:
@@ -81,12 +81,20 @@ for checksum in *.tar.zst.sha256; do
 done
 ```
 
-Run the semantic validators from the repository root:
+The reviewable summaries omit the large captured Argo CD responses. Extract a complete archive before running the semantic validator:
 
 ```sh
+temporary_directory="$(mktemp --directory)"
+trap 'rm -rf "$temporary_directory"' EXIT
+(cd research/evidence/formal-evaluation-v1/archives && \
+  sha256sum --check privileged-container-run-001.tar.zst.sha256)
+tar --use-compress-program=unzstd \
+  --extract \
+  --file research/evidence/formal-evaluation-v1/archives/privileged-container-run-001.tar.zst \
+  --directory "$temporary_directory"
 python3 k8s-lab/scripts/validate-evidence.py \
-  research/evidence/formal-evaluation-v1/runs/privileged-container/run-001 \
-  --protocol research/protocols/formal-evaluation-v1.json
+  --protocol-file research/protocols/formal-evaluation-v1.json \
+  "$temporary_directory/privileged-container-run-001"
 ```
 
 Read `research/evidence/README.md` for the complete schema and storage contract. Read [Limitations](limitations.md) before reusing or quoting the results.

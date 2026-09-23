@@ -1,10 +1,10 @@
 # RADAR: Explainable Security Interpretation for GitOps Drift
 
-RADAR—**Risk-Aware Drift Assessment for Reconciliation**—is a Go research prototype that turns Argo CD desired-versus-live resource evidence into deterministic, field-level security findings.
+RADAR (Risk-Aware Drift Assessment for Reconciliation) is a Go research prototype that turns Argo CD desired-versus-live resource evidence into deterministic, field-level security findings.
 
 Argo CD remains responsible for GitOps comparison and reconciliation. RADAR is read-only: it retrieves Application and managed-resource data, extracts atomic `add`, `remove`, and `replace` changes, evaluates them with OPA/Rego, and reports the affected resource, JSON Pointer, before/after values, severity, reason, and recommendation.
 
-RADAR began as a final-year cybersecurity research project by Ochola Eddyphil Odhiambo. It is intended for reproducible research and practitioner experimentation, not production enforcement.
+It supports reproducible research and practitioner experimentation. It is not a production enforcement system.
 
 ## Why It Exists
 
@@ -66,7 +66,7 @@ make build
 The representative finding identifies:
 
 ```text
-resource:  apps/v1/Deployment/radar-demo/radar-demo
+resource:  apps/v1/Deployment/demo/guestbook
 operation: replace
 path:      /spec/template/spec/containers/0/securityContext/privileged
 values:    false → true
@@ -84,6 +84,8 @@ Use JSON output when integrating with other tools:
 ```
 
 Stored fixtures are **fixture-validated evidence**, not live-cluster observations. See [Getting Started](docs/getting-started.md) for expected behavior and troubleshooting.
+
+The controlled live lab can run on a local Linux host, a Linux virtual machine, or a temporary cloud development host that meets the documented requirements. GitHub Codespaces is optional and is not part of RADAR's architecture.
 
 ## Scan a Live Argo CD Application
 
