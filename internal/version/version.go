@@ -1,8 +1,8 @@
 package version
 
-const (
+var (
 	Name    = "radar"
-	Version = "0.1.0-foundation"
+	Version = "dev"
 	Commit  = "dev"
 	Date    = "unknown"
 )

@@ -78,6 +78,19 @@ class MetricsTests(unittest.TestCase):
             self.assertEqual(metrics["timeToDetectSeconds"]["median"], 5)
             self.assertEqual(metrics["processingLatencySeconds"]["median"], 3)
 
+    def test_writes_platform_independent_csv_line_endings(self):
+        with tempfile.TemporaryDirectory() as root:
+            output = Path(root) / "results"
+            MODULE.write_outputs(
+                [{"runId": "metadata-only-run-001", "scenario": "metadata-only"}],
+                {"declaredRuns": 1},
+                output,
+            )
+
+            content = (output / "run-accounting.csv").read_bytes()
+            self.assertNotIn(b"\r\n", content)
+            self.assertTrue(content.endswith(b"\n"))
+
 
 if __name__ == "__main__":
     unittest.main()

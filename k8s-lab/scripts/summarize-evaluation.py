@@ -236,7 +236,7 @@ def write_outputs(rows: list[dict[str, Any]], metrics: dict[str, Any], output: P
         "baselineResetVerified",
     ]
     with (output / "run-accounting.csv").open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fields, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fields, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

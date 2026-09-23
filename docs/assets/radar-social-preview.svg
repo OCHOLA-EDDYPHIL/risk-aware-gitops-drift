@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">RADAR — Explainable security interpretation for GitOps drift</title>
+  <desc id="desc">A social preview showing desired and live Kubernetes state becoming field-level findings and deterministic policy decisions.</desc>
+  <rect width="1280" height="640" fill="#f5f2ea"/>
+  <rect x="56" y="56" width="1168" height="528" rx="24" fill="#fffdf8" stroke="#24251f" stroke-width="2"/>
+  <text x="104" y="164" fill="#24251f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" letter-spacing="5">RADAR</text>
+  <text x="104" y="246" fill="#24251f" font-family="Georgia, serif" font-size="54" font-weight="700">Security meaning for</text>
+  <text x="104" y="310" fill="#24251f" font-family="Georgia, serif" font-size="54" font-weight="700">field-level GitOps drift.</text>
+  <text x="104" y="370" fill="#5f6257" font-family="Arial, sans-serif" font-size="23">Argo CD evidence → atomic JSON changes → OPA/Rego decisions</text>
+  <g transform="translate(104 434)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">
+    <rect width="276" height="72" rx="12" fill="#dfe8d8"/>
+    <text x="24" y="44" fill="#31422b">desired ↔ live</text>
+    <path d="M294 36h44" stroke="#24251f" stroke-width="2"/>
+    <path d="m329 28 10 8-10 8" fill="none" stroke="#24251f" stroke-width="2"/>
+    <rect x="356" width="276" height="72" rx="12" fill="#e8dfd3"/>
+    <text x="380" y="44" fill="#4b3928">/spec/.../privileged</text>
+    <path d="M650 36h44" stroke="#24251f" stroke-width="2"/>
+    <path d="m685 28 10 8-10 8" fill="none" stroke="#24251f" stroke-width="2"/>
+    <rect x="712" width="356" height="72" rx="12" fill="#ead8d4"/>
+    <text x="736" y="44" fill="#5b2b24">CRITICAL · explainable</text>
+  </g>
+  <text x="1176" y="548" text-anchor="end" fill="#77796f" font-family="Arial, sans-serif" font-size="18">Risk-Aware Drift Assessment for Reconciliation</text>
+</svg>

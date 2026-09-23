@@ -1,7 +1,11 @@
 GOFILES := $(shell find . -name '*.go' -not -path './vendor/*')
 LAB_SCRIPTS := $(shell find k8s-lab/scripts -name '*.sh' -type f | sort)
+VERSION ?= dev
+COMMIT ?= $(shell git rev-parse --short=12 HEAD 2>/dev/null || printf unknown)
+BUILD_DATE ?= $(shell git show -s --format=%cI HEAD 2>/dev/null || printf unknown)
+LDFLAGS := -s -w -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Version=$(VERSION) -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Commit=$(COMMIT) -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Date=$(BUILD_DATE)
 
-.PHONY: fmt fmt-check test build run-example rego-test policy-integration-test protocol-check lab-static-check ci
+.PHONY: fmt fmt-check vet test race build run-example rego-test policy-integration-test protocol-check lab-static-check release-check release-snapshot docs-check ci
 
 fmt:
 	gofmt -w $(GOFILES)
@@ -12,8 +16,15 @@ fmt-check:
 test:
 	go test ./...
 
+vet:
+	go vet ./...
+
+race:
+	go test -race ./...
+
 build:
-	go build ./cmd/radar
+	mkdir -p bin
+	go build -trimpath -ldflags "$(LDFLAGS)" -o bin/radar ./cmd/radar
 
 run-example:
 	go run ./cmd/radar scan --fixture testdata/argocd/application_outofsync.json --output table
@@ -48,7 +59,29 @@ lab-static-check:
 	@! k8s-lab/scripts/run-scenario.sh --context not-radar-lab --scenario privileged-container --repetition 1 >/dev/null 2>&1
 	@! RADAR_BIN=/bin/true k8s-lab/scripts/run-scenario.sh --context radar-lab --collection-id test-run --scenario privileged-container --repetition 1 --environment-file /nonexistent >/dev/null 2>&1
 
-ci: fmt-check test build
+docs-check:
+	python3 scripts/check-doc-links.py
+
+release-check:
+	@temporary="$$(mktemp --directory)"; trap 'rm -rf "$$temporary"' EXIT; \
+		DIST_DIR="$$temporary" scripts/package-release.sh 0.0.0-test; \
+		(cd "$$temporary" && sha256sum --check SHA256SUMS); \
+		for archive in "$$temporary"/*.tar.gz; do \
+			tar -tzf "$$archive" | grep -Eq '/radar$$'; \
+			tar -tzf "$$archive" | grep -Eq '/policies/risk.rego$$'; \
+			tar -tzf "$$archive" | grep -Eq '/THIRD_PARTY_NOTICES.md$$'; \
+		done; \
+		native_arch="$$(go env GOARCH)"; \
+		if test -f "$$temporary/radar_0.0.0-test_linux_$${native_arch}.tar.gz"; then \
+			tar -xzf "$$temporary/radar_0.0.0-test_linux_$${native_arch}.tar.gz" -C "$$temporary"; \
+			"$$temporary/radar_0.0.0-test_linux_$${native_arch}/radar" version | grep -Eq '^radar 0\.0\.0-test \([0-9a-f]{40}, .+\)$$'; \
+		fi
+
+release-snapshot:
+	@test "$(VERSION)" != dev || (echo "VERSION must be an explicit semantic version" >&2; exit 1)
+	DIST_DIR="$${DIST_DIR:-dist}" scripts/package-release.sh "$(VERSION)"
+
+ci: fmt-check vet test race build docs-check release-check
 	@if command -v opa >/dev/null 2>&1; then \
 		$(MAKE) rego-test; \
 	else \
