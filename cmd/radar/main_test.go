@@ -262,6 +262,35 @@ func TestRunVersionReportsInjectedBuildMetadata(t *testing.T) {
 	}
 }
 
+func TestRunHelpReturnsSuccess(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+		want string
+	}{
+		{name: "root long flag", args: []string{"--help"}, want: "radar scan [options]"},
+		{name: "root command", args: []string{"help"}, want: "radar help [scan]"},
+		{name: "scan topic", args: []string{"help", "scan"}, want: "--fixture <sanitized-fixture>"},
+		{name: "scan long flag", args: []string{"scan", "--help"}, want: "ARGOCD_AUTH_TOKEN"},
+		{name: "scan short flag", args: []string{"scan", "-h"}, want: "--app <argo-app-name>"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			var stdout, stderr bytes.Buffer
+			if err := run(test.args, &stdout, &stderr, scanDependencies{}); err != nil {
+				t.Fatalf("run(%v) error = %v", test.args, err)
+			}
+			if !strings.Contains(stdout.String(), test.want) {
+				t.Fatalf("help output missing %q:\n%s", test.want, stdout.String())
+			}
+			if stderr.Len() != 0 {
+				t.Fatalf("help wrote to stderr: %s", stderr.String())
+			}
+		})
+	}
+}
+
 func TestRunScanDoesNotLeakTokenInErrorsOrOutput(t *testing.T) {
 	const token = "radar-super-secret-token"
 	api := &fakeArgoAPI{applicationErr: errors.New("argocd request was unauthorized")}

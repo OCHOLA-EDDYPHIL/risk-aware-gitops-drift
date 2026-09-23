@@ -27,7 +27,7 @@ build:
 	go build -trimpath -ldflags "$(LDFLAGS)" -o bin/radar ./cmd/radar
 
 run-example:
-	go run ./cmd/radar scan --fixture testdata/argocd/application_outofsync.json --output table
+	go run ./cmd/radar scan --fixture testdata/argocd/scan_bundle_privileged.json --output table
 
 rego-test:
 	@command -v opa >/dev/null 2>&1 || (echo "OPA CLI is required for policy tests. Install OPA or rely on GitHub Actions, which installs it in CI."; exit 1)
@@ -51,11 +51,13 @@ lab-static-check:
 	python3 k8s-lab/scripts/validate_evidence_test.py
 	python3 k8s-lab/scripts/verify_baseline_test.py
 	$(MAKE) protocol-check
+	bash k8s-lab/scripts/capture_environment_test.sh
 	bash k8s-lab/scripts/common_test.sh
 	bash -n $(LAB_SCRIPTS)
 	shellcheck $(LAB_SCRIPTS)
 	kubectl kustomize k8s-lab/baseline >/dev/null
 	@! k8s-lab/scripts/setup.sh --context not-radar-lab >/dev/null 2>&1
+	@! k8s-lab/scripts/preflight.sh --context not-radar-lab >/dev/null 2>&1
 	@! k8s-lab/scripts/run-scenario.sh --context not-radar-lab --scenario privileged-container --repetition 1 >/dev/null 2>&1
 	@! RADAR_BIN=/bin/true k8s-lab/scripts/run-scenario.sh --context radar-lab --collection-id test-run --scenario privileged-container --repetition 1 --environment-file /nonexistent >/dev/null 2>&1
 

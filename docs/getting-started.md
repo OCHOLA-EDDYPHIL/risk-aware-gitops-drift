@@ -47,7 +47,7 @@ Run a privileged-container example:
 ./bin/radar scan \
   --fixture testdata/argocd/scan_bundle_privileged.json \
   --policy policies/risk.rego \
-  --output table
+  --output json
 ```
 
 The expected classified finding has rule `RADAR-WORKLOAD-PRIVILEGED`, path `/spec/template/spec/containers/0/securityContext/privileged`, before value `false`, after value `true`, and severity `CRITICAL` with score `100`.
@@ -124,13 +124,13 @@ make docs-check
 make release-check
 ```
 
-The full lab static suite additionally requires `kubectl` and `shellcheck`:
+The full lab static suite also requires `kubectl` and `shellcheck`:
 
 ```sh
 make lab-static-check
 ```
 
-The resettable Kubernetes laboratory is a research environment, not a prerequisite for using fixture mode. Read `k8s-lab/README.md` and its safety boundary before starting it.
+The resettable Kubernetes laboratory is a research environment, not a prerequisite for using fixture mode. It can run on any compatible Linux and Docker host. Read `k8s-lab/README.md` and its safety boundary before starting it.
 
 ## Next Steps
 
