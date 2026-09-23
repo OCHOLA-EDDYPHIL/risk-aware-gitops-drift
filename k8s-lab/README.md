@@ -60,7 +60,7 @@ k8s-lab/scripts/run-scenario.sh \
   --environment-file k8s-lab/evidence/runner-integrity-v1/environment.json
 ```
 
-Valid scenarios are listed in [drift-scenarios/README.md](drift-scenarios/README.md). Each run refuses a dirty baseline or unbound executable, applies one live mutation without editing Git, records schema-v3 JSON, deletes and recreates only the synthetic `radar-demo` namespace, and verifies the restored frozen revision and declared baseline.
+Valid scenarios are listed in [drift-scenarios/README.md](drift-scenarios/README.md). Each run builds the scanner from the required files at the clean source commit without retrieving unrelated evidence archives. It applies one live mutation without editing Git, records schema-v3 JSON, deletes and recreates only the synthetic `radar-demo` namespace, and verifies the restored frozen revision and declared baseline.
 
 Use an accurate provider label for the selected host. Cloud-hosted runs can also supply `--region` and `--machine-type`. Those two values are stored as `null` when they do not apply. The older `capture-codespace-environment.sh` command remains as a compatibility wrapper for existing Codespaces procedures.
 

@@ -124,7 +124,9 @@ build_root="$(mktemp --directory)"
 snapshot_root="${build_root}/source"
 scanner_binary="${build_root}/radar"
 mkdir -p "${snapshot_root}"
-git -C "${REPO_ROOT}" archive "${source_head}" | tar --extract --directory "${snapshot_root}"
+git -C "${REPO_ROOT}" archive "${source_head}" -- \
+  cmd internal go.mod go.sum policies/risk.rego docs/risk-matrix.md | \
+  tar --extract --directory "${snapshot_root}"
 (cd "${snapshot_root}" && go build -trimpath -o "${scanner_binary}" ./cmd/radar)
 scanner_sha256="$(sha256sum "${scanner_binary}" | awk '{print $1}')"
 policy_sha256="$(sha256sum "${snapshot_root}/policies/risk.rego" | awk '{print $1}')"
