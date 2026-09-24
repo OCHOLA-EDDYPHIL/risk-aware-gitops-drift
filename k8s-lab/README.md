@@ -21,32 +21,123 @@ Every Kubernetes operation names `radar-lab` and verifies its API server, CA and
 
 GitHub Codespaces and the included devcontainer are optional host adapters. They are not RADAR components or prerequisites.
 
-Run `make lab-static-check` to lint the scripts, render the baseline, and exercise the wrong-context rejection without creating a cluster.
+## 1. Create the isolated project environment
 
-## Safety prerequisites
+The host needs Linux x86-64, a working Docker daemon, Git, `curl`, Python
+3.10–3.14 with venv support, `tar`, `xz`, and SHA-256 utilities. The live lab additionally
+needs at least two CPUs and 4 GiB of currently available memory.
 
-Run the non-mutating host check first:
+From the repository root:
 
 ```sh
-k8s-lab/scripts/preflight.sh --context radar-lab
+make env-bootstrap
+source scripts/activate-env.sh
+make env-check
 ```
 
-The preflight checks Linux, Docker, the pinned tools, at least two CPUs, at least 4 GiB of available memory, a clean worktree, and the absence of an existing `radar-lab` profile. It never stops unrelated containers or processes. Install the pinned tools by a method appropriate for the selected host; `.devcontainer/install-tools.sh` is the Ubuntu-based devcontainer adapter.
+The bootstrap verifies every downloaded archive or binary and installs all
+project tools below the ignored `.radar-env` directory. It does not use `sudo`
+or modify `/usr/local`. Activation also isolates Go caches, Python packages,
+Minikube state, kubeconfig, and generated credentials. Repeat only the `source`
+command in each new shell; use `radar-deactivate` when finished.
 
-Create a read-only SSH deploy key for this private repository and keep the private key outside the repository. Do not reuse a personal write-capable key.
+The included devcontainer runs the same bootstrap contract. It is an optional
+convenience, not a requirement.
+
+Run `make lab-static-check` to lint the scripts, render the baseline, and
+exercise wrong-context rejection without creating a cluster.
+
+## 2. Prepare repository access
+
+Argo CD must read the exact Git commit used by the checkout. Make sure the
+working tree is clean, the commit has been pushed to the remote, and a
+read-only SSH deploy key for this repository exists outside the checkout. Do
+not reuse a personal write-capable key.
 
 ```sh
+git status --short
 export RADAR_REPO_URL=git@github.com:OCHOLA-EDDYPHIL/risk-aware-gitops-drift.git
 export RADAR_REPO_SSH_KEY_FILE=/absolute/path/to/read-only-deploy-key
-export RADAR_TARGET_REVISION=<immutable-40-character-commit-sha>
-k8s-lab/scripts/setup.sh --context radar-lab
+export RADAR_TARGET_REVISION="$(git rev-parse HEAD)"
+chmod 600 "${RADAR_REPO_SSH_KEY_FILE}"
 ```
 
-Setup preserves the existing kubeconfig current context, installs the pinned Argo CD manifest, configures an API-only least-privilege `radar` account, stores the repository credential only inside `radar-lab`, and writes a short-lived API token to the ignored `.radar-lab-token` file.
+`RADAR_TARGET_REVISION` must be an immutable 40-character commit SHA. The
+runner later requires the checkout, Argo CD target, synchronized revision, and
+latest successful synchronization to identify this same commit.
 
-`RADAR_TARGET_REVISION` is required and must be an immutable 40-character commit SHA. Before injecting drift, the runner requires the clean worktree, Application target, synchronized revision, latest successful sync operation, captured environment and frozen scanner build to identify that same commit.
+## 3. Create the dedicated cluster
 
-## Verify and run
+Run the non-mutating preflight, then setup:
+
+```sh
+make lab-preflight
+make lab-setup
+```
+
+The preflight verifies the activated project environment, Linux, Docker, pinned
+tool versions, capacity, clean worktree, and absence of an existing
+`radar-lab` profile. It never stops unrelated containers or processes.
+
+Setup creates only the isolated `radar-lab` Minikube profile, installs pinned
+Kubernetes and Argo CD versions, synchronizes the synthetic baseline, and
+verifies it. The deploy key is stored only in that cluster. Setup creates:
+
+- an API-token account used by the RADAR CLI;
+- a separate browser-login account named `radar-viewer`;
+- identical read-only access for only the `radar/radar-lab` Application and
+  project; and
+- mode-`0600` credentials below `.radar-env/state/`.
+
+After provisioning, setup disables the Argo CD bootstrap administrator and
+removes its initial password Secret.
+
+## 4. Rehearse the visual demonstration
+
+Use two terminals. In both, enter the repository and run:
+
+```sh
+source scripts/activate-env.sh
+```
+
+In terminal A, start the localhost-only Argo CD UI tunnel:
+
+```sh
+make lab-ui
+```
+
+Open the printed URL and sign in as `radar-viewer`. Read the password from the
+printed mode-`0600` file without placing it in notes, screenshots, shell
+history, or the repository. Keep this terminal running.
+
+If the lab is on a remote host, carry the printed loopback port through a
+trusted SSH or editor tunnel. Do not publish Argo CD on a public interface.
+
+In terminal B, start the guided rehearsal:
+
+```sh
+make lab-demo
+```
+
+The script pauses at each presentation checkpoint and safely demonstrates one
+synthetic privileged-container drift:
+
+1. Show the Application as `Synced` and `Healthy` in Argo CD.
+2. Continue; the script changes only the synthetic Deployment and waits for
+   Argo CD to report `OutOfSync`.
+3. Refresh the browser, open the Deployment diff, and point to
+   `privileged: true`.
+4. Continue; RADAR reads the same Argo CD evidence and prints the exact field,
+   before/after values, explanation, and `CRITICAL / 100` decision.
+5. Contrast Argo CD's drift status with RADAR's security interpretation, then
+   continue; the script explicitly synchronizes and verifies the baseline.
+6. Refresh the browser and show `Synced` and `Healthy` again.
+
+If the rehearsal is interrupted after mutation, its exit handler attempts the
+same verified baseline reset before stopping. This is a visual demonstration,
+not a new formal evaluation result.
+
+## Controlled evidence runs
 
 ```sh
 k8s-lab/scripts/verify-baseline.sh --context radar-lab
@@ -76,10 +167,13 @@ Supplying a protocol creates schema-v4 evidence and binds each run to the protoc
 
 After all declared runs are sanitized and indexed, `summarize-evaluation.py` derives run accounting, detection, classification, timing and explanation metrics from the reviewable summaries. Generated values never replace or edit the immutable run records.
 
-## Teardown
+## 5. Teardown
 
 ```sh
-k8s-lab/scripts/teardown.sh --context radar-lab --confirm radar-lab
+make lab-teardown
 ```
 
-Teardown deletes only the Minikube profile named `radar-lab` and its local token file. It does not prune Docker, delete other Minikube profiles, or operate on another Kubernetes context.
+Teardown deletes only the project-local Minikube profile named `radar-lab` and
+its project-local API token and browser password. It does not prune Docker,
+delete another Minikube profile, inspect a system kubeconfig, or operate on
+another Kubernetes context.

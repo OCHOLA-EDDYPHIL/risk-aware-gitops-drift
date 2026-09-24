@@ -17,6 +17,23 @@
   },
   "postCreateCommand": "bash .devcontainer/install-tools.sh",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "${containerWorkspaceFolder}/.radar-env/go/bin:${containerWorkspaceFolder}/.radar-env/python/bin:${containerWorkspaceFolder}/.radar-env/bin:${containerEnv:PATH}",
+    "GOROOT": "${containerWorkspaceFolder}/.radar-env/go",
+    "GOPATH": "${containerWorkspaceFolder}/.radar-env/state/go",
+    "GOMODCACHE": "${containerWorkspaceFolder}/.radar-env/cache/go-mod",
+    "GOCACHE": "${containerWorkspaceFolder}/.radar-env/cache/go-build",
+    "GOTOOLCHAIN": "local",
+    "VIRTUAL_ENV": "${containerWorkspaceFolder}/.radar-env/python",
+    "PYTHONNOUSERSITE": "1",
+    "PIP_CACHE_DIR": "${containerWorkspaceFolder}/.radar-env/cache/pip",
+    "MINIKUBE_HOME": "${containerWorkspaceFolder}/.radar-env/state/minikube",
+    "KUBECONFIG": "${containerWorkspaceFolder}/.radar-env/state/kubeconfig",
+    "RADAR_TOKEN_FILE": "${containerWorkspaceFolder}/.radar-env/state/radar-token",
+    "RADAR_UI_PASSWORD_FILE": "${containerWorkspaceFolder}/.radar-env/state/argocd-ui-password",
+    "RADAR_ENV_ROOT": "${containerWorkspaceFolder}/.radar-env",
+    "RADAR_ENV_ACTIVE": "1"
+  },
   "customizations": {
     "vscode": {
       "extensions": [

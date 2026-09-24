@@ -22,4 +22,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## External Tools
 
-OPA, Kubernetes, kubectl, Minikube, Argo CD, Docker, Git, Git LFS, and shell utilities are separate tools used for development or execution. They are not redistributed in RADAR's source-built release archive and remain governed by their own licenses. Their names identify interoperability and do not imply endorsement.
+Go, OPA, Kubernetes, kubectl, Minikube, Argo CD, Docker, Git, Git LFS, jq,
+ShellCheck, PyYAML, bcrypt, and shell utilities are separate tools used for
+development or execution. The optional bootstrap retrieves pinned tools into an
+ignored local directory; they are not committed to the repository or
+redistributed in RADAR's source-built release archive and remain governed by
+their own licenses. Their names identify interoperability and do not imply
+endorsement.

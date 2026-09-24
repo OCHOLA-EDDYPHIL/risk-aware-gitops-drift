@@ -7,11 +7,16 @@ trap 'rm -rf "${TEST_ROOT}"' EXIT
 REPOSITORY="${TEST_ROOT}/repository"
 FAKE_BIN="${TEST_ROOT}/bin"
 OUTPUT_ROOT="${TEST_ROOT}/output"
-mkdir -p "${REPOSITORY}/k8s-lab/scripts" "${FAKE_BIN}" "${OUTPUT_ROOT}"
+mkdir -p "${REPOSITORY}/k8s-lab/scripts" "${REPOSITORY}/scripts" "${FAKE_BIN}" "${OUTPUT_ROOT}"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cp "${SCRIPT_DIR}/common.sh" "${SCRIPT_DIR}/capture-environment.sh" "${SCRIPT_DIR}/preflight.sh" \
   "${SCRIPT_DIR}/capture-codespace-environment.sh" "${REPOSITORY}/k8s-lab/scripts/"
+cp "${SCRIPT_DIR}/../../scripts/toolchain-versions.sh" "${REPOSITORY}/scripts/"
+cat >"${REPOSITORY}/scripts/check-env.sh" <<'SH'
+#!/usr/bin/env bash
+[[ "${RADAR_ENV_ACTIVE:-}" == "1" ]]
+SH
 
 cat >"${FAKE_BIN}/docker" <<'SH'
 #!/usr/bin/env bash
@@ -42,13 +47,16 @@ cat >"${FAKE_BIN}/git-lfs" <<'SH'
 printf 'git-lfs/3.7.1 (test)\n'
 SH
 chmod +x "${FAKE_BIN}"/* "${REPOSITORY}/k8s-lab/scripts/"*.sh
+chmod +x "${REPOSITORY}/scripts/check-env.sh"
 
 git -C "${REPOSITORY}" init --quiet
 git -C "${REPOSITORY}" update-index --add \
   k8s-lab/scripts/common.sh \
   k8s-lab/scripts/capture-environment.sh \
   k8s-lab/scripts/capture-codespace-environment.sh \
-  k8s-lab/scripts/preflight.sh
+  k8s-lab/scripts/preflight.sh \
+  scripts/check-env.sh \
+  scripts/toolchain-versions.sh
 git -C "${REPOSITORY}" -c user.name=RADAR -c user.email=radar@example.invalid \
   commit --quiet --no-gpg-sign --message initial
 
@@ -66,6 +74,12 @@ jq --exit-status '
 ' "${OUTPUT_ROOT}/local.json" >/dev/null
 (cd "${OUTPUT_ROOT}" && sha256sum --check local.json.sha256 >/dev/null)
 
+RADAR_ENV_ACTIVE=1 \
+RADAR_ENV_ROOT="${REPOSITORY}/.radar-env" \
+MINIKUBE_HOME="${REPOSITORY}/.radar-env/state/minikube" \
+KUBECONFIG="${REPOSITORY}/.radar-env/state/kubeconfig" \
+RADAR_TOKEN_FILE="${REPOSITORY}/.radar-env/state/radar-token" \
+RADAR_UI_PASSWORD_FILE="${REPOSITORY}/.radar-env/state/argocd-ui-password" \
 RADAR_MIN_AVAILABLE_KIB=1 PATH="${FAKE_BIN}:${PATH}" \
   "${REPOSITORY}/k8s-lab/scripts/preflight.sh" --context radar-lab >/dev/null
 

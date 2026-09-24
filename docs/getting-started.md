@@ -2,19 +2,29 @@
 
 This guide covers a fixture-based scan and a read-only live Argo CD scan. The fixture path is the recommended first run because it requires no Kubernetes cluster and cannot mutate infrastructure.
 
-## Requirements
+## Project-Local Environment
 
-- Go 1.24.0.
-- OPA 1.17.1 available as `opa` on `PATH`.
-- Git LFS 3.x only when retrieving immutable evidence archives.
-- Argo CD API access only for a live scan.
+On a Linux x86-64 host, the bootstrap requires `curl`, Git, Python 3.10–3.14
+with venv support, `tar`, `xz`, and SHA-256 utilities. It downloads checksum-pinned Go,
+OPA, kubectl, Minikube, jq, ShellCheck, Git LFS, and Python tooling into the
+ignored `.radar-env` directory. It does not use `sudo` or write to a system
+tool directory.
 
-Verify the local tools:
+Create and activate it:
 
 ```sh
-go version
-opa version
+make env-bootstrap
+source scripts/activate-env.sh
+make env-check
 ```
+
+Run the activation command in each new shell. It places only this project's
+tools on `PATH` and isolates Go caches, Python packages, Minikube state,
+kubeconfig, and lab credentials below `.radar-env`. Run `radar-deactivate` to
+restore the shell's previous environment.
+
+Docker is needed only for the controlled Kubernetes lab. Argo CD access is
+needed only for a live scan.
 
 ## Build
 

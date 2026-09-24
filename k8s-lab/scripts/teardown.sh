@@ -17,5 +17,6 @@ assert_context "$2"
 require_command minikube
 
 minikube delete --profile "${RADAR_PROFILE}"
-rm -f "${RADAR_TOKEN_FILE:-${REPO_ROOT}/.radar-lab-token}"
-printf 'Deleted only Minikube profile %s and the local RADAR token file.\n' "${RADAR_PROFILE}"
+rm -f "${RADAR_TOKEN_FILE}"
+rm -f "${RADAR_UI_PASSWORD_FILE}"
+printf 'Deleted only Minikube profile %s and its project-local credentials.\n' "${RADAR_PROFILE}"

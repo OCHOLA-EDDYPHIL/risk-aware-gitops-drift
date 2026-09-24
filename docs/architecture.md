@@ -42,7 +42,9 @@ The CLI and JSON report are the primary interfaces. A dashboard is outside the r
 
 ## Controlled Laboratory
 
-The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. The context server, CA and cluster UID must match an identity recorded immediately after the profile is created. Argo CD has self-heal disabled during observation, exposes its API through a process-owned, dynamically allocated localhost port, and grants RADAR only application/project read access.
+The controlled environment is a dedicated Minikube profile and Kubernetes context named `radar-lab`. Its binaries, Minikube home, kubeconfig, language caches, and generated credentials live below the ignored project-local `.radar-env` directory. Lab entry points refuse to operate when that environment is not active. The context server, CA and cluster UID must also match an identity recorded immediately after the profile is created.
+
+Argo CD has self-heal disabled during observation and is exposed only through a process-owned, dynamically allocated `127.0.0.1` port. RADAR uses an API-token account and the browser demonstration uses a separate login account; both inherit the same read-only permissions for only the `radar/radar-lab` Application and project. Setup disables the bootstrap administrator after provisioning those credentials.
 
 The scenario runner requires a clean source commit equal to the immutable Argo CD revision. It builds the scanner and policy from that commit, records their hashes, applies one synthetic mutation, and accepts a scan bundle only when Application snapshots bracketing managed-resource capture have the same resource version and frozen synchronization state. Reset uses the original revision, requires explicit success from every operation, and verifies the restored declared fields before another run.
 

@@ -282,7 +282,7 @@ jq --null-input \
 current_stage="observe-argocd"
 refresh_application
 wait_for_application_value '{.status.sync.status}' OutOfSync 300s
-token_file="${RADAR_TOKEN_FILE:-${REPO_ROOT}/.radar-lab-token}"
+token_file="${RADAR_TOKEN_FILE}"
 [[ -s "${token_file}" && ! -L "${token_file}" ]] || die "RADAR token file is missing or unsafe; run create-token.sh"
 start_argocd_forward "${port_forward_log}"
 current_stage="capture-managed-resources"

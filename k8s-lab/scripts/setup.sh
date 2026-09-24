@@ -6,9 +6,6 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh disable=SC1091
 source "${SCRIPT_DIR}/common.sh"
 
-readonly KUBERNETES_VERSION="v1.35.1"
-readonly ARGOCD_VERSION="v3.4.5"
-
 usage() {
   printf 'Usage: %s --context radar-lab\n' "$0" >&2
   exit 2
@@ -35,7 +32,7 @@ minikube start \
   --driver docker \
   --cpus 2 \
   --memory 3072mb \
-  --kubernetes-version "${KUBERNETES_VERSION}" \
+  --kubernetes-version "v${RADAR_KUBERNETES_VERSION}" \
   --keep-context=true
 
 current_context_after="$(kubectl config current-context 2>/dev/null || true)"
@@ -49,11 +46,11 @@ kubectl config get-contexts "${RADAR_CONTEXT}" >/dev/null 2>&1 || die "Minikube 
 record_lab_cluster_identity
 
 server_version="$(kube version --output json | jq -r '.serverVersion.gitVersion')"
-[[ "${server_version}" == "${KUBERNETES_VERSION}" ]] || die "Kubernetes ${KUBERNETES_VERSION} is required; found ${server_version}"
+[[ "${server_version}" == "v${RADAR_KUBERNETES_VERSION}" ]] || die "Kubernetes v${RADAR_KUBERNETES_VERSION} is required; found ${server_version}"
 
 kube create namespace "${ARGO_NAMESPACE}" --dry-run=client --output yaml | kube apply --filename - >/dev/null
 kube --namespace "${ARGO_NAMESPACE}" apply --server-side --filename \
-  "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml" >/dev/null
+  "https://raw.githubusercontent.com/argoproj/argo-cd/v${RADAR_ARGOCD_VERSION}/manifests/install.yaml" >/dev/null
 kube --namespace "${ARGO_NAMESPACE}" wait --for=condition=Available deployment --all --timeout=600s >/dev/null
 kube --namespace "${ARGO_NAMESPACE}" rollout status statefulset/argocd-application-controller --timeout=600s >/dev/null
 
@@ -62,7 +59,7 @@ kube --namespace "${ARGO_NAMESPACE}" rollout restart deployment/argocd-server >/
 kube --namespace "${ARGO_NAMESPACE}" rollout status deployment/argocd-server --timeout=300s >/dev/null
 
 server_image="$(kube --namespace "${ARGO_NAMESPACE}" get deployment argocd-server --output jsonpath='{.spec.template.spec.containers[0].image}')"
-[[ "${server_image}" == *":${ARGOCD_VERSION}" ]] || die "Argo CD server image is not pinned to ${ARGOCD_VERSION}"
+[[ "${server_image}" == *":v${RADAR_ARGOCD_VERSION}" ]] || die "Argo CD server image is not pinned to v${RADAR_ARGOCD_VERSION}"
 
 kube --namespace "${ARGO_NAMESPACE}" create secret generic radar-repository \
   --from-literal=type=git \
@@ -82,6 +79,15 @@ sed -e "s|REPLACE_WITH_RADAR_REPOSITORY_URL|${escaped_repo_url}|g" \
 refresh_application
 wait_for_synced_healthy 600s
 "${SCRIPT_DIR}/create-token.sh" --context "${RADAR_CONTEXT}"
+kube --namespace "${ARGO_NAMESPACE}" patch configmap argocd-cm --type merge \
+  --patch '{"data":{"admin.enabled":"false"}}' >/dev/null
+kube --namespace "${ARGO_NAMESPACE}" delete secret argocd-initial-admin-secret --ignore-not-found=true >/dev/null
+"${SCRIPT_DIR}/create-ui-account.sh" --context "${RADAR_CONTEXT}"
+[[ "$(kube --namespace "${ARGO_NAMESPACE}" get configmap argocd-cm --output jsonpath='{.data.admin\.enabled}')" == "false" ]] || \
+  die "Argo CD bootstrap administrator was not disabled"
+if kube --namespace "${ARGO_NAMESPACE}" get secret argocd-initial-admin-secret >/dev/null 2>&1; then
+  die "Argo CD initial administrator Secret still exists"
+fi
 "${SCRIPT_DIR}/verify-baseline.sh" --context "${RADAR_CONTEXT}"
 
 printf 'RADAR lab is ready. The previous kubeconfig current context remains %s.\n' "${current_context_before:-unset}"

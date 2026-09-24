@@ -34,14 +34,15 @@ RADAR is not an admission controller, Kubernetes operator, runtime detector, SIE
 
 The fastest safe path exercises the complete extraction-to-report pipeline without starting a cluster.
 
-Requirements:
-
-- Go 1.24.0.
-- OPA 1.17.1 available as `opa` on `PATH`.
+On Linux x86-64, bootstrap the pinned project environment first. It is stored in
+the ignored `.radar-env` directory and does not install tools into the host:
 
 ```sh
 git clone https://github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift.git
 cd risk-aware-gitops-drift
+make env-bootstrap
+source scripts/activate-env.sh
+make env-check
 make build
 ./bin/radar scan \
   --fixture testdata/argocd/scan_bundle_privileged.json \
@@ -72,6 +73,11 @@ Use table output for a compact terminal view:
 Stored fixtures are **fixture-validated evidence**, not live-cluster observations. See [Getting Started](docs/getting-started.md) for expected behavior and troubleshooting.
 
 The controlled live lab can run on a local Linux host, a Linux virtual machine, or a temporary cloud development host that meets the documented requirements. GitHub Codespaces is optional and is not part of RADAR's architecture.
+
+To demonstrate the live system visually, first create the dedicated `radar-lab`
+cluster, then use the localhost-only Argo CD UI alongside the guided RADAR
+rehearsal. The complete setup, presentation, and teardown commands are in the
+[controlled lab guide](k8s-lab/README.md).
 
 ## Scan a Live Argo CD Application
 
