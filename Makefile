@@ -61,6 +61,7 @@ lab-static-check:
 	$(MAKE) protocol-check
 	bash k8s-lab/scripts/capture_environment_test.sh
 	bash k8s-lab/scripts/common_test.sh
+	bash k8s-lab/scripts/create_ui_account_test.sh
 	bash -n $(LAB_SCRIPTS) $(TOOLING_SCRIPTS)
 	shellcheck $(LAB_SCRIPTS) $(TOOLING_SCRIPTS)
 	kubectl kustomize k8s-lab/baseline >/dev/null
