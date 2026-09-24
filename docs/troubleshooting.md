@@ -1,5 +1,26 @@
 # Troubleshooting
 
+## A lab command says to activate the project environment
+
+Each shell that builds RADAR or operates the lab must activate the repository's
+isolated environment:
+
+```sh
+source scripts/activate-env.sh
+make env-check
+```
+
+If `.radar-env` does not exist or the version check fails, rerun
+`make env-bootstrap`. The bootstrap writes only inside the repository and does
+not replace system-wide Go, Python, kubectl, Minikube, OPA, or jq installations.
+
+## Lab preflight reports insufficient memory
+
+The controlled cluster requires at least 4 GiB of currently available host
+memory, not merely 4 GiB installed. Close memory-heavy processes or use a Linux
+VM or temporary cloud host with more available memory. Do not lower the guard
+for a formal run.
+
 ## `opa CLI is required`
 
 RADAR delegates Rego evaluation to an `opa` executable on `PATH`. Verify:
@@ -70,3 +91,12 @@ The packaging script deliberately refuses a non-test release when the code and d
 ## Lab command rejects the context
 
 This is a safety feature. The research scripts accept only the dedicated `radar-lab` profile and context and additionally verify the API server, CA, and cluster UID. Never bypass the guard or substitute another cluster. Read `k8s-lab/README.md` before operating the lab.
+
+## The Argo CD browser page is unavailable
+
+Run `make lab-ui` in an activated shell and keep that process open. The printed
+URL uses a dynamically allocated `127.0.0.1` port and stops working when the
+process exits. The viewer password is in `RADAR_UI_PASSWORD_FILE` with mode
+`0600`; do not show it in screenshots or commit it. For a remote host, carry
+the loopback connection through a trusted SSH or editor tunnel rather than
+publishing Argo CD on a public interface.

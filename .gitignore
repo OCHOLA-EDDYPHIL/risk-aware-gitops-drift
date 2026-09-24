@@ -9,12 +9,14 @@ coverage.out
 .DS_Store
 .idea/
 .vscode/
+.radar-env/
 kubeconfig
 *.kubeconfig
 *.pem
 *.key
 *.crt
 .radar-lab-token
+.radar-lab-ui-password
 k8s-lab/evidence/
 __pycache__/
 *.pyc

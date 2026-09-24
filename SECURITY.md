@@ -22,7 +22,15 @@ RADAR performs read-only HTTP requests to Argo CD and invokes a local OPA execut
 
 The `--token` flag exists for compatibility, but `ARGOCD_AUTH_TOKEN` is safer because command arguments can be visible to other processes and shell history. Regardless of delivery method, callers are responsible for protecting the environment and output files.
 
-The research lab has a separate safety boundary: it accepts only the explicit `radar-lab` profile and context, uses synthetic workloads, disables Argo CD self-heal during observation, and verifies reset after each scenario. Do not weaken or bypass those guards.
+The research lab has a separate safety boundary: it runs only from the activated
+project-local `.radar-env`, accepts only the explicit `radar-lab` profile and
+context, uses synthetic workloads, disables Argo CD self-heal during
+observation, and verifies reset after each scenario. Its short-lived API token
+and browser password are ignored files with mode `0600` below `.radar-env`.
+Argo CD is forwarded only to a dynamically allocated `127.0.0.1` port, the
+browser uses a read-only account, and setup disables the bootstrap administrator
+after provisioning. Do not weaken or bypass those guards, publish the UI, or
+include the credentials in screenshots.
 
 ## Supported Material
 

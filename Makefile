@@ -1,11 +1,19 @@
-GOFILES := $(shell find . -name '*.go' -not -path './vendor/*')
+GOFILES := $(shell find . -name '*.go' -not -path './vendor/*' -not -path './.radar-env/*')
 LAB_SCRIPTS := $(shell find k8s-lab/scripts -name '*.sh' -type f | sort)
+TOOLING_SCRIPTS := scripts/activate-env.sh scripts/bootstrap-env.sh scripts/check-env.sh scripts/toolchain-versions.sh .devcontainer/install-tools.sh
 VERSION ?= dev
 COMMIT ?= $(shell git rev-parse --short=12 HEAD 2>/dev/null || printf unknown)
 BUILD_DATE ?= $(shell git show -s --format=%cI HEAD 2>/dev/null || printf unknown)
 LDFLAGS := -s -w -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Version=$(VERSION) -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Commit=$(COMMIT) -X github.com/OCHOLA-EDDYPHIL/risk-aware-gitops-drift/internal/version.Date=$(BUILD_DATE)
 
-.PHONY: fmt fmt-check vet test race build run-example rego-test policy-integration-test protocol-check lab-static-check release-check release-snapshot docs-check ci
+.PHONY: env-bootstrap env-check fmt fmt-check vet test race build run-example rego-test policy-integration-test protocol-check lab-static-check lab-preflight lab-setup lab-ui lab-demo lab-teardown release-check release-snapshot docs-check ci
+
+env-bootstrap:
+	bash scripts/bootstrap-env.sh
+
+env-check:
+	@test "$${RADAR_ENV_ACTIVE:-}" = "1" || (echo "Activate the environment first: source scripts/activate-env.sh" >&2; exit 1)
+	scripts/check-env.sh
 
 fmt:
 	gofmt -w $(GOFILES)
@@ -53,13 +61,33 @@ lab-static-check:
 	$(MAKE) protocol-check
 	bash k8s-lab/scripts/capture_environment_test.sh
 	bash k8s-lab/scripts/common_test.sh
-	bash -n $(LAB_SCRIPTS)
-	shellcheck $(LAB_SCRIPTS)
+	bash k8s-lab/scripts/create_ui_account_test.sh
+	bash -n $(LAB_SCRIPTS) $(TOOLING_SCRIPTS)
+	shellcheck $(LAB_SCRIPTS) $(TOOLING_SCRIPTS)
 	kubectl kustomize k8s-lab/baseline >/dev/null
 	@! k8s-lab/scripts/setup.sh --context not-radar-lab >/dev/null 2>&1
 	@! k8s-lab/scripts/preflight.sh --context not-radar-lab >/dev/null 2>&1
+	@! k8s-lab/scripts/create-ui-account.sh --context not-radar-lab >/dev/null 2>&1
+	@! k8s-lab/scripts/serve-ui.sh --context not-radar-lab >/dev/null 2>&1
+	@! k8s-lab/scripts/rehearse-demo.sh --context not-radar-lab >/dev/null 2>&1
+	@! k8s-lab/scripts/teardown.sh --context not-radar-lab --confirm radar-lab >/dev/null 2>&1
 	@! k8s-lab/scripts/run-scenario.sh --context not-radar-lab --scenario privileged-container --repetition 1 >/dev/null 2>&1
 	@! RADAR_BIN=/bin/true k8s-lab/scripts/run-scenario.sh --context radar-lab --collection-id test-run --scenario privileged-container --repetition 1 --environment-file /nonexistent >/dev/null 2>&1
+
+lab-preflight:
+	k8s-lab/scripts/preflight.sh --context radar-lab
+
+lab-setup:
+	k8s-lab/scripts/setup.sh --context radar-lab
+
+lab-ui:
+	k8s-lab/scripts/serve-ui.sh --context radar-lab
+
+lab-demo:
+	k8s-lab/scripts/rehearse-demo.sh --context radar-lab
+
+lab-teardown:
+	k8s-lab/scripts/teardown.sh --context radar-lab --confirm radar-lab
 
 docs-check:
 	python3 scripts/check-doc-links.py

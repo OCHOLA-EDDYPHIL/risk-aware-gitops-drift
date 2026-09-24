@@ -11,3 +11,4 @@ data:
     p, role:radar-readonly, applications, get, radar/radar-lab, allow
     p, role:radar-readonly, projects, get, radar, allow
     g, radar, role:radar-readonly
+    g, radar-viewer, role:radar-readonly

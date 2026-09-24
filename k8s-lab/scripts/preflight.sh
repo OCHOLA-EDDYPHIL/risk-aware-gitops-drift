@@ -6,10 +6,6 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=common.sh disable=SC1091
 source "${SCRIPT_DIR}/common.sh"
 
-readonly MINIKUBE_VERSION="v1.38.1"
-readonly KUBECTL_VERSION="v1.35.6"
-readonly OPA_VERSION="1.17.1"
-readonly GO_VERSION="go1.24.0"
 readonly MIN_AVAILABLE_KIB="${RADAR_MIN_AVAILABLE_KIB:-4194304}"
 readonly MIN_CPU_COUNT=2
 
@@ -20,6 +16,7 @@ usage() {
 
 [[ $# -eq 2 && "$1" == "--context" ]] || usage
 assert_context "$2"
+"${REPO_ROOT}/scripts/check-env.sh" >/dev/null
 
 [[ "$(uname --kernel-name)" == "Linux" ]] || die "the controlled lab requires a Linux host"
 [[ -r /proc/meminfo ]] || die "the controlled lab requires Linux memory information from /proc/meminfo"
@@ -43,16 +40,16 @@ if ((available_kib < MIN_AVAILABLE_KIB)); then
 fi
 
 installed_minikube="$(minikube version --short)"
-[[ "${installed_minikube}" == "${MINIKUBE_VERSION}" ]] || die "Minikube ${MINIKUBE_VERSION} is required; found ${installed_minikube}"
+[[ "${installed_minikube}" == "v${RADAR_MINIKUBE_VERSION}" ]] || die "Minikube v${RADAR_MINIKUBE_VERSION} is required; found ${installed_minikube}"
 
 installed_kubectl="$(kubectl version --client --output json | jq --raw-output '.clientVersion.gitVersion')"
-[[ "${installed_kubectl}" == "${KUBECTL_VERSION}" ]] || die "kubectl ${KUBECTL_VERSION} is required; found ${installed_kubectl}"
+[[ "${installed_kubectl}" == "v${RADAR_KUBECTL_VERSION}" ]] || die "kubectl v${RADAR_KUBECTL_VERSION} is required; found ${installed_kubectl}"
 
 installed_opa="$(opa version | awk '/^Version:/ {print $2}')"
-[[ "${installed_opa}" == "${OPA_VERSION}" ]] || die "OPA ${OPA_VERSION} is required; found ${installed_opa}"
+[[ "${installed_opa}" == "${RADAR_OPA_VERSION}" ]] || die "OPA ${RADAR_OPA_VERSION} is required; found ${installed_opa}"
 
 installed_go="$(go env GOVERSION)"
-[[ "${installed_go}" == "${GO_VERSION}" ]] || die "Go ${GO_VERSION} is required; found ${installed_go}"
+[[ "${installed_go}" == "go${RADAR_GO_VERSION}" ]] || die "Go go${RADAR_GO_VERSION} is required; found ${installed_go}"
 
 docker info >/dev/null
 

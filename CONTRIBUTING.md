@@ -18,9 +18,14 @@ Keep proposals narrow. Describe the exact resource, operation, JSON Pointer, val
 
 ## Development Setup
 
-Required tools are Go 1.24.0 and, for policy tests, OPA 1.17.1. The full static lab validation also uses `kubectl` and `shellcheck`.
+Use the repository-local, checksum-pinned tool environment. It contains Go,
+OPA, kubectl, ShellCheck, jq, Git LFS, and the Python tooling used by the
+laboratory scripts without writing them into host system directories.
 
 ```sh
+make env-bootstrap
+source scripts/activate-env.sh
+make env-check
 make fmt-check
 make vet
 make test

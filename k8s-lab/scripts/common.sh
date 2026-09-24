@@ -12,6 +12,9 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 readonly REPO_ROOT
+# shellcheck source=../../scripts/toolchain-versions.sh disable=SC1091
+source "${REPO_ROOT}/scripts/toolchain-versions.sh"
+readonly RADAR_PROJECT_ENV_ROOT="${REPO_ROOT}/.radar-env"
 # shellcheck disable=SC2034
 readonly BASELINE_DIR="${REPO_ROOT}/k8s-lab/baseline"
 readonly RADAR_IDENTITY_FILE="${MINIKUBE_HOME:-${HOME}/.minikube}/profiles/${RADAR_PROFILE}/radar-identity.json"
@@ -28,6 +31,22 @@ require_command() {
 assert_context() {
   local requested_context="${1:-}"
   [[ "${requested_context}" == "${RADAR_CONTEXT}" ]] || die "--context must be exactly ${RADAR_CONTEXT}"
+  assert_project_environment
+}
+
+assert_project_environment() {
+  [[ "${RADAR_ENV_ACTIVE:-}" == "1" ]] || \
+    die "activate the project environment first: source scripts/activate-env.sh"
+  [[ "${RADAR_ENV_ROOT:-}" == "${RADAR_PROJECT_ENV_ROOT}" ]] || \
+    die "RADAR_ENV_ROOT must be ${RADAR_PROJECT_ENV_ROOT}"
+  [[ "${MINIKUBE_HOME:-}" == "${RADAR_PROJECT_ENV_ROOT}/state/minikube" ]] || \
+    die "MINIKUBE_HOME must remain inside the project environment"
+  [[ "${KUBECONFIG:-}" == "${RADAR_PROJECT_ENV_ROOT}/state/kubeconfig" ]] || \
+    die "KUBECONFIG must remain inside the project environment"
+  [[ "${RADAR_TOKEN_FILE:-}" == "${RADAR_PROJECT_ENV_ROOT}/state/radar-token" ]] || \
+    die "RADAR_TOKEN_FILE must remain inside the project environment"
+  [[ "${RADAR_UI_PASSWORD_FILE:-}" == "${RADAR_PROJECT_ENV_ROOT}/state/argocd-ui-password" ]] || \
+    die "RADAR_UI_PASSWORD_FILE must remain inside the project environment"
 }
 
 context_connection_values() {

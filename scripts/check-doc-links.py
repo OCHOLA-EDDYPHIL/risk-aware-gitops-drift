@@ -12,12 +12,14 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parents[1]
 LINK = re.compile(r"!?\[[^]]*\]\(([^)]+)\)")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "#")
+GENERATED_DIRECTORIES = {".git", ".radar-env", "bin", "dist", "__pycache__"}
 
 
 def main() -> int:
     failures: list[str] = []
     for document in sorted(ROOT.rglob("*.md")):
-        if ".git" in document.parts:
+        relative_parts = document.relative_to(ROOT).parts
+        if any(part in GENERATED_DIRECTORIES for part in relative_parts[:-1]):
             continue
         text = document.read_text(encoding="utf-8")
         for line_number, line in enumerate(text.splitlines(), 1):

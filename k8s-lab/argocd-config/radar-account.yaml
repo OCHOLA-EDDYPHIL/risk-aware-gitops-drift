@@ -7,3 +7,5 @@ metadata:
 data:
   accounts.radar: apiKey
   accounts.radar.enabled: "true"
+  accounts.radar-viewer: login
+  accounts.radar-viewer.enabled: "true"
