@@ -14,6 +14,7 @@ mkdir -p \
   "${REPOSITORY}/k8s-lab/scripts" \
   "${REPOSITORY}/scripts" \
   "${ENV_ROOT}/state/minikube/profiles/radar-lab" \
+  "${TEST_ROOT}/python-modules" \
   "${FAKE_BIN}"
 
 cp "${SOURCE_ROOT}/k8s-lab/scripts/common.sh" \
@@ -69,6 +70,24 @@ server.serve_forever()
 PY
 chmod +x "${TEST_ROOT}/forward.py"
 
+cat >"${TEST_ROOT}/python-modules/bcrypt.py" <<'PY'
+import hashlib
+import hmac
+
+
+def gensalt(rounds=12):
+    assert rounds == 12
+    return b"radar-test-salt"
+
+
+def hashpw(password, salt):
+    return b"$2b$12$" + hashlib.sha256(salt + password).hexdigest().encode()[:53]
+
+
+def checkpw(password, password_hash):
+    return hmac.compare_digest(hashpw(password, b"radar-test-salt"), password_hash)
+PY
+
 cat >"${FAKE_BIN}/minikube" <<'SH'
 #!/usr/bin/env bash
 [[ "$*" == *"status"* ]]
@@ -114,7 +133,8 @@ export MINIKUBE_HOME="${ENV_ROOT}/state/minikube"
 export KUBECONFIG="${ENV_ROOT}/state/kubeconfig"
 export RADAR_TOKEN_FILE="${ENV_ROOT}/state/radar-token"
 export RADAR_UI_PASSWORD_FILE="${ENV_ROOT}/state/argocd-ui-password"
-export PATH="${FAKE_BIN}:${SOURCE_ROOT}/.radar-env/python/bin:${SOURCE_ROOT}/.radar-env/bin:/usr/bin:/bin"
+export PYTHONPATH="${TEST_ROOT}/python-modules"
+export PATH="${FAKE_BIN}:${PATH}"
 
 "${REPOSITORY}/k8s-lab/scripts/create-ui-account.sh" --context radar-lab >/dev/null
 [[ -s "${RADAR_UI_PASSWORD_FILE}" && ! -L "${RADAR_UI_PASSWORD_FILE}" ]]
