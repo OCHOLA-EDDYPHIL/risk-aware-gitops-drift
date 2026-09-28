@@ -13,7 +13,7 @@ OPERATION_LOG="${TEST_ROOT}/operations.log"
 mkdir -p \
   "${REPOSITORY}/k8s-lab/scripts" \
   "${REPOSITORY}/scripts" \
-  "${ENV_ROOT}/state/minikube/profiles/radar-lab" \
+  "${ENV_ROOT}/state/minikube/.minikube/profiles/radar-lab" \
   "${TEST_ROOT}/python-modules" \
   "${FAKE_BIN}"
 
@@ -118,8 +118,8 @@ jq --null-input \
   --arg caSha256 "${ca_sha256}" \
   '{profile:"radar-lab",context:"radar-lab",server:$server,
     caSha256:$caSha256,clusterUid:"trusted-uid"}' \
-  >"${ENV_ROOT}/state/minikube/profiles/radar-lab/radar-identity.json"
-chmod 600 "${ENV_ROOT}/state/minikube/profiles/radar-lab/radar-identity.json"
+  >"${ENV_ROOT}/state/minikube/.minikube/profiles/radar-lab/radar-identity.json"
+chmod 600 "${ENV_ROOT}/state/minikube/.minikube/profiles/radar-lab/radar-identity.json"
 printf 'radar-api-token' >"${ENV_ROOT}/state/radar-token"
 chmod 600 "${ENV_ROOT}/state/radar-token"
 touch "${ENV_ROOT}/state/kubeconfig"

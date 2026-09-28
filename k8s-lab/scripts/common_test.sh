@@ -8,7 +8,7 @@ export MINIKUBE_HOME="${TEST_ROOT}/minikube"
 export FAKE_BIN="${TEST_ROOT}/bin"
 export FAKE_OPERATION_LOG="${TEST_ROOT}/operations.log"
 export ACTUAL_UID="trusted-uid"
-mkdir -p "${FAKE_BIN}" "${MINIKUBE_HOME}/profiles/radar-lab"
+mkdir -p "${FAKE_BIN}" "${MINIKUBE_HOME}/.minikube/profiles/radar-lab"
 
 cat >"${TEST_ROOT}/forward.py" <<'PY'
 #!/usr/bin/env python3
