@@ -17,7 +17,8 @@ source "${REPO_ROOT}/scripts/toolchain-versions.sh"
 readonly RADAR_PROJECT_ENV_ROOT="${REPO_ROOT}/.radar-env"
 # shellcheck disable=SC2034
 readonly BASELINE_DIR="${REPO_ROOT}/k8s-lab/baseline"
-readonly RADAR_IDENTITY_FILE="${MINIKUBE_HOME:-${HOME}/.minikube}/profiles/${RADAR_PROFILE}/radar-identity.json"
+readonly RADAR_MINIKUBE_DATA_DIR="${MINIKUBE_HOME:-${HOME}}/.minikube"
+readonly RADAR_IDENTITY_FILE="${RADAR_MINIKUBE_DATA_DIR}/profiles/${RADAR_PROFILE}/radar-identity.json"
 
 die() {
   printf 'RADAR lab safety check failed: %s\n' "$*" >&2
